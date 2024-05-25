@@ -107,7 +107,7 @@
     async function fetchOrderHistory() {
       try {
         // Fetch order history data from the backend API
-        const response = await fetch('/api/orders', {
+        const response = await fetch('https://m1wala1.onrender.com/api/orders', {
           method: 'GET',
           headers: {
             'Authorization': 'Bearer your-jwt-token' // Replace 'your-jwt-token' with the actual JWT token
