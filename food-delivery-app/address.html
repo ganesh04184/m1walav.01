@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Saved Addresses</title>
+    <link rel="stylesheet" href="../assets/css/vendors/bootstrap.min.css" />
+    <link rel="stylesheet" href="../assets/css/style.css" />
+    <style>
+        .address-item {
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .address-item:hover {
+            background-color: #f1f1f1;
+        }
+
+        .address-item.selected {
+            border: 2px solid #28a745;
+            background-color: #e6ffed;
+        }
+
+        @media (max-width: 768px) {
+            .address-item {
+                font-size: 14px;
+            }
+        }
+
+        .btn.theme-btn {
+            background-color: #28a745;
+            border-color: #28a745;
+            color: #fff;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- header start -->
+    <header class="section-t-space">
+        <div class="custom-container">
+            <div class="header-panel">
+                <a href="cart.html">
+                    <i class="ri-arrow-left-s-line"></i>
+                </a>
+                <h2>Saved Address</h2>
+                <a href="address-details.html">
+                    <i class="ri-add-line theme-color add-square-img"></i>
+                </a>
+            </div>
+        </div>
+    </header>
+    <!-- header end -->
+
+    <!-- choose Address section start -->
+    <section class="section-b-space">
+        <div class="custom-container">
+            <ul class="address-list" id="addressList">
+                <!-- Saved addresses will be dynamically populated here -->
+            </ul>
+            <button class="btn theme-btn w-100 mb-2" id="addNewAddressButton">Add New Address</button>
+            <button class="btn theme-btn w-100" id="selectAddressButton" disabled>Select Address</button>
+        </div>
+    </section>
+    <!-- choose Address section end -->
+
+    <script src="../assets/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('http://localhost:3000/addresses')
+                .then(response => response.json())
+                .then(addresses => {
+                    const addressList = document.getElementById('addressList');
+                    addressList.innerHTML = '';
+                    addresses.forEach((address, index) => {
+                        const listItem = document.createElement('li');
+                        listItem.className = 'address-item';
+                        listItem.dataset.index = index;
+                        listItem.dataset.address = JSON.stringify(address);
+                        listItem.innerHTML = `
+                            <div>${address.fullname}</div>
+                            <div>${address.mobile}</div>
+                            <div>${address.flat}, ${address.area}, ${address.landmark}</div>
+                            <div>${address.pincode}, ${address.city}, ${address.state}</div>
+                        `;
+                        listItem.addEventListener('click', () => {
+                            document.querySelectorAll('.address-item').forEach(item => item.classList.remove('selected'));
+                            listItem.classList.add('selected');
+                            document.getElementById('selectAddressButton').disabled = false;
+                        });
+                        addressList.appendChild(listItem);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching addresses:', error);
+                });
+
+            document.getElementById('addNewAddressButton').addEventListener('click', () => {
+                window.location.href = 'address-details.html';
+            });
+
+            document.getElementById('selectAddressButton').addEventListener('click', () => {
+                const selectedAddress = document.querySelector('.address-item.selected');
+                if (selectedAddress) {
+                    const address = JSON.parse(selectedAddress.dataset.address);
+                    localStorage.setItem('selectedAddress', JSON.stringify(address));
+                    window.location.href = 'confirm-location.html';
+                } else {
+                    alert('Please select an address');
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="zomo" />
+  <meta name="keywords" content="zomo" />
+  <meta name="author" content="zomo" />
+  <link rel="manifest" href="../manifest.json" />
+
+  <link rel="icon" href="../assets/images/logo/favicon.png" type="image/x-icon" />
+  <title>zomo App</title>
+  <link rel="apple-touch-icon" href="../assets/images/logo/favicon.png" />
+  <meta name="theme-color" content="#ff8d2f" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  <meta name="apple-mobile-web-app-title" content="zomo" />
+  <meta name="msapplication-TileImage" content="../assets/images/logo/favicon.png" />
+  <meta name="msapplication-TileColor" content="#FFFFFF" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+  <style>
+    /* Custom CSS */
+    /* Container */
+    .custom-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 15px;
+    }
+
+    /* Order box */
+    .order-box {
+      background-color: #ffffff;
+      border: 1px solid #3d7d36; /* Dark green border */
+      padding: 15px;
+      cursor: pointer;
+      transition: box-shadow 0.3s ease;
+    }
+
+    .order-box:hover {
+      box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Restaurant name */
+    .dark-text {
+      font-size: 18px;
+      margin-bottom: 5px;
+      color: #3d7d36; /* Dark green color */
+    }
+
+    /* Subtotal */
+    .theme-color {
+      font-size: 16px;
+    }
+
+    /* Food items */
+    .food-items {
+      font-size: 14px;
+    }
+
+    /* Rating and timing */
+    .rating-star {
+      font-size: 12px;
+    }
+
+    .timing {
+      list-style-type: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .rating-stars-container {
+      display: flex;
+      align-items: center;
+    }
+
+    .star {
+      color: #ffbf00; /* Yellow star color */
+    }
+
+    .star:hover {
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Header section -->
+  <!-- Add header content if needed -->
+
+  <!-- Orders history section -->
+  <section class="section-t-space">
+    <div class="custom-container">
+      <h2 class="text-center mb-4" style="color: #3d7d36;">Orders History</h2>
+      <div id="orderHistoryContainer" class="row gy-3">
+        <!-- Order history will be dynamically populated here -->
+      </div>
+    </div>
+  </section>
+
+  <script>
+    // Fetch order history data from backend API
+    fetchOrderHistory();
+
+    async function fetchOrderHistory() {
+      try {
+        // Fetch order history data from the backend API
+        const response = await fetch('/api/orders', {
+          method: 'GET',
+          headers: {
+            'Authorization': 'Bearer your-jwt-token' // Replace 'your-jwt-token' with the actual JWT token
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch order history');
+        }
+
+        const orders = await response.json();
+
+        // Call a function to dynamically populate the HTML with the fetched order data
+        displayOrderHistory(orders);
+      } catch (error) {
+        console.error('Error fetching order history:', error);
+        // Handle error
+      }
+    }
+
+    function displayOrderHistory(orders) {
+      const orderHistoryContainer = document.getElementById('orderHistoryContainer');
+
+      // Clear existing content
+      orderHistoryContainer.innerHTML = '';
+
+      // Loop through each order and create HTML elements to display order details
+      orders.forEach(order => {
+        const orderHTML = `
+          <div class="col-12">
+            <div class="vertical-product-box order-box" onclick="return false;">
+              <div class="vertical-box-img">
+                <!-- Add image source if available -->
+              </div>
+              <div class="vertical-box-details">
+                <div class="vertical-box-head">
+                  <div class="Grocery">
+                    <h5 class="dark-text">Order ID: ${order.orderId}</h5>
+                    <h5 class="dark-text">Status: ${order.status}</h5>
+                    <h5 class="dark-text">Expected Delivery: ${order.expectedDeliveryDate}</h5>
+                    <h5 class="theme-color">₹${order.subtotal}</h5>
+                  </div>
+                  <h6 class="food-items mb-2">${order.items.map(item => item.name).join(', ')}</h6>
+                </div>
+                <div class="reorder">
+                  <h6 class="rating-star">
+                    <ul class="timing">
+                      <li class="rating-stars-container">
+                        ${generateStarRating(order.rating)}
+                      </li>
+                    </ul>
+                  </h6>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+
+        // Append the order HTML to the container
+        orderHistoryContainer.innerHTML += orderHTML;
+      });
+    }
+
+    // Function to generate star rating HTML
+    function generateStarRating(rating) {
+      let starsHTML = '';
+      for (let i = 1; i <= 5; i++) {
+        const starClass = i <= rating ? 'ri-star-s-fill' : 'ri-star-line';
+        starsHTML += `<span class="star" onclick="showRating(${i})"><i class="${starClass}"></i></span>`;
+      }
+      return starsHTML;
+    }
+
+    // Function to show selected rating
+    function showRating(rating) {
+      alert(`You rated the product ${rating} out of 5`);
+    }
+  </script>
+</body>
+
+</html>

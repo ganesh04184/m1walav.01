@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Order Details</title>
+</head>
+<body>
+  <h2>Order Details</h2>
+  <div id="order-details">
+    <p>Order ID: <span id="order-id"></span></p>
+    <p>Shipment Status: <span id="shipment-status"></span></p>
+    <p>Expected Delivery Date: <span id="expected-delivery"></span></p>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const urlParams = new URLSearchParams(window.location.search);
+      const orderId = urlParams.get('orderId');
+
+      if (!orderId) {
+        console.error('Order ID is missing in the URL');
+        return;
+      }
+
+      fetch(`/api/order-details?orderId=${orderId}`)
+        .then(response => response.json())
+        .then(data => {
+          if (data.error) {
+            console.error(data.error);
+          } else {
+            displayOrderDetails(data);
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching order details:', error);
+        });
+
+      function displayOrderDetails(order) {
+        document.getElementById('order-id').textContent = order.orderId;
+        document.getElementById('shipment-status').textContent = order.shipmentStatus;
+        document.getElementById('expected-delivery').textContent = order.expectedDeliveryDate;
+      }
+    });
+  </script>
+</body>
+</html>

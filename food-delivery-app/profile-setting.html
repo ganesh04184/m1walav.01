@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="zomo" />
+  <meta name="keywords" content="zomo" />
+  <meta name="author" content="zomo" />
+  <link rel="manifest" href="../manifest.json" />
+
+  <link rel="icon" href="../assets/images/logo/favicon.png" type="image/x-icon" />
+  <title>zomo App</title>
+  <link rel="apple-touch-icon" href="../assets/images/logo/favicon.png" />
+  <meta name="theme-color" content="#ff8d2f" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  <meta name="apple-mobile-web-app-title" content="zomo" />
+  <meta name="msapplication-TileImage" content="../assets/images/logo/favicon.png" />
+  <meta name="msapplication-TileColor" content="#FFFFFF" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <style>/* Header */
+    .section-t-space {
+      padding-top: 20px;
+    }
+    
+    .header-panel {
+      display: flex;
+      align-items: center;
+    }
+    
+    .header-panel h2 {
+      margin-left: 10px;
+    }
+    
+    /* Profile Image */
+    .profile-img {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    
+    .profile-img img {
+      width: 150px;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+    
+    .camera {
+      position: relative;
+      top: -30px;
+      right: -100px;
+      background-color: #ff8d2f;
+      color: #fff;
+      border-radius: 50%;
+      padding: 10px;
+      cursor: pointer;
+    }
+    
+    /* Form */
+    .auth-form {
+      max-width: 500px;
+      margin: 0 auto;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    .form-label {
+      font-weight: bold;
+    }
+    
+    .form-input {
+      position: relative;
+    }
+    
+    .form-control {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+    
+    .btn {
+      display: inline-block;
+      width: auto;
+      padding: 10px 20px;
+      background-color: #ff8d2f;
+      color: #fff;
+      text-align: center;
+      text-decoration: none;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    
+    .btn:hover {
+      background-color: #ff6e00;
+    }
+    
+    /* Responsive */
+    @media only screen and (max-width: 768px) {
+      .profile-img img {
+        width: 120px;
+        height: 120px;
+      }
+    
+      .camera {
+        font-size: 16px;
+        padding: 8px;
+        top: -20px;
+        right: -70px;
+      }
+    }
+    </style>
+</head>
+
+<body>
+  <!-- header start -->
+  <header class="section-t-space">
+    <div class="custom-container">
+      <div class="header-panel">
+        <a href="profile.html">
+          <i class="ri-arrow-left-s-line"></i>
+        </a>
+        <h2>Profile-Setting</h2>
+      </div>
+    </div>
+  </header>
+  <!-- header end -->
+
+  <!-- profile info start -->
+  <section>
+    <div class="custom-container">
+      <div class="profile-img">
+        <img class="img-fluid img" src="../assets/images/icons/profile.png" alt="profile" />
+        <i class="ri-camera-line camera"></i>
+      </div>
+    </div>
+  </section>
+  <!-- profile info end -->
+
+  <!-- profile listing start -->
+  <section class="section-b-space">
+    <div class="custom-container">
+      <form class="auth-form profile-form">
+        <div class="form-group">
+          <label class="form-label fw-semibold">
+username</label>
+          <div class="form-input mb-3">
+            <input type="text" class="form-control" id="
+username" readonly />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label fw-semibold">Mobile Number</label>
+          <div class="form-input mb-3">
+            <input type="text" class="form-control" id="mobile" readonly />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label fw-semibold">Email</label>
+          <div class="form-input mb-3">
+            <input type="text" class="form-control" id="email" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label fw-semibold">Address</label>
+          <div class="form-input mb-3">
+            <textarea class="form-control" rows="2" id="address" readonly></textarea>
+          </div>
+        </div>
+        <button type="button" class="btn theme-btn save-address w-100">Save</button>
+      </form>
+    </div>
+  </section>
+  <!-- profile listing end -->
+
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+        // Fetch user data
+        const response = await fetch('/api/users', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (response.ok) {
+          const userData = await response.json();
+          // Fill the form fields with user data
+          document.getElementById('username').value = userData.username;
+          document.getElementById('mobile').value = userData.mobile;
+          document.getElementById('email').value = userData.email;
+        } else {
+          console.error('Failed to fetch user data');
+        }
+
+        // Fetch address data
+        const addressResponse = await fetch('/addresses', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (addressResponse.ok) {
+          const addressData = await addressResponse.json();
+          // Fill the address field with address data
+          const address = `${addressData.flat}, ${addressData.area}, ${addressData.landmark}, ${addressData.city}, ${addressData.state}, ${addressData.pincode}`;
+          document.getElementById('address').value = address;
+        } else {
+          console.error('Failed to fetch address data');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    });
+  </script>
+</body>
+
+</html>

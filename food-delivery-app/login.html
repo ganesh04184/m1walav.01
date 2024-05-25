@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        /* Updated CSS with green color */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            color: #4CAF50;
+            /* Green color */
+            text-align: center;
+            margin-top: 50px;
+            /* Adjust as needed */
+        }
+
+        form {
+            width: 300px;
+            margin: 0 auto;
+            background-color: #f2f2f2;
+            /* Light grey background */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            /* Light shadow */
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ddd;
+            /* Light grey border */
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        button[type="submit"],
+        button[type="button"] {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            background-color: #4CAF50;
+            /* Green button */
+            color: #fff;
+            /* White text */
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button[type="submit"]:hover,
+        button[type="button"]:hover {
+            background-color: #45a049;
+            /* Darker green color on hover */
+        }
+
+        .signup-button {
+            background-color: #008CBA;
+            /* Blue button */
+            margin-top: 20px;
+        }
+
+        .signup-button:hover {
+            background-color: #007B9A;
+            /* Darker blue on hover */
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Login</h1>
+    <form id="loginForm">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required><br><br>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required><br><br>
+        <button type="submit">Login</button>
+        <button type="button" class="signup-button" onclick="redirectToSignup()">Sign Up</button>
+    </form>
+
+    <script>
+        function redirectToSignup() {
+            window.location.href = './signup.html';
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            const response = await fetch('/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ username, password })
+            });
+
+            const result = await response.json();
+            if (result.success) {
+                alert('Login successful');
+                if (result.role === 'admin') {
+                    window.location.href = './admin-grocery-home.html';
+                } else {
+                    window.location.href = './grocery-home.html';
+                }
+            } else {
+                alert('Login failed: ' + result.message);
+            }
+        });
+    </script>
+</body>
+
+</html>

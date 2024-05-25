@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order Tracking</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .order-details {
+      margin-top: 20px;
+    }
+    .navbar-menu {
+    background-color: rgba(var(--white), 1);
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+.navbar-menu ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    width: 100%;
+    justify-content: space-around;
+}
+
+.navbar-menu li {
+    flex: 1;
+    text-align: center;
+}
+
+.navbar-menu a {
+    color: rgba(34, 139, 34);
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.navbar-menu a.active {
+    color: rgba(var(--light-theme-color), 1);
+}
+
+.navbar-menu img {
+    max-width: 24px;
+    margin-bottom: 5px;
+}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Order Tracking</h1>
+    <form id="trackingForm">
+      <input type="text" id="orderIdInput" placeholder="Enter Order ID" required>
+      <button type="submit">Track Order</button>
+    </form>
+    <div class="order-details" id="orderDetails"></div>
+  </div>
+
+  <!-- Bottom Navbar -->
+  <div class="navbar-menu">
+    <ul>
+        <li>
+            <a href="landing.html" class="icon logo">
+                <img class="img-fluid" src="../assets/images/svg/food-logo.svg" alt="logo">
+                <span>Zomo</span>
+            </a>
+        </li>
+        <li class="active">
+            <a href="grocery-home.html" class="icon">
+                <img class="unactive" src="../assets/images/svg/grocery.svg" alt="grocery">
+                <img class="active" src="../assets/images/svg/grocery-fill.svg" alt="grocery">
+                <span>Grocery</span>
+            </a>
+        </li>
+        <li>
+            <a href="cart.html" class="icon">
+                <img class="unactive" src="../assets/images/svg/user.svg" alt="cart">
+                <img class="active" src="../assets/images/svg/user-fill.svg" alt="cart">
+                <span>Cart</span>
+            </a>
+        </li>
+        <li>
+            <a href="profile.html" class="icon">
+                <img class="unactive" src="../assets/images/svg/user.svg" alt="user">
+                <img class="active" src="../assets/images/svg/user-fill.svg" alt="user">
+                <span>Profile</span>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+  <script>
+    document.getElementById('trackingForm').addEventListener('submit', function(event) {
+  event.preventDefault();
+  const orderId = document.getElementById('orderIdInput').value;
+  trackOrder(orderId);
+});
+
+function trackOrder(orderId) {
+  fetch(`/api/orders/:orderId`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Failed to fetch order details'); // Throw error if response status is not ok
+      }
+      return response.json();
+    })
+    .then(order => {
+      // Display order details
+      document.getElementById('orderDetails').innerHTML = `
+        <h2>Order ID: ${order.orderId}</h2>
+        <p><strong>Username:</strong> ${order.username}</p>
+        <p><strong>Items:</strong> ${order.items.map(item => `${item.name} (x${item.quantity})`).join(', ')}</p>
+        <p><strong>Subtotal:</strong> ${order.subtotal}</p>
+        <p><strong>Status:</strong> ${order.status}</p>
+        <p><strong>Expected Delivery Date:</strong> ${order.expectedDeliveryDate ? new Date(order.expectedDeliveryDate).toLocaleDateString() : 'N/A'}</p>
+      `;
+    })
+    .catch(error => {
+      // Handle errors
+      console.error('Error tracking order:', error);
+      document.getElementById('orderDetails').innerHTML = `<p>Error tracking order: ${error.message}</p>`; // Display error message
+    });
+}
+  </script>
+</body>
+</html>

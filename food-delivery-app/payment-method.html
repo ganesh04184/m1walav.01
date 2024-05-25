@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Method</title>
+    <style>
+        /* Global styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        /* Header styles */
+        header {
+            background-color: #ff8d2f;
+            padding: 20px;
+            text-align: center;
+            color: #fff;
+        }
+
+        /* Main content styles */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .selected-items,
+        .subtotal {
+            margin-bottom: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            padding: 20px;
+        }
+
+        /* Place Order form styles */
+        #itemsContainer {
+            margin-bottom: 20px;
+        }
+
+        button {
+            background-color: #4CAF50; /* Green background */
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049; /* Darker green on hover */
+        }
+
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .selected-items,
+            .subtotal {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Payment Method</h1>
+    </header>
+    <section class="selected-items">
+        <h2>Selected Items</h2>
+        <ul id="selected-items-list">
+            <!-- Cart items will be dynamically added here -->
+        </ul>
+    </section>
+    <section class="subtotal">
+        <h2>Subtotal</h2>
+        <p id="subtotal">Subtotal: ₹0.00</p>
+    </section>
+    <section>
+        <button id="cash-on-delivery-btn">Cash on Delivery</button>
+    </section>
+    <section>
+        <div class="container">
+            <h1>Place Order</h1>
+            <form id="orderForm">
+                <div class="buttons">
+                    <button type="button" id="place-order-btn">Place Order</button>
+                </div>
+            </form>
+        </div>
+    </section>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+    const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+    const subtotal = localStorage.getItem('totalCost') || '0.00';
+
+    const selectedItemsList = document.getElementById('selected-items-list');
+    cartItems.forEach(item => {
+        const li = document.createElement('li');
+        li.textContent = `${item.name} - Quantity: ${item.quantity}`;
+        selectedItemsList.appendChild(li);
+    });
+
+    document.getElementById('subtotal').textContent = `Subtotal: ₹${subtotal}`;
+
+    document.getElementById('place-order-btn').addEventListener('click', async () => {
+        try {
+            const orderDetails = {
+                items: cartItems,
+                subtotal: parseFloat(subtotal.replace('₹', '')),
+                status: 'Pending',
+                expectedDeliveryDate: new Date().toISOString().slice(0, 10)
+            };
+
+            const token = localStorage.getItem('token');
+
+            const response = await fetch('/api/place-order', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(orderDetails)
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'Failed to place order');
+            }
+
+            window.location.href = '/order-tracking.html';
+        } catch (error) {
+            console.error('Error placing order:', error);
+            alert(`Error placing order: ${error.message}`);
+        }
+    });
+});
+
+    </script>
+</body>
+</html>

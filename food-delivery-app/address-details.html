@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Address Details</title>
+    <link rel="stylesheet" href="../assets/css/vendors/bootstrap.min.css" />
+    <link rel="stylesheet" href="../assets/css/style.css" />
+</head>
+
+<body>
+    <!-- header start -->
+    <header class="section-t-space">
+        <div class="custom-container">
+            <div class="header-panel">
+                <a href="cart.html">
+                    <i class="ri-arrow-left-s-line"></i>
+                </a>
+                <h2>Add New Address</h2>
+            </div>
+        </div>
+    </header>
+    <!-- header end -->
+
+    <!-- Address form section start -->
+    <section class="section-b-space">
+        <div class="custom-container">
+            <form id="address-form" class="auth-form">
+                <div class="form-group">
+                    <label class="form-label fw-semibold">Full Name</label>
+                    <div class="form-input mb-3">
+                        <input type="text" name="fullname" class="form-control" placeholder="Enter your full name" required />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label fw-semibold">Mobile Number</label>
+                    <div class="form-input mb-3">
+                        <input type="text" name="mobile" class="form-control" placeholder="Enter your mobile number" required />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label fw-semibold">Flat/House Number</label>
+                    <div class="form-input mb-3">
+                        <input type="text" name="flat" class="form-control" placeholder="Enter your flat/house number" required />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label fw-semibold">Area</label>
+                    <div class="form-input mb-3">
+                        <input type="text" name="area" class="form-control" placeholder="Enter your area" required />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label fw-semibold">Landmark</label>
+                    <div class="form-input mb-3">
+                        <input type="text" name="landmark" class="form-control" placeholder="Enter your landmark" required />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label fw-semibold">Pincode</label>
+                    <div class="form-input mb-3">
+                        <input type="text" name="pincode" class="form-control" placeholder="Enter your pincode" required />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label fw-semibold">Town/City</label>
+                    <div class="form-input mb-3">
+                        <input type="text" name="city" class="form-control" placeholder="Enter your town/city" required />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label fw-semibold">State</label>
+                    <div class="form-input mb-3">
+                        <input type="text" name="state" class="form-control" placeholder="Enter your state" required />
+                    </div>
+                </div>
+                <button type="submit" class="btn theme-btn save-address w-100">Save Address</button>
+            </form>
+        </div>
+    </section>
+    <!-- Address form section end -->
+
+    <script src="../assets/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.getElementById('address-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const formData = new FormData(event.target);
+            const data = {
+                fullname: formData.get('fullname'),
+                mobile: formData.get('mobile'),
+                flat: formData.get('flat'),
+                area: formData.get('area'),
+                landmark: formData.get('landmark'),
+                pincode: formData.get('pincode'),
+                city: formData.get('city'),
+                state: formData.get('state')
+            };
+
+            fetch('http://localhost:3000/address-details', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        alert('Address saved successfully');
+                        window.location.href = 'address.html';
+                    } else {
+                        alert('Error saving address');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        });
+    </script>
+</body>
+
+</html>

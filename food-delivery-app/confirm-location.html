@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Confirm Location</title>
+  <link rel="stylesheet" href="../assets/css/vendors/bootstrap.min.css" />
+  <link rel="stylesheet" href="../assets/css/style.css" />
+</head>
+
+<body>
+  <!-- location map start -->
+  <div class="location-map" id="map"></div>
+  <!-- location map end -->
+
+  <!-- location popup start -->
+  <div class="location-popup">
+    <div class="change-location">
+      <div class="d-flex align-items-center gap-2">
+        <i class="ri-map-pin-line"></i>
+        <h2>Selected Address</h2>
+      </div>
+      <a href="address.html" class="change-add theme-color">Change</a>
+    </div>
+    <p class="address mt-2 mb-0 p-0" id="selectedAddress"></p>
+    <a href="payment-method.html" class="btn theme-btn confirm-location-btn w-100">Confirm Location</a>
+  </div>
+  <!-- location popup end -->
+
+  <!-- google map js -->
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDGCQvcXUsXwCdYArPXo72dLZ31WS3WQRw"></script>
+  <script src="../assets/js/location-map.js"></script>
+
+  <!-- bootstrap js -->
+  <script src="../assets/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const selectedAddress = JSON.parse(localStorage.getItem('selectedAddress'));
+      if (selectedAddress) {
+        const addressElement = document.getElementById('selectedAddress');
+        addressElement.innerHTML = `
+          <div>${selectedAddress.fullname}</div>
+          <div>${selectedAddress.mobile}</div>
+          <div>${selectedAddress.flat}, ${selectedAddress.area}, ${selectedAddress.landmark}</div>
+          <div>${selectedAddress.pincode}, ${selectedAddress.city}, ${selectedAddress.state}</div>
+        `;
+      } else {
+        alert('No address selected');
+        window.location.href = 'address.html';
+      }
+    });
+  </script>
+</body>
+
+</html>

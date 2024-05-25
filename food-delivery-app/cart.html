@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="zomo" />
+    <meta name="keywords" content="zomo" />
+    <meta name="author" content="zomo" />
+    <link rel="manifest" href="../manifest.json" />
+
+    <link rel="icon" href="../assets/images/logo/favicon.png" type="image/x-icon" />
+    <title>zomo App</title>
+    <link rel="apple-touch-icon" href="../assets/images/logo/favicon.png" />
+    <meta name="theme-color" content="#ff8d2f" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="apple-mobile-web-app-title" content="zomo" />
+    <meta name="msapplication-TileImage" content="../assets/images/logo/favicon.png" />
+    <meta name="msapplication-TileColor" content="#FFFFFF" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <!-- font link -->
+    <link rel="stylesheet" href="../assets/css/vendors/metropolis.min.css" />
+
+    <!-- remixicon css -->
+    <link rel="stylesheet" type="text/css" href="../assets/css/vendors/remixicon.css" />
+
+    <!-- bootstrap css -->
+    <link rel="stylesheet" id="rtl-link" type="text/css" href="../assets/css/vendors/bootstrap.min.css" />
+
+    <title>Shopping Cart</title>
+    <style>
+      * {
+          font-family: Arial, sans-serif;
+          margin: 0;
+          padding: 0;
+      }
+
+      header {
+          background-color: #fff;
+          padding: 20px;
+          text-align: center;
+          border-bottom: 1px solid #ddd;
+      }
+
+      .cart-container {
+          padding: 20px;
+      }
+
+      .savings-message {
+          background-color: #e0f8e9;
+          padding: 10px;
+          border-radius: 5px;
+          margin-bottom: 20px;
+          text-align: center;
+      }
+
+      .review-items {
+          background-color: #fff;
+          padding: 20px;
+          border-radius: 5px;
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+          margin-bottom: 20px;
+      }
+
+      .review-items h2 {
+          margin-top: 0;
+      }
+
+      .cart-item {
+          display: flex;
+          align-items: center;
+          margin-bottom: 20px;
+      }
+
+      .cart-item img {
+          width: 60px;
+          height: 60px;
+          border-radius: 5px;
+          margin-right: 20px;
+      }
+
+      .item-details {
+          flex-grow: 1;
+      }
+
+      .item-details p {
+          margin: 5px 0;
+      }
+
+      .item-quantity {
+          display: flex;
+          align-items: center;
+      }
+
+      .quantity-btn {
+          background-color: #4CAF50;
+          border: none;
+          padding: 10px 10px;
+          cursor: pointer;
+          border-radius: 5px;
+          font-size: 16px;
+          color: #fff;
+      }
+
+      .quantity {
+          margin: 0 10px;
+          font-size: 16px;
+      }
+
+      .item-price {
+          font-weight: bold;
+          color: #000;
+      }
+
+      .clear-cart {
+          background-color: #ff4d4d;
+          color: #fff;
+          border: none;
+          padding: 10px;
+          cursor: pointer;
+          border-radius: 5px;
+      }
+
+      .additional-options {
+          background-color: #fff;
+          padding: 20px;
+          border-radius: 5px;
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+          margin-bottom: 20px;
+      }
+
+      .apply-coupon,
+      .bag-option {
+          margin-bottom: 20px;
+      }
+
+      .bill-details {
+          background-color: #fffbcc;
+          padding: 20px;
+          border-radius: 5px;
+          text-align: center;
+          margin-bottom: 20px;
+      }
+
+      .original-price {
+          text-decoration: line-through;
+          color: #999;
+      }
+
+      .proceed {
+          text-align: center;
+          padding: 20px;
+          background-color: #fff;
+          border-radius: 5px;
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .proceed-btn {
+          background-color: #4CAF50;
+          color: #fff;
+          border: none;
+          padding: 15px 30px;
+          cursor: pointer;
+          border-radius: 5px;
+          font-size: 18px;
+      }
+
+      .proceed-btn:hover {
+          background-color: #45a049;
+      }
+
+      button {
+          background-color: #4CAF50;
+          color: #fff;
+          border: none;
+          padding: 10px 20px;
+          cursor: pointer;
+          border-radius: 5px;
+          font-size: 16px;
+      }
+
+      button:hover {
+          background-color: #45a049;
+      }
+  </style>
+</head>
+<body>
+<header>
+    <h1>Shopping Cart</h1>
+</header>
+<section id="cart-items">
+    <!-- Cart items will be dynamically added here -->
+</section>
+<section class="bill-details">
+    <h2>Total Cost</h2>
+    <p id="total-cost">Total Cost: ₹0</p>
+</section>
+<section class="proceed">
+    <button id="proceed-btn">Proceed to Payment</button>
+</section>
+<section class="ContinueShopping">
+    <button id="ContinueShopping-btn">Continue Shopping</button>
+</section>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+      const cartItemsContainer = document.getElementById('cart-items');
+      let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+
+      renderCartItems(cartItems);
+
+      function renderCartItems(items) {
+          cartItemsContainer.innerHTML = '';
+          let totalCost = 0;
+
+          items.forEach(item => {
+              const itemElement = document.createElement('div');
+              itemElement.classList.add('cart-item');
+              itemElement.innerHTML = `
+                  <h4>${item.name}</h4>
+                  <p>Price: ₹${item.price}</p>
+                  <p>Quantity: ${item.quantity}</p>
+                  <button class="increase-quantity">+</button>
+                  <button class="decrease-quantity">-</button>
+              `;
+              cartItemsContainer.appendChild(itemElement);
+
+              totalCost += item.price * item.quantity;
+          });
+
+          document.getElementById('total-cost').textContent = `Total Cost: ₹${totalCost}`;
+
+          const increaseBtns = cartItemsContainer.querySelectorAll('.increase-quantity');
+          const decreaseBtns = cartItemsContainer.querySelectorAll('.decrease-quantity');
+
+          increaseBtns.forEach(btn => {
+              btn.addEventListener('click', () => {
+                  const itemName = btn.parentElement.querySelector('h4').textContent;
+                  increaseQuantity(itemName);
+              });
+          });
+
+          decreaseBtns.forEach(btn => {
+              btn.addEventListener('click', () => {
+                  const itemName = btn.parentElement.querySelector('h4').textContent;
+                  decreaseQuantity(itemName);
+              });
+          });
+      }
+
+      function increaseQuantity(name) {
+          cartItems = cartItems.map(item => {
+              if (item.name === name) {
+                  item.quantity++;
+              }
+              return item;
+          });
+          localStorage.setItem('cartItems', JSON.stringify(cartItems));
+          renderCartItems(cartItems);
+      }
+
+      function decreaseQuantity(name) {
+          cartItems = cartItems.map(item => {
+              if (item.name === name) {
+                  item.quantity--;
+              }
+              return item;
+          });
+
+          cartItems = cartItems.filter(item => item.quantity > 0);
+          localStorage.setItem('cartItems', JSON.stringify(cartItems));
+          renderCartItems(cartItems);
+      }
+
+      function proceedToPayment() {
+          const totalCost = document.getElementById('total-cost').textContent.split('₹')[1];
+          localStorage.setItem('totalCost', totalCost);
+          window.location.href = "/payment-method.html";
+      }
+
+      function ContinueShopping() {
+          window.location.href = "/grocery-home.html";
+      }
+
+      document.getElementById('proceed-btn').addEventListener('click', proceedToPayment);
+      document.getElementById('ContinueShopping-btn').addEventListener('click', ContinueShopping);
+  });
+</script>
+</body>
+</html>

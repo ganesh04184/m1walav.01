@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="zomo" />
+  <meta name="keywords" content="zomo" />
+  <meta name="author" content="zomo" />
+  <link rel="manifest" href="../manifest.json" />
+
+  <link rel="icon" href="../assets/images/logo/favicon.png" type="image/x-icon" />
+  <title>zomo App</title>
+  <link rel="apple-touch-icon" href="../assets/images/logo/favicon.png" />
+  <meta name="theme-color" content="#ff8d2f" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  <meta name="apple-mobile-web-app-title" content="zomo" />
+  <meta name="msapplication-TileImage" content="../assets/images/logo/favicon.png" />
+  <meta name="msapplication-TileColor" content="#FFFFFF" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+  <!-- font link -->
+  <link rel="stylesheet" href="../assets/css/vendors/metropolis.min.css" />
+
+  <!-- remixicon css -->
+  <link rel="stylesheet" type="text/css" href="../assets/css/vendors/remixicon.css" />
+
+  <!-- bootstrap css -->
+  <link rel="stylesheet" id="rtl-link" type="text/css" href="../assets/css/vendors/bootstrap.min.css" />
+
+  <!-- Theme css -->
+  <link rel="stylesheet" id="change-link" type="text/css" href="../assets/css/style.css" />
+</head>
+
+<body>
+  <!-- header start -->
+  <header class="section-t-space">
+    <div class="custom-container">
+      <div class="header-panel">
+        <a href="profile.html">
+          <i class="ri-arrow-left-s-line"></i>
+        </a>
+        <h2>Delivery Address</h2>
+      </div>
+    </div>
+  </header>
+  <!-- header end -->
+
+  <!--choose Address section start -->
+  <section class="section-b-space pt-0">
+    <div class="custom-container">
+      <ul class="address-list" id="addressList">
+        <!-- Addresses will be dynamically added here -->
+      </ul>
+      <a href="profile.html" class="btn theme-btn add-select w-100" role="button">Select</a>
+    </div>
+  </section>
+  <!--choose Address section start -->
+
+  <!-- bootstrap js -->
+  <script src="../assets/js/bootstrap.bundle.min.js"></script>
+
+  <!-- script js -->
+  <script src="../assets/js/script.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // Fetch addresses from address.html
+      fetch('/addresses')
+        .then(response => response.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(html, 'text/html');
+          const addressContainer = doc.querySelector('.address-container');
+
+          // Get the UL element where addresses will be appended
+          const addressList = document.getElementById('addressList');
+
+          // Append each address to the UL
+          addressList.appendChild(addressContainer.cloneNode(true));
+        })
+        .catch(error => console.error('Error fetching addresses:', error));
+    });
+  </script>
+</body>
+
+</html>

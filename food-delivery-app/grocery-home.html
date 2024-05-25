@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Category Products</title>
+    <style>
+        :root {
+            --theme-color: 34, 139, 34;
+            --light-theme-color: 144, 238, 144;
+            --white: 255, 255, 255;
+            --dark-text: 0, 0, 0;
+            --light-text: 141, 143, 145;
+            --success-color: 39, 125, 42;
+            --error-color: 245, 58, 58;
+            --accent-color: 34, 139, 34;
+            --box-bg: 245, 245, 245;
+            --dashed-line: 237, 237, 237;
+        }
+
+        body {
+    font-family: "Metropolis", sans-serif;
+    background-color: rgba(var(--white), 1);
+    color: rgba(var(--dark-text), 1);
+    margin: 0;
+    padding-bottom: 60px; /* Adjusted padding for the bottom navigation bar */
+    box-sizing: border-box; /* Ensure padding and border are included in the width */
+}
+
+.container {
+    display: flex;
+    max-width: 1200px;
+    margin: 0 auto;
+    flex-direction: column; /* Changed flex direction to column */
+}
+
+.categories {
+    width: 100%; /* Make the category list take full width */
+    padding: 10px;
+    background-color: rgba(var(--box-bg), 1);
+    box-sizing: border-box;
+    margin-bottom: 10px; /* Add margin to separate from products */
+}
+
+.products {
+    width: 100%; /* Make the products take full width */
+    padding: 10px;
+    overflow-x: auto;
+    white-space: nowrap;
+    box-sizing: border-box;
+}
+
+.product-item {
+    width: calc(35% - 10px);
+    border: 1px solid rgba(var(--dashed-line), 1);
+    padding: 10px;
+    border-radius: 5px;
+    background-color: rgba(var(--white), 1);
+    display: inline-block;
+    box-sizing: border-box;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    vertical-align: top;
+}
+
+.product-item img {
+    width: 1080px; /* Set the width to 200 pixels */
+    height: 1080px; /* Set the height to 200 pixels */
+    object-fit: cover; /* Maintain aspect ratio and cover the container */
+    border-radius: 5px;
+    display: block;
+    margin-bottom: 10px;
+}
+
+.product-item h3 {
+    color: rgba(var(--theme-color), 1);
+    margin: 10px 0 5px;
+}
+
+.product-item p {
+    margin: 0;
+    color: rgba(var(--light-text), 1);
+}
+
+.product-item .add-to-cart-btn {
+    margin-top: 10px;
+    background-color: rgba(var(--theme-color), 1);
+    color: rgba(var(--white), 1);
+    padding: 10px;
+    border-radius: 5px;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.product-item .add-to-cart-btn:hover {
+    background-color: rgba(var(--light-theme-color), 1);
+}
+
+.navbar-menu {
+    background-color: rgba(var(--white), 1);
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+.navbar-menu ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    width: 100%;
+    justify-content: space-around;
+}
+
+.navbar-menu li {
+    flex: 1;
+    text-align: center;
+}
+
+.navbar-menu a {
+    color: rgba(34, 139, 34);
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.navbar-menu a.active {
+    color: rgba(var(--light-theme-color), 1);
+}
+
+.navbar-menu img {
+    max-width: 24px;
+    margin-bottom: 5px;
+}
+    </style>
+
+</head>
+<body>
+    <div class="container">
+        
+        <div class="categories">
+            <!-- Category list goes here -->
+            <h3>Categories</h3>
+            <ul>
+                <li><a href="#" onclick="showCategory('Fruits')">Fruits</a></li>
+                <li><a href="#" onclick="showCategory('Vegetables')">Vegetables</a></li>
+                <!-- Add more categories as needed -->
+            </ul>
+        </div>
+
+        <div class="products">
+            <!-- Product list goes here -->
+            <h2>Available Products</h2>
+            <div class="product-list" id="fruits">
+                <h3>Fruits</h3>
+                <ul>
+                    <!-- Product items for fruits will be dynamically added here -->
+                </ul>
+            </div>
+            <div class="product-list" id="vegetables">
+                <h3>Vegetables</h3>
+                <ul>
+                    <!-- Product items for vegetables will be dynamically added here -->
+                </ul>
+            </div>
+            <!-- Add more product lists for other categories -->
+        </div>
+    </div>
+
+
+    <!-- Popup -->
+    <div id="cart-popup" class="cart-popup">
+        <!-- Your popup content here -->
+    </div>
+
+    <!-- Bottom Navbar -->
+    <div class="navbar-menu">
+        <ul>
+            <li>
+                <a href="landing.html" class="icon logo">
+                    <img class="img-fluid" src="../assets/images/svg/food-logo.svg" alt="logo">
+                    <span>Zomo</span>
+                </a>
+            </li>
+            <li class="active">
+                <a href="grocery-home.html" class="icon">
+                    <img class="unactive" src="../assets/images/svg/grocery.svg" alt="grocery">
+                    <img class="active" src="../assets/images/svg/grocery-fill.svg" alt="grocery">
+                    <span>Grocery</span>
+                </a>
+            </li>
+            <li>
+                <a href="cart.html" class="icon">
+                    <img class="unactive" src="../assets/images/svg/user.svg" alt="cart">
+                    <img class="active" src="../assets/images/svg/user-fill.svg" alt="cart">
+                    <span>Cart</span>
+                </a>
+            </li>
+            <li>
+                <a href="profile.html" class="icon">
+                    <img class="unactive" src="../assets/images/svg/user.svg" alt="user">
+                    <img class="active" src="../assets/images/svg/user-fill.svg" alt="user">
+                    <span>Profile</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+
+    <script>
+        // Fetch products from local storage
+        const products = JSON.parse(localStorage.getItem('products')) || [];
+    
+        // Function to render products in the specified category
+        function renderProductsByCategory(category) {
+            // Hide all product lists
+            document.querySelectorAll('.product-list').forEach(list => {
+                list.style.display = 'none';
+            });
+    
+            // Show the product list for the selected category
+            const productList = document.getElementById(category.toLowerCase());
+            if (productList) {
+                productList.innerHTML = '';
+    
+                // Filter products by category
+                const categoryProducts = products.filter(product => product.category === category);
+    
+                categoryProducts.forEach(product => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `
+                        <div class="product-item">
+                            <img src="${product.image}" alt="${product.name}" style="width:50px;height:50px;">
+                            <h3>${product.name}</h3>
+                            <p>Price: ₹${product.price} - Qty: <span id="${product.name}-quantity">${product.quantity}</span></p>
+                            <button class="add-to-cart-btn" onclick="addToCart('${product.name}', ${product.price})">Add to Cart</button>
+                            <button onclick="increaseQuantity('${product.name}')">+</button>
+                            <button onclick="decreaseQuantity('${product.name}')">-</button>
+                        </div>
+                    `;
+                    productList.appendChild(li);
+                });
+    
+                productList.style.display = 'block';
+            }
+        }
+    
+        // Function to show products of a specific category
+        function showCategory(category) {
+            renderProductsByCategory(category);
+        }
+    
+        // Function to increase product quantity
+        function increaseQuantity(productName) {
+            const quantitySpan = document.getElementById(`${productName}-quantity`);
+            if (quantitySpan) {
+                let quantity = parseInt(quantitySpan.textContent);
+                quantity++;
+                quantitySpan.textContent = quantity;
+            }
+        }
+    
+        // Function to decrease product quantity
+        function decreaseQuantity(productName) {
+            const quantitySpan = document.getElementById(`${productName}-quantity`);
+            if (quantitySpan) {
+                let quantity = parseInt(quantitySpan.textContent);
+                if (quantity > 1) {
+                    quantity--;
+                    quantitySpan.textContent = quantity;
+                }
+            }
+        }
+    
+        // Function to add product to cart
+        function addToCart(name, price) {
+            let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+            const existingItem = cartItems.find(item => item.name === name);
+            if (existingItem) {
+                existingItem.quantity++;
+            } else {
+                cartItems.push({ name, price, quantity: 1 });
+            }
+            localStorage.setItem('cartItems', JSON.stringify(cartItems));
+            alert("Product added to cart.");
+        }
+    
+        // Add event listener to show default category on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            // Show products of the default category
+            showCategory('Fruits');
+            // You can add more functionality here, like handling user interaction and adding products to cart
+        });
+    </script>
+    
+</body>
+</html>
