@@ -3,100 +3,150 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Category Products</title>
+    <title>Grocery Shopping</title>
     <style>
-        :root {
-            --theme-color: 34, 139, 34;
-            --light-theme-color: 144, 238, 144;
-            --white: 255, 255, 255;
-            --dark-text: 0, 0, 0;
-            --light-text: 141, 143, 145;
-            --success-color: 39, 125, 42;
-            --error-color: 245, 58, 58;
-            --accent-color: 34, 139, 34;
-            --box-bg: 245, 245, 245;
-            --dashed-line: 237, 237, 237;
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
         }
 
-        body {
-    font-family: "Metropolis", sans-serif;
-    background-color: rgba(var(--white), 1);
-    color: rgba(var(--dark-text), 1);
-    margin: 0;
-    padding-bottom: 60px; /* Adjusted padding for the bottom navigation bar */
-    box-sizing: border-box; /* Ensure padding and border are included in the width */
-}
+        header {
+            background-color: #f8f8f8;
+            padding: 10px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
 
-.container {
-    display: flex;
-    max-width: 1200px;
-    margin: 0 auto;
-    flex-direction: column; /* Changed flex direction to column */
-}
+        #search {
+            padding: 5px;
+            width: 80%;
+            margin-top: 10px;
+        }
 
-.categories {
-    width: 100%; /* Make the category list take full width */
-    padding: 10px;
-    background-color: rgba(var(--box-bg), 1);
-    box-sizing: border-box;
-    margin-bottom: 10px; /* Add margin to separate from products */
-}
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+            background-color: #333;
+            overflow: hidden;
+        }
 
-.products {
-    width: 100%; /* Make the products take full width */
-    padding: 10px;
-    overflow-x: auto;
-    white-space: nowrap;
-    box-sizing: border-box;
-}
+        nav ul li {
+            float: left;
+        }
 
-.product-item {
-    width: calc(35% - 10px);
-    border: 1px solid rgba(var(--dashed-line), 1);
-    padding: 10px;
-    border-radius: 5px;
-    background-color: rgba(var(--white), 1);
-    display: inline-block;
-    box-sizing: border-box;
-    margin-right: 10px;
-    margin-bottom: 10px;
-    vertical-align: top;
-}
+        nav ul li a {
+            display: block;
+            padding: 10px;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+        }
 
-.product-item img {
-    width: 1080px; /* Set the width to 200 pixels */
-    height: 1080px; /* Set the height to 200 pixels */
-    object-fit: cover; /* Maintain aspect ratio and cover the container */
-    border-radius: 5px;
-    display: block;
-    margin-bottom: 10px;
-}
+        nav ul li a:hover {
+            background-color: #111;
+        }
 
-.product-item h3 {
-    color: rgba(var(--theme-color), 1);
-    margin: 10px 0 5px;
-}
+        main {
+            display: flex;
+            padding: 10px;
+        }
 
-.product-item p {
-    margin: 0;
-    color: rgba(var(--light-text), 1);
-}
+        aside {
+            width: 20%;
+        }
 
-.product-item .add-to-cart-btn {
-    margin-top: 10px;
-    background-color: rgba(var(--theme-color), 1);
-    color: rgba(var(--white), 1);
-    padding: 10px;
-    border-radius: 5px;
-    display: inline-block;
-    cursor: pointer;
-}
+        aside ul {
+            list-style-type: none;
+            padding: 0;
+        }
 
-.product-item .add-to-cart-btn:hover {
-    background-color: rgba(var(--light-theme-color), 1);
-}
+        aside ul li {
+            margin-bottom: 10px;
+        }
 
-.navbar-menu {
+        aside ul li a {
+            text-decoration: none;
+            color: #333;
+            display: block;
+            padding: 10px;
+            background-color: #f8f8f8;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        aside ul li a:hover {
+            background-color: #ddd;
+        }
+
+        .product-grid {
+            width: 80%;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+            padding-left: 20px;
+        }
+
+        .product-item {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            text-align: center;
+            background-color: #fff;
+        }
+
+        .product-item img {
+            max-width: 100%;
+            height: auto;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+        }
+
+        .product-item button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .product-item button:hover {
+            background-color: #218838;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            max-width: 400px;
+            margin: 20px auto;
+        }
+
+        form label {
+            margin-top: 10px;
+        }
+
+        form input {
+            padding: 5px;
+            margin-top: 5px;
+        }
+
+        form button {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        form button:hover {
+            background-color: #0056b3;
+        }
+        .navbar-menu {
     background-color: rgba(var(--white), 1);
     position: fixed;
     bottom: 0;
@@ -140,121 +190,95 @@
     margin-bottom: 5px;
 }
     </style>
-
 </head>
 <body>
-    <div class="container">
-        
-        <div class="categories">
-            <!-- Category list goes here -->
-            <h3>Categories</h3>
-            <ul>
-                <li><a href="#" onclick="showCategory('Fruits')">Fruits</a></li>
-                <li><a href="#" onclick="showCategory('Vegetables')">Vegetables</a></li>
-                <!-- Add more categories as needed -->
-            </ul>
-        </div>
-
-        <div class="products">
-            <!-- Product list goes here -->
-            <h2>Available Products</h2>
-            <div class="product-list" id="fruits">
-                <h3>Fruits</h3>
-                <ul>
-                    <!-- Product items for fruits will be dynamically added here -->
-                </ul>
-            </div>
-            <div class="product-list" id="vegetables">
-                <h3>Vegetables</h3>
-                <ul>
-                    <!-- Product items for vegetables will be dynamically added here -->
-                </ul>
-            </div>
-            <!-- Add more product lists for other categories -->
-        </div>
-    </div>
-
-
-    <!-- Popup -->
-    <div id="cart-popup" class="cart-popup">
-        <!-- Your popup content here -->
-    </div>
-
-    <!-- Bottom Navbar -->
-    <div class="navbar-menu">
+    <header>
+        <h1>Grocery Shopping</h1>
+        <input type="text" id="search" placeholder="Search...">
+    </header>
+    <nav>
+        <ul id="categories">
+            <li data-category="vegetables-fruits"><a href="#">Vegetables & Fruits</a></li>
+            <li data-category="dairy-breakfast"><a href="#">Dairy & Breakfast</a></li>
+        </ul>
+    </nav>
+    <main>
+        <aside id="subcategories"></aside>
+        <section class="product-grid"></section>
+    </main>
+     <!-- Bottom Navbar -->
+     <div class="navbar-menu">
         <ul>
-            <li>
-                <a href="landing.html" class="icon logo">
-                    <img class="img-fluid" src="../assets/images/svg/food-logo.svg" alt="logo">
-                    <span>Zomo</span>
-                </a>
-            </li>
             <li class="active">
                 <a href="grocery-home.html" class="icon">
                     <img class="unactive" src="../assets/images/svg/grocery.svg" alt="grocery">
-                    <img class="active" src="../assets/images/svg/grocery-fill.svg" alt="grocery">
                     <span>Grocery</span>
                 </a>
             </li>
             <li>
                 <a href="cart.html" class="icon">
                     <img class="unactive" src="../assets/images/svg/user.svg" alt="cart">
-                    <img class="active" src="../assets/images/svg/user-fill.svg" alt="cart">
                     <span>Cart</span>
                 </a>
             </li>
             <li>
                 <a href="profile.html" class="icon">
                     <img class="unactive" src="../assets/images/svg/user.svg" alt="user">
-                    <img class="active" src="../assets/images/svg/user-fill.svg" alt="user">
                     <span>Profile</span>
                 </a>
             </li>
         </ul>
     </div>
 
-
     <script>
-        // Fetch products from local storage
         const products = JSON.parse(localStorage.getItem('products')) || [];
     
-        // Function to render products in the specified category
-        function renderProductsByCategory(category) {
-            // Hide all product lists
-            document.querySelectorAll('.product-list').forEach(list => {
-                list.style.display = 'none';
-            });
+        // Sample subcategories data
+        const subcategories = {
+            "vegetables-fruits": ["Leafy Greens", "Root Vegetables", "Fruits"],
+            "dairy-breakfast": ["Milk", "Cheese", "Breakfast Cereals"]
+        };
     
-            // Show the product list for the selected category
-            const productList = document.getElementById(category.toLowerCase());
-            if (productList) {
-                productList.innerHTML = '';
+        // Function to render subcategories based on the selected category
+        function renderSubcategories(category) {
+            const subcategoryList = document.getElementById('subcategories');
+            subcategoryList.innerHTML = '';
     
-                // Filter products by category
-                const categoryProducts = products.filter(product => product.category === category);
-    
-                categoryProducts.forEach(product => {
+            if (subcategories[category]) {
+                const subcategoryUl = document.createElement('ul');
+                subcategories[category].forEach(subcategory => {
                     const li = document.createElement('li');
-                    li.innerHTML = `
-                        <div class="product-item">
-                            <img src="${product.image}" alt="${product.name}" style="width:50px;height:50px;">
-                            <h3>${product.name}</h3>
-                            <p>Price: ₹${product.price} - Qty: <span id="${product.name}-quantity">${product.quantity}</span></p>
-                            <button class="add-to-cart-btn" onclick="addToCart('${product.name}', ${product.price})">Add to Cart</button>
-                            <button onclick="increaseQuantity('${product.name}')">+</button>
-                            <button onclick="decreaseQuantity('${product.name}')">-</button>
-                        </div>
-                    `;
-                    productList.appendChild(li);
+                    li.innerHTML = `<a href="#" onclick="renderProductsBySubcategory('${subcategory}')">${subcategory}</a>`;
+                    subcategoryUl.appendChild(li);
                 });
-    
-                productList.style.display = 'block';
+                subcategoryList.appendChild(subcategoryUl);
             }
         }
     
-        // Function to show products of a specific category
+        // Function to render products by subcategory
+        function renderProductsBySubcategory(subcategory) {
+            const productGrid = document.querySelector('.product-grid');
+            productGrid.innerHTML = '';
+    
+            const filteredProducts = products.filter(product => product.subcategory === subcategory);
+            filteredProducts.forEach(product => {
+                const productDiv = document.createElement('div');
+                productDiv.className = 'product-item';
+                productDiv.innerHTML = `
+                    <img src="${product.image}" alt="${product.name}">
+                    <h3>${product.name}</h3>
+                    <p>Price: ₹${product.price} - Qty: <span id="${product.name}-quantity">${product.quantity}</span></p>
+                    <button class="add-to-cart-btn" onclick="addToCart('${product.name}', ${product.price})">Add to Cart</button>
+                    <button onclick="increaseQuantity('${product.name}')">+</button>
+                    <button onclick="decreaseQuantity('${product.name}')">-</button>
+                `;
+                productGrid.appendChild(productDiv);
+            });
+        }
+    
+        // Function to handle category click
         function showCategory(category) {
-            renderProductsByCategory(category);
+            renderSubcategories(category);
         }
     
         // Function to increase product quantity
@@ -280,7 +304,7 @@
         }
     
         // Function to add product to cart
-        function addToCart(name, price) {
+        async function addToCart(name, price) {
             let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
             const existingItem = cartItems.find(item => item.name === name);
             if (existingItem) {
@@ -289,14 +313,70 @@
                 cartItems.push({ name, price, quantity: 1 });
             }
             localStorage.setItem('cartItems', JSON.stringify(cartItems));
-            alert("Product added to cart.");
+    
+            // Get the token and userId from localStorage
+            const token = localStorage.getItem('token');
+            const userId = localStorage.getItem('userId');
+    
+            if (token && userId) {
+                try {
+                    const response = await fetch('http://localhost:3000/add-to-cart', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'x-auth-token': token,
+                        },
+                        body: JSON.stringify({ productName: name, price }),
+                    });
+    
+                    const data = await response.json();
+                    if (data.success) {
+                        alert('Product added to cart.');
+                    } else {
+                        alert('Failed to add product to cart: ' + data.msg);
+                    }
+                } catch (error) {
+                    console.error('Error adding item to cart:', error);
+                    alert('An error occurred while adding item to cart: ' + error.message);
+                }
+            } else {
+                alert('You need to log in first.');
+            }
         }
     
-        // Add event listener to show default category on page load
+        // Function to update cart display
+        function updateCartDisplay() {
+            const cartContainer = document.getElementById('cart-container');
+            const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+            cartContainer.innerHTML = '';
+    
+            if (cartItems.length === 0) {
+                cartContainer.innerHTML = '<p>Your cart is empty.</p>';
+            } else {
+                cartItems.forEach(item => {
+                    const cartItemDiv = document.createElement('div');
+                    cartItemDiv.className = 'cart-item';
+                    cartItemDiv.innerHTML = `
+                        <h3>${item.name}</h3>
+                        <p>Price: ₹${item.price}</p>
+                        <p>Quantity: ${item.quantity}</p>
+                    `;
+                    cartContainer.appendChild(cartItemDiv);
+                });
+            }
+        }
+    
+        // Fetch cart items on page load
         document.addEventListener('DOMContentLoaded', () => {
-            // Show products of the default category
-            showCategory('Fruits');
-            // You can add more functionality here, like handling user interaction and adding products to cart
+            updateCartDisplay();
+        });
+    
+        // Handle category click events
+        document.querySelectorAll('#categories li').forEach(li => {
+            li.addEventListener('click', () => {
+                const category = li.getAttribute('data-category');
+                showCategory(category);
+            });
         });
     </script>
     
