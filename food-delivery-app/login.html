@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,22 +13,18 @@
         }
 
         h1 {
-            color: #4CAF50;
-            /* Green color */
+            color: #4CAF50; /* Green color */
             text-align: center;
-            margin-top: 50px;
-            /* Adjust as needed */
+            margin-top: 50px; /* Adjust as needed */
         }
 
         form {
             width: 300px;
             margin: 0 auto;
-            background-color: #f2f2f2;
-            /* Light grey background */
+            background-color: #f2f2f2; /* Light grey background */
             padding: 20px;
             border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            /* Light shadow */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Light shadow */
         }
 
         label {
@@ -41,8 +36,7 @@
             width: 100%;
             padding: 10px;
             margin: 5px 0;
-            border: 1px solid #ddd;
-            /* Light grey border */
+            border: 1px solid #ddd; /* Light grey border */
             border-radius: 5px;
             box-sizing: border-box;
         }
@@ -52,10 +46,8 @@
             width: 100%;
             padding: 10px;
             margin-top: 10px;
-            background-color: #4CAF50;
-            /* Green button */
-            color: #fff;
-            /* White text */
+            background-color: #4CAF50; /* Green button */
+            color: #fff; /* White text */
             border: none;
             border-radius: 5px;
             cursor: pointer;
@@ -63,29 +55,26 @@
 
         button[type="submit"]:hover,
         button[type="button"]:hover {
-            background-color: #45a049;
-            /* Darker green color on hover */
+            background-color: #45a049; /* Darker green color on hover */
         }
 
         .signup-button {
-            background-color: #008CBA;
-            /* Blue button */
+            background-color: #008CBA; /* Blue button */
             margin-top: 20px;
         }
 
         .signup-button:hover {
-            background-color: #007B9A;
-            /* Darker blue on hover */
+            background-color: #007B9A; /* Darker blue on hover */
         }
     </style>
 </head>
 <body>
     <h1>Login</h1>
-    <form id="loginForm">
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required><br><br>
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required><br><br>
+    <form id="loginForm" onsubmit="event.preventDefault(); login(document.getElementById('loginEmail').value, document.getElementById('loginPassword').value);">
+        <label for="loginEmail">Email:</label>
+        <input type="email" id="loginEmail" required>
+        <label for="loginPassword">Password:</label>
+        <input type="password" id="loginPassword" required>
         <button type="submit">Login</button>
         <button type="button" class="signup-button" onclick="redirectToSignup()">Sign Up</button>
     </form>
@@ -94,32 +83,31 @@
         function redirectToSignup() {
             window.location.href = './signup.html';
         }
-
-        document.getElementById('loginForm').addEventListener('submit', async (event) => {
-            event.preventDefault();
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-
-            try {
-                const response = await fetch('/api/auth/login', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ email, password })
-                });
-
-                const result = await response.json();
-                if (response.ok) {
-                    alert('Login successful');
-                    window.location.href = './grocery-home.html'; // Redirect to grocery-home.html for all users
-                } else {
-                    alert('Login failed: ' + (result.message || result.msg || 'Unknown error'));
-                }
-            } catch (error) {
-                alert('Login failed: ' + error.message);
-            }
+        async function login(email, password) {
+    try {
+        const response = await fetch('http://localhost:3000/api/auth/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email, password }),
         });
+
+        const data = await response.json();
+
+        if (response.ok && data.token) {
+            localStorage.setItem('token', data.token);
+            localStorage.setItem('userId', data.userId);
+            alert('Login successful!');
+            window.location.href = 'grocery-home.html'; // Redirect to grocery-home page
+        } else {
+            alert('Login failed: ' + (data.msg || 'Unknown error'));
+        }
+    } catch (error) {
+        console.error('Error logging in:', error);
+        alert('An error occurred during login: ' + error.message);
+    }
+}
     </script>
 </body>
 </html>
