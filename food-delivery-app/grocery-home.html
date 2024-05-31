@@ -271,7 +271,7 @@
                     productDiv.innerHTML = `
                         <img src="${product.image}" alt="${product.name}">
                         <h3>${product.name}</h3>
-                        <p>Price: ₹${product.price} - Qty: <span id="${product.name}-quantity">${product.quantity}</span></p>
+                        <p>Price: ₹${product.price} - Qty: <span id="${product.name}-quantity">${product.quantityValue} ${product.quantityUnit}</span></p>
                         <button class="add-to-cart-btn" onclick="addToCart('${product.name}', ${product.price})">Add to Cart</button>
                     `;
                     productGrid.appendChild(productDiv);
