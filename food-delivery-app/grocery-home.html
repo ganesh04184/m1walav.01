@@ -206,7 +206,6 @@
     <main>
         <aside id="subcategories"></aside>
         <section class="product-grid"></section>
-        <div id="cart-container"></div>
     </main>
     <!-- Bottom Navbar -->
     <div class="navbar-menu">
@@ -234,18 +233,18 @@
 
     <script>
         const products = JSON.parse(localStorage.getItem('products')) || [];
-    
+
         // Sample subcategories data
         const subcategories = {
             "vegetables-fruits": ["Leafy Greens", "Root Vegetables", "Fruits"],
             "dairy-breakfast": ["Milk", "Cheese", "Breakfast Cereals"]
         };
-    
+
         // Function to render subcategories based on the selected category
         function renderSubcategories(category) {
             const subcategoryList = document.getElementById('subcategories');
             subcategoryList.innerHTML = '';
-    
+
             if (subcategories[category]) {
                 const subcategoryUl = document.createElement('ul');
                 subcategories[category].forEach(subcategory => {
@@ -256,31 +255,35 @@
                 subcategoryList.appendChild(subcategoryUl);
             }
         }
-    
+
         // Function to render products by subcategory
         function renderProductsBySubcategory(subcategory) {
             const productGrid = document.querySelector('.product-grid');
             productGrid.innerHTML = '';
-    
+
             const filteredProducts = products.filter(product => product.subcategory === subcategory);
-            filteredProducts.forEach(product => {
-                const productDiv = document.createElement('div');
-                productDiv.className = 'product-item';
-                productDiv.innerHTML = `
-                    <img src="${product.image}" alt="${product.name}">
-                    <h3>${product.name}</h3>
-                    <p>Price: ₹${product.price} - Qty: <span id="${product.name}-quantity">${product.quantity}</span></p>
-                    <button class="add-to-cart-btn" onclick="addToCart('${product.name}', ${product.price})">Add to Cart</button>
-                `;
-                productGrid.appendChild(productDiv);
-            });
+            if (filteredProducts.length === 0) {
+                productGrid.innerHTML = '<p>No products found in this subcategory.</p>';
+            } else {
+                filteredProducts.forEach(product => {
+                    const productDiv = document.createElement('div');
+                    productDiv.className = 'product-item';
+                    productDiv.innerHTML = `
+                        <img src="${product.image}" alt="${product.name}">
+                        <h3>${product.name}</h3>
+                        <p>Price: ₹${product.price} - Qty: <span id="${product.name}-quantity">${product.quantity}</span></p>
+                        <button class="add-to-cart-btn" onclick="addToCart('${product.name}', ${product.price})">Add to Cart</button>
+                    `;
+                    productGrid.appendChild(productDiv);
+                });
+            }
         }
-    
+
         // Function to handle category click
         function showCategory(category) {
             renderSubcategories(category);
         }
-    
+
         // Function to add product to cart
         async function addToCart(name, price) {
             let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
@@ -291,11 +294,11 @@
                 cartItems.push({ name, price, quantity: 1 });
             }
             localStorage.setItem('cartItems', JSON.stringify(cartItems));
-    
+
             // Get the token and userId from localStorage
             const token = localStorage.getItem('token');
             const userId = localStorage.getItem('userId');
-    
+
             if (token && userId) {
                 try {
                     const response = await fetch('https://m1wala1.onrender.com/add-to-cart', {
@@ -306,7 +309,7 @@
                         },
                         body: JSON.stringify({ productName: name, price }),
                     });
-    
+
                     const data = await response.json();
                     if (data.success) {
                         alert('Product added to cart.');
@@ -321,34 +324,7 @@
                 alert('You need to log in first.');
             }
         }
-    
-        // Function to update cart display
-        function updateCartDisplay() {
-            const cartContainer = document.getElementById('cart-container');
-            const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
-            cartContainer.innerHTML = '';
-    
-            if (cartItems.length === 0) {
-                cartContainer.innerHTML = '<p>Your cart is empty.</p>';
-            } else {
-                cartItems.forEach(item => {
-                    const cartItemDiv = document.createElement('div');
-                    cartItemDiv.className = 'cart-item';
-                    cartItemDiv.innerHTML = `
-                        <h3>${item.name}</h3>
-                        <p>Price: ₹${item.price}</p>
-                        <p>Quantity: ${item.quantity}</p>
-                    `;
-                    cartContainer.appendChild(cartItemDiv);
-                });
-            }
-        }
-    
-        // Fetch cart items on page load
-        document.addEventListener('DOMContentLoaded', () => {
-            updateCartDisplay();
-        });
-    
+
         // Handle category click events
         document.querySelectorAll('#categories li').forEach(li => {
             li.addEventListener('click', () => {
@@ -356,7 +332,10 @@
                 showCategory(category);
             });
         });
+
+        // Initial category load
+        showCategory("vegetables-fruits");
     </script>
-    
+
 </body>
 </html>
