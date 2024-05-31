@@ -214,7 +214,7 @@
         return;
     }
 
-    fetch('/api/cart', {
+    fetch('https://m1wala1.onrender.com/api/cart', {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -282,7 +282,7 @@
     });
 
     function updateQuantity(itemId, action) {
-    fetch(`http://localhost:3000/api/cart/${itemId}/${action}`, {
+    fetch(`https://m1wala1.onrender.com/api/cart/${itemId}/${action}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
@@ -306,7 +306,7 @@
 }
 
     function fetchCartItems() {
-        fetch('/api/cart', {
+        fetch('https://m1wala1.onrender.com/api/cart', {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
