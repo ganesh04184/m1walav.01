@@ -31,261 +31,318 @@
 
     <title>Shopping Cart</title>
     <style>
-      * {
-          font-family: Arial, sans-serif;
-          margin: 0;
-          padding: 0;
-      }
+        * {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
 
-      header {
-          background-color: #fff;
-          padding: 20px;
-          text-align: center;
-          border-bottom: 1px solid #ddd;
-      }
+        header {
+            background-color: #fff;
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
 
-      .cart-container {
-          padding: 20px;
-      }
+        .cart-container {
+            padding: 20px;
+        }
 
-      .savings-message {
-          background-color: #e0f8e9;
-          padding: 10px;
-          border-radius: 5px;
-          margin-bottom: 20px;
-          text-align: center;
-      }
+        .savings-message {
+            background-color: #e0f8e9;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
 
-      .review-items {
-          background-color: #fff;
-          padding: 20px;
-          border-radius: 5px;
-          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-          margin-bottom: 20px;
-      }
+        .review-items {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
 
-      .review-items h2 {
-          margin-top: 0;
-      }
+        .review-items h2 {
+            margin-top: 0;
+        }
 
-      .cart-item {
-          display: flex;
-          align-items: center;
-          margin-bottom: 20px;
-      }
+        .cart-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
 
-      .cart-item img {
-          width: 60px;
-          height: 60px;
-          border-radius: 5px;
-          margin-right: 20px;
-      }
+        .cart-item img {
+            width: 60px;
+            height: 60px;
+            border-radius: 5px;
+            margin-right: 20px;
+        }
 
-      .item-details {
-          flex-grow: 1;
-      }
+        .item-details {
+            flex-grow: 1;
+        }
 
-      .item-details p {
-          margin: 5px 0;
-      }
+        .item-details p {
+            margin: 5px 0;
+        }
 
-      .item-quantity {
-          display: flex;
-          align-items: center;
-      }
+        .item-quantity {
+            display: flex;
+            align-items: center;
+        }
 
-      .quantity-btn {
-          background-color: #4CAF50;
-          border: none;
-          padding: 10px 10px;
-          cursor: pointer;
-          border-radius: 5px;
-          font-size: 16px;
-          color: #fff;
-      }
+        .quantity-btn {
+            background-color: #4CAF50;
+            border: none;
+            padding: 10px 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+            color: #fff;
+        }
 
-      .quantity {
-          margin: 0 10px;
-          font-size: 16px;
-      }
+        .quantity {
+            margin: 0 10px;
+            font-size: 16px;
+        }
 
-      .item-price {
-          font-weight: bold;
-          color: #000;
-      }
+        .item-price {
+            font-weight: bold;
+            color: #000;
+        }
 
-      .clear-cart {
-          background-color: #ff4d4d;
-          color: #fff;
-          border: none;
-          padding: 10px;
-          cursor: pointer;
-          border-radius: 5px;
-      }
+        .clear-cart {
+            background-color: #ff4d4d;
+            color: #fff;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
 
-      .additional-options {
-          background-color: #fff;
-          padding: 20px;
-          border-radius: 5px;
-          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-          margin-bottom: 20px;
-      }
+        .additional-options {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
 
-      .apply-coupon,
-      .bag-option {
-          margin-bottom: 20px;
-      }
+        .apply-coupon,
+        .bag-option {
+            margin-bottom: 20px;
+        }
 
-      .bill-details {
-          background-color: #fffbcc;
-          padding: 20px;
-          border-radius: 5px;
-          text-align: center;
-          margin-bottom: 20px;
-      }
+        .bill-details {
+            background-color: #fffbcc;
+            padding: 20px;
+            border-radius: 5px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
 
-      .original-price {
-          text-decoration: line-through;
-          color: #999;
-      }
+        .original-price {
+            text-decoration: line-through;
+            color: #999;
+        }
 
-      .proceed {
-          text-align: center;
-          padding: 20px;
-          background-color: #fff;
-          border-radius: 5px;
-          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      }
+        .proceed {
+            text-align: center;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
 
-      .proceed-btn {
-          background-color: #4CAF50;
-          color: #fff;
-          border: none;
-          padding: 15px 30px;
-          cursor: pointer;
-          border-radius: 5px;
-          font-size: 18px;
-      }
+        .proceed-btn {
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            padding: 15px 30px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 18px;
+        }
 
-      .proceed-btn:hover {
-          background-color: #45a049;
-      }
+        .proceed-btn:hover {
+            background-color: #45a049;
+        }
 
-      button {
-          background-color: #4CAF50;
-          color: #fff;
-          border: none;
-          padding: 10px 20px;
-          cursor: pointer;
-          border-radius: 5px;
-          font-size: 16px;
-      }
+        button {
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+        }
 
-      button:hover {
-          background-color: #45a049;
-      }
-  </style>
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
 </head>
 <body>
-<header>
-    <h1>Shopping Cart</h1>
-</header>
-<section id="cart-items">
-    <!-- Cart items will be dynamically added here -->
-</section>
-<section class="bill-details">
-    <h2>Total Cost</h2>
-    <p id="total-cost">Total Cost: ₹0</p>
-</section>
-<section class="proceed">
-    <button id="proceed-btn">Proceed to Payment</button>
-</section>
-<section class="ContinueShopping">
-    <button id="ContinueShopping-btn">Continue Shopping</button>
-</section>
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-      const cartItemsContainer = document.getElementById('cart-items');
-      let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+    <header>
+        <h1>Shopping Cart</h1>
+    </header>
+    <section id="cart-items" class="cart-container">
+        <!-- Cart items will be dynamically added here -->
+    </section>
+    <section class="bill-details">
+        <h2>Subtotal</h2>
+        <p id="subtotal">Subtotal: ₹<span id="subtotal-value">0</span></p>
 
-      renderCartItems(cartItems);
+    </section>
+    <section class="proceed">
+        <button id="proceed-btn">Proceed to Payment</button>
+    </section>
+    <section class="ContinueShopping">
+        <button id="ContinueShopping-btn">Continue Shopping</button>
+    </section>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+    const cartItemsContainer = document.getElementById('cart-items');
+    const token = localStorage.getItem('token');
+    if (!token) {
+        alert('You need to log in first.');
+        window.location.href = '/login.html';
+        return;
+    }
 
-      function renderCartItems(items) {
-          cartItemsContainer.innerHTML = '';
-          let totalCost = 0;
+    fetch('/api/cart', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'x-auth-token': token
+        },
+    })
+    .then(response => {
+        if (!response.ok) {
+            console.error(`HTTP error! Status: ${response.status}`);
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.msg) {
+            alert(data.msg);
+        } else {
+            renderCartItems(data);
+        }
+    })
+    .catch(error => {
+        console.error('Error fetching cart items:', error);
+        alert('An error occurred while fetching cart items.');
+    });
 
-          items.forEach(item => {
-              const itemElement = document.createElement('div');
-              itemElement.classList.add('cart-item');
-              itemElement.innerHTML = `
-                  <h4>${item.name}</h4>
-                  <p>Price: ₹${item.price}</p>
-                  <p>Quantity: ${item.quantity}</p>
-                  <button class="increase-quantity">+</button>
-                  <button class="decrease-quantity">-</button>
-              `;
-              cartItemsContainer.appendChild(itemElement);
+    function renderCartItems(items) {
+        cartItemsContainer.innerHTML = '';
+        let totalCost = 0;
 
-              totalCost += item.price * item.quantity;
-          });
+        items.forEach(item => {
+            const itemElement = document.createElement('div');
+            itemElement.classList.add('cart-item');
+            itemElement.setAttribute('data-id', item._id);
 
-          document.getElementById('total-cost').textContent = `Total Cost: ₹${totalCost}`;
+            const subtotal = item.price * item.quantity;
+            totalCost += subtotal;
 
-          const increaseBtns = cartItemsContainer.querySelectorAll('.increase-quantity');
-          const decreaseBtns = cartItemsContainer.querySelectorAll('.decrease-quantity');
+            itemElement.innerHTML = `
+                <div class="item-details">
+                    <h4>${item.productName}</h4>
+                    <p>Price: ₹${item.price}</p>
+                    <p>Quantity: <span class="quantity">${item.quantity}</span></p>
+                    <p>Subtotal: ₹${subtotal}</p>
+                    <div class="item-quantity">
+                        <button class="quantity-btn increase-quantity" data-id="${item._id}">+</button>
+                        <span class="quantity">${item.quantity}</span>
+                        <button class="quantity-btn decrease-quantity" data-id="${item._id}">-</button>
+                    </div>
+                </div>
+            `;
+            cartItemsContainer.appendChild(itemElement);
+        });
+        document.getElementById('subtotal-value').textContent = totalCost;
+    }
 
-          increaseBtns.forEach(btn => {
-              btn.addEventListener('click', () => {
-                  const itemName = btn.parentElement.querySelector('h4').textContent;
-                  increaseQuantity(itemName);
-              });
-          });
+    cartItemsContainer.addEventListener('click', event => {
+        const target = event.target;
+        if (target.classList.contains('increase-quantity')) {
+            const itemId = target.getAttribute('data-id');
+            updateQuantity(itemId, 'increase');
+        } else if (target.classList.contains('decrease-quantity')) {
+            const itemId = target.getAttribute('data-id');
+            updateQuantity(itemId, 'decrease');
+        }
+    });
 
-          decreaseBtns.forEach(btn => {
-              btn.addEventListener('click', () => {
-                  const itemName = btn.parentElement.querySelector('h4').textContent;
-                  decreaseQuantity(itemName);
-              });
-          });
-      }
+    function updateQuantity(itemId, action) {
+    fetch(`http://localhost:3000/api/cart/${itemId}/${action}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'x-auth-token': token,
+        },
+    })
+    .then(response => {
+        if (!response.ok) {
+            console.error(`HTTP error! Status: ${response.status}`);
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        renderCartItems(data);
+    })
+    .catch(error => {
+        console.error('Error updating cart item quantity:', error);
+        alert('An error occurred while updating cart item quantity.');
+    });
+}
 
-      function increaseQuantity(name) {
-          cartItems = cartItems.map(item => {
-              if (item.name === name) {
-                  item.quantity++;
-              }
-              return item;
-          });
-          localStorage.setItem('cartItems', JSON.stringify(cartItems));
-          renderCartItems(cartItems);
-      }
+    function fetchCartItems() {
+        fetch('/api/cart', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-auth-token': token
+            },
+        })
+        .then(response => {
+            if (!response.ok) {
+                console.error(`HTTP error! Status: ${response.status}`);
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            renderCartItems(data);
+        })
+        .catch(error => {
+            console.error('Error fetching cart items:', error);
+            alert('An error occurred while fetching cart items.');
+        });
+    }
 
-      function decreaseQuantity(name) {
-          cartItems = cartItems.map(item => {
-              if (item.name === name) {
-                  item.quantity--;
-              }
-              return item;
-          });
+    function proceedToPayment() {
+        const subtotal = document.getElementById('subtotal-value').textContent;
+        localStorage.setItem('Subtotal', subtotal);
+        window.location.href = "./payment-method.html";
+    }
 
-          cartItems = cartItems.filter(item => item.quantity > 0);
-          localStorage.setItem('cartItems', JSON.stringify(cartItems));
-          renderCartItems(cartItems);
-      }
+    function continueShopping() {
+        window.location.href = "./grocery-home.html";
+    }
 
-      function proceedToPayment() {
-          const totalCost = document.getElementById('total-cost').textContent.split('₹')[1];
-          localStorage.setItem('totalCost', totalCost);
-          window.location.href = "/payment-method.html";
-      }
+    document.getElementById('proceed-btn').addEventListener('click', proceedToPayment);
+    document.getElementById('ContinueShopping-btn').addEventListener('click', continueShopping);
+});
 
-      function ContinueShopping() {
-          window.location.href = "/grocery-home.html";
-      }
-
-      document.getElementById('proceed-btn').addEventListener('click', proceedToPayment);
-      document.getElementById('ContinueShopping-btn').addEventListener('click', ContinueShopping);
-  });
 </script>
 </body>
 </html>
