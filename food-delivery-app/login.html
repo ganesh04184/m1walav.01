@@ -112,49 +112,26 @@
             }
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            const token = localStorage.getItem('token');
-
-            if (!token) {
-                alert('No token found. Redirecting to login page.');
-                window.location.href = 'login.html';
-                return;
-            }
-
-            // Optionally, validate the token with the server
-            validateToken(token);
-        });
-
-        async function validateToken(token) {
-            try {
-                const response = await fetch('http://localhost:3000/api/auth/validate-token', {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`,
-                    },
-                });
-
-                if (!response.ok) {
-                    alert('Invalid token. Redirecting to login page.');
-                    localStorage.removeItem('token');
-                    localStorage.removeItem('userId');
-                    window.location.href = 'login.html';
-                }
-            } catch (error) {
-                console.error('Error validating token:', error);
-                alert('An error occurred while validating the token: ' + error.message);
-                localStorage.removeItem('token');
-                localStorage.removeItem('userId');
-                window.location.href = 'login.html';
-            }
-        }
-
         function logout() {
             localStorage.removeItem('token');
             localStorage.removeItem('userId');
             alert('Logged out successfully.');
             window.location.href = 'login.html'; // Redirect to login page
+
+            // Optionally, notify the server about the logout
+            fetch('http://localhost:3000/api/auth/logout', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                }
+            }).then(response => {
+                if (response.ok) {
+                    console.log('Logged out on the server');
+                } else {
+                    console.log('Failed to log out on the server');
+                }
+            }).catch(error => console.error('Error logging out on the server:', error));
         }
     </script>
 </body>
