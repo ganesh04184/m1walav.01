@@ -3,179 +3,263 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Grocery Home</title>
+    <title>Admin Grocery</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
-            padding: 20px;
-        }
-        .container {
-            max-width: 800px;
-            margin: auto;
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        .container h2 {
-            margin-bottom: 20px;
-        }
-        .product-list, .product-form {
-            margin-bottom: 20px;
-        }
-        .product-list ul {
-            list-style-type: none;
-            padding: 0;
-        }
-        .product-list li {
-            background-color: #e0f8e9;
-            padding: 10px;
-            border-radius: 5px;
-            margin-bottom: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .product-form input, .product-form select {
-            margin: 5px 0;
-            padding: 10px;
-            width: calc(100% - 20px);
-            border-radius: 5px;
-            border: 1px solid #ccc;
-        }
-        .product-form button {
-            background-color: #4CAF50;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            padding: 10px 20px;
-        }
-        .product-form button:hover {
-            background-color: #45a049;
-        }
-        .remove-btn, .edit-btn {
-            background-color: #ff4d4d;
-            color: #fff;
-            border: none;
-            padding: 10px;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        .edit-btn {
-            background-color: #ff8c00;
-        }
-        .remove-btn:hover, .edit-btn:hover {
-            background-color: #e63939;
+        /* Styles from your original code... */
+        /* Add new styles for product list display */
+        .product-list {
+            margin-top: 40px;
+            max-width: 500px;
+            width: 100%;
         }
 
-        /* Responsive Styles */
-        @media screen and (max-width: 600px) {
-            .container {
-                padding: 10px;
-            }
-            .product-form input, .product-form select {
-                width: 100%;
-            }
+        .product {
+            margin-bottom: 20px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+        }
+
+        .product h3 {
+            margin-bottom: 10px;
+        }
+
+        .product p {
+            margin-bottom: 5px;
+        }
+
+        .product img {
+            max-width: 100px;
+            height: auto;
+            margin-bottom: 10px;
+        }
+
+        .product-actions {
+            margin-top: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .product-actions button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .product-actions button.edit {
+            background-color: #007bff;
+            color: white;
+            margin-right: 10px;
+        }
+
+        .product-actions button.delete {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        #product-form {
+            display: none;
+        }
+        
+        .quantity-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .quantity-group select,
+        .quantity-group input {
+            flex: 1;
+        }
+        #form-message {
+            margin-top: 10px;
+            color: green;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h2>Manage Products</h2>
-        <div class="product-list">
-            <h3>Product List</h3>
-            <ul id="product-list">
-                <!-- Product items will be dynamically added here -->
-            </ul>
-        </div>
-        <div class="product-form">
-            <h3>Add Product</h3>
-            <input type="text" id="product-name" placeholder="Product Name">
-            <input type="file" id="product-image" accept="image/*">
-            <input type="number" id="product-quantity" placeholder="Product Quantity">
-            <select id="product-measure">
-                <option value="kg">kg</option>
-                <option value="liter">liter</option>
-                <option value="items">items</option>
-            </select>
-            <input type="number" id="product-price" placeholder="Product Price">
-            <select id="product-category">
-                <option value="Fruits">Fruits</option>
-                <option value="Vegetables">Vegetables</option>
-                <option value="Dairy">Dairy</option>
-                <option value="Bakery">Bakery</option>
-                <option value="Meat">Meat</option>
-                <option value="Snacks">Snacks</option>
-            </select>
-            <button onclick="addProduct()">Add Product</button>
-        </div>
-    </div>
+    <header>
+        <h1>Admin - Add Product</h1>
+    </header>
+    <main>
+        <!-- Add Product Button -->
+        <button id="add-product-btn">Add Product</button>
 
+        <!-- Product Form -->
+        <form id="product-form" enctype="multipart/form-data">
+            <label for="name">Product Name:</label>
+            <input type="text" id="name" required>
+            
+            <label for="category">Category:</label>
+            <input type="text" id="category" required>
+            
+            <label for="subcategory">Subcategory:</label>
+            <input type="text" id="subcategory" required>
+            
+            <label for="image">Image:</label>
+            <input type="file" id="image" accept="image/*" required>
+            
+            <label for="price">Price:</label>
+            <input type="text" id="price" required>
+            
+            <label for="time">Delivery Time:</label>
+            <input type="text" id="time" required>
+            
+            <label for="quantity">Quantity:</label>
+            <div class="quantity-group">
+                <select id="quantity-unit" required>
+                    <option value="kg">kg</option>
+                    <option value="grams">grams</option>
+                    <option value="units">units</option>
+                    <option value="ml">ml</option>
+                </select>
+                <input type="number" id="quantity-value" min="1" required>
+            </div>
+            
+            <button type="submit">Add Product</button>
+            <div id="form-message"></div>
+        </form>
+        
+        <!-- Product List Section -->
+        <div class="product-list" id="product-list">
+            <!-- Existing products will be displayed here -->
+        </div>
+    </main>
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            let products = JSON.parse(localStorage.getItem('products')) || [];
+        // Event listener for "Add Product" button click
+        document.getElementById('add-product-btn').addEventListener('click', function() {
+            // Show the product form
+            document.getElementById('product-form').style.display = 'block';
+        });
 
-            function renderProducts() {
-                const productList = document.getElementById('product-list');
-                productList.innerHTML = '';
+        // Function to display existing products
+        function displayProducts() {
+            const products = JSON.parse(localStorage.getItem('products')) || [];
+            const productList = document.getElementById('product-list');
+            productList.innerHTML = '';
 
-                products.forEach((product, index) => {
-                    const li = document.createElement('li');
-                    li.innerHTML = `
-                        <img src="${product.image}" alt="${product.name}" style="width:50px;height:50px;">
-                        ${product.name} - ₹${product.price}/${product.measure} - Qty: ${product.quantity} ${product.measure} - Category: ${product.category}
-                        <button class="edit-btn" onclick="editProduct(${index})">Edit</button>
-                        <button class="remove-btn" onclick="removeProduct(${index})">Remove</button>
-                    `;
-                    productList.appendChild(li);
-                });
+            products.forEach((product, index) => {
+                const productDiv = document.createElement('div');
+                productDiv.classList.add('product');
+                productDiv.innerHTML = `
+                    <h3>${product.name}</h3>
+                    <p><strong>Category:</strong> ${product.category}</p>
+                    <p><strong>Subcategory:</strong> ${product.subcategory}</p>
+                    <p><strong>Price:</strong> ${product.price}</p>
+                    <p><strong>Delivery Time:</strong> ${product.time}</p>
+                    <p><strong>Quantities:</strong> ${product.quantityValue} ${product.quantityUnit}</p>
+                    <img src="${product.image}" alt="${product.name}">
+                    <div class="product-actions">
+                        <button class="edit" onclick="editProduct(${index})">Edit</button>
+                        <button class="delete" onclick="deleteProduct(${index})">Delete</button>
+                    </div>
+                `;
+                productList.appendChild(productDiv);
+            });
+        }
+
+        // Function to edit a product
+        function editProduct(index) {
+            const products = JSON.parse(localStorage.getItem('products')) || [];
+            const product = products[index];
+            if (!product) {
+                alert('Invalid product');
+                return;
             }
 
-            window.addProduct = () => {
-                const name = document.getElementById('product-name').value;
-                const imageInput = document.getElementById('product-image');
-                const imageFile = imageInput.files[0];
-                const quantity = document.getElementById('product-quantity').value;
-                const measure = document.getElementById('product-measure').value;
-                const price = document.getElementById('product-price').value;
-                const category = document.getElementById('product-category').value;
+            // Fill the form with existing product details for editing
+            document.getElementById('name').value = product.name;
+            document.getElementById('category').value = product.category;
+            document.getElementById('subcategory').value = product.subcategory;
+            document.getElementById('price').value = product.price;
+            document.getElementById('time').value = product.time;
 
-                if (name && imageFile && quantity && price && category && measure) {
-                    const reader = new FileReader();
-                    reader.onload = () => {
-                        const image = reader.result;
-                        products.push({ name, image, quantity, price, category, measure });
-                        localStorage.setItem('products', JSON.stringify(products));
-                        renderProducts();
-                    };
-                    reader.readAsDataURL(imageFile);
-                }
+            // Split the quantity into unit and value for editing
+            document.getElementById('quantity-unit').value = product.quantityUnit;
+            document.getElementById('quantity-value').value = product.quantityValue;
+
+            // Remove the product from the list since we are editing it
+            products.splice(index, 1);
+            localStorage.setItem('products', JSON.stringify(products));
+
+            // Scroll to the top of the form for better user experience
+            document.getElementById('product-form').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Function to delete a product
+        function deleteProduct(index) {
+            const products = JSON.parse(localStorage.getItem('products')) || [];
+            if (index < 0 || index >= products.length) {
+                alert('Invalid product');
+                return;
+            }
+
+            // Remove the product from the list and update local storage
+            products.splice(index, 1);
+            localStorage.setItem('products', JSON.stringify(products));
+
+            // Refresh the product list
+            displayProducts();
+        }
+
+        // Function to add a new product
+        function addProduct(product) {
+            let products = JSON.parse(localStorage.getItem('products')) || [];
+            products.push(product);
+            localStorage.setItem('products', JSON.stringify(products));
+
+            // Display success message
+            const formMessage = document.getElementById('form-message');
+            formMessage.textContent = 'Product added successfully!';
+            formMessage.style.color = 'green';
+
+            // Clear form fields after successful submission
+            document.getElementById('product-form').reset();
+
+            // Refresh the product list
+            displayProducts();
+        }
+
+        // Event listener for form submission
+        document.getElementById('product-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            // Get form data
+            const name = document.getElementById('name').value;
+            const category = document.getElementById('category').value;
+            const subcategory = document.getElementById('subcategory').value;
+            const price = document.getElementById('price').value;
+            const time = document.getElementById('time').value;
+            const quantityUnit = document.getElementById('quantity-unit').value;
+            const quantityValue = document.getElementById('quantity-value').value;
+            const image = document.getElementById('image').files[0];
+
+            // Convert image to base64 to store in localStorage
+            const reader = new FileReader();
+            reader.readAsDataURL(image);
+            reader.onload = function () {
+                const imageBase64 = reader.result;
+
+                // Create product object
+                const product = { 
+                    name, 
+                    category, 
+                    subcategory, 
+                    price, 
+                    time, 
+                    quantityUnit, 
+                    quantityValue, 
+                    image: imageBase64 
+                };
+
+                // Add product to the list
+                addProduct(product);
             };
-
-            window.editProduct = (index) => {
-                const product = products[index];
-                document.getElementById('product-name').value = product.name;
-                document.getElementById('product-image').value = product.image;
-                document.getElementById('product-quantity').value = product.quantity;
-                document.getElementById('product-measure').value = product.measure;
-                document.getElementById('product-price').value = product.price;
-                document.getElementById('product-category').value = product.category;
-
-                products.splice(index, 1);
-                localStorage.setItem('products', JSON.stringify(products));
-                renderProducts();
-            };
-
-            window.removeProduct = (index) => {
-                products.splice(index, 1);
-                localStorage.setItem('products', JSON.stringify(products));
-                renderProducts();
-            };
-
-            renderProducts();
         });
+
+        // Call displayProducts() to show existing products when the page loads
+        displayProducts();
+        
     </script>
 </body>
 </html>
