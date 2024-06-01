@@ -392,67 +392,36 @@
             renderProductsBySubcategory('Leafy Greens'); // Default subcategory to show on page load
         });
 
-        document.getElementById('search').addEventListener('input', async (e) => {
-            const searchQuery = e.target.value.toLowerCase();
-            const products = await fetchProducts();
-            const productGrid = document.querySelector('.product-grid');
-            productGrid.innerHTML = '';
+        // Event listener for search input
+document.getElementById('search').addEventListener('input', async (event) => {
+    const searchTerm = event.target.value.toLowerCase();
+    const products = await fetchProducts();
+    const productGrid = document.querySelector('.product-grid');
+    productGrid.innerHTML = '';
 
-            const filteredProducts = products.filter(product => 
-                product.name.toLowerCase().includes(searchQuery) ||
-                product.subcategory.toLowerCase().includes(searchQuery)
-            );
+    const filteredProducts = products.filter(product =>
+        product.name.toLowerCase().includes(searchTerm)
+    );
 
-            if (filteredProducts.length === 0) {
-                productGrid.innerHTML = '<p>No products found.</p>';
-            } else {
-                filteredProducts.forEach(product => {
-                    if (typeof product.originalPrice !== 'number' || typeof product.discountedPrice !== 'number') {
-                        console.error('Invalid price data', product);
-                        return;
-                    }
-
-                    const discountPercentage = calculateDiscountPercentage(product.originalPrice, product.discountedPrice);
-
-                    const productItem = document.createElement('div');
-                    productItem.className = 'product-item';
-
-                    const productImage = document.createElement('img');
-                    productImage.src = product.imageUrl;
-                    productImage.alt = product.name;
-
-                    const productName = document.createElement('h3');
-                    productName.textContent = product.name;
-
-                    const discountBadge = document.createElement('div');
-                    discountBadge.className = 'discount';
-                    discountBadge.textContent = `${discountPercentage}% OFF`;
-
-                    const pricesDiv = document.createElement('div');
-                    pricesDiv.className = 'prices';
-
-                    const originalPrice = document.createElement('span');
-                    originalPrice.className = 'original-price';
-                    originalPrice.textContent = `$${product.originalPrice.toFixed(2)}`;
-
-                    const discountedPrice = document.createElement('span');
-                    discountedPrice.className = 'discounted-price';
-                    discountedPrice.textContent = `$${product.discountedPrice.toFixed(2)}`;
-
-                    const productButton = document.createElement('button');
-                    productButton.textContent = 'Add to Cart';
-                    productButton.onclick = () => alert(`Added ${product.name} to cart!`);
-
-                    productItem.appendChild(discountBadge);
-                    productItem.appendChild(productImage);
-                    productItem.appendChild(productName);
-                    productItem.appendChild(pricesDiv);
-                    productItem.appendChild(productButton);
-
-                    productGrid.appendChild(productItem);
-                });
-            }
+    if (filteredProducts.length === 0) {
+        productGrid.innerHTML = '<p>No products found.</p>';
+    } else {
+        filteredProducts.forEach(product => {
+            const productItem = document.createElement('div');
+            productItem.classList.add('product-item');
+            productItem.innerHTML = `
+                <img src="${product.imageUrl}" alt="${product.name}">
+                <h3>${product.name}</h3>
+                <div class="prices">
+                    <span class="original-price">₹${parseFloat(product.originalPrice).toFixed(2)}</span>
+                    <span class="discounted-price">₹${parseFloat(product.discountedPrice).toFixed(2)}</span>
+                </div>
+                <button>Add to Cart</button>
+            `;
+            productGrid.appendChild(productItem);
         });
+    }
+});
     </script>
 </body>
 </html>
