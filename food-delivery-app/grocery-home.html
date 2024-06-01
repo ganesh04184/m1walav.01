@@ -95,6 +95,7 @@
             padding: 10px;
             text-align: center;
             background-color: #fff;
+            position: relative;
         }
 
         .product-item img {
@@ -103,6 +104,34 @@
             border-bottom: 1px solid #ddd;
             padding-bottom: 10px;
             margin-bottom: 10px;
+        }
+
+        .product-item .discount {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #ff5c5c;
+            color: white;
+            padding: 5px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        .product-item .prices {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .product-item .original-price {
+            text-decoration: line-through;
+            color: #888;
+        }
+
+        .product-item .discounted-price {
+            color: #28a745;
+            font-weight: bold;
         }
 
         .product-item button {
@@ -116,6 +145,26 @@
 
         .product-item button:hover {
             background-color: #218838;
+        }
+
+        .product-item.unavailable {
+            background-color: #f8d7da;
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .product-item .not-available {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(255, 255, 255, 0.8);
+            color: red;
+            font-size: 1.5em;
         }
 
         form {
@@ -200,7 +249,7 @@
     <nav>
         <ul id="categories">
             <li data-category="vegetables-fruits"><a href="#">Vegetables & Fruits</a></li>
-            <li data-category="dairy-breakfast"><a href="#">Dairy & Breakfast</a></li>
+            <li data-category="dairy"><a href="#">Dairy</a></li>
             <li data-category="meat"><a href="#">Meat</a></li>
         </ul>
     </nav>
@@ -213,7 +262,7 @@
         <ul>
             <li class="active">
                 <a href="grocery-home.html" class="icon">
-                    <img class="unactive" src="food-delivery-app/mart.jpeg" alt="grocery">
+                    <img class="unactive" src="../assets/images/svg/grocery.svg" alt="grocery">
                     <span>Grocery</span>
                 </a>
             </li>
@@ -225,7 +274,7 @@
             </li>
             <li>
                 <a href="profile.html" class="icon">
-                    <img class="unactive" src="food-delivery-app/profile.jpeg" alt="user">
+                    <img class="unactive" src="../assets/images/svg/user.svg" alt="user">
                     <span>Profile</span>
                 </a>
             </li>
@@ -233,16 +282,12 @@
     </div>
 
     <script>
-        const products = JSON.parse(localStorage.getItem('products')) || [];
-
-        // Sample subcategories data
         const subcategories = {
-            "vegetables-fruits": ["Leafy Greens", "Root Vegetables", "Fruits","Seasonal Fruits"],
+            "vegetables-fruits": ["Leafy Greens", "Root Vegetables", "Fruits", "Seasonal Fruits"],
             "dairy": ["Milk", "Curd", "Ghee"],
-            "meat": ["m1wala country chicken", "Mutton", "Fish"]
+            "meat": ["Country Chicken", "Mutton", "Fish"]
         };
 
-        // Function to render subcategories based on the selected category
         function renderSubcategories(category) {
             const subcategoryList = document.getElementById('subcategories');
             subcategoryList.innerHTML = '';
@@ -258,86 +303,159 @@
             }
         }
 
-        // Function to render products by subcategory
-        function renderProductsBySubcategory(subcategory) {
+        async function fetchProducts() {
+            const response = await fetch('http://localhost:3000/products');
+            const products = await response.json();
+            return products;
+        }
+
+        function calculateDiscountPercentage(originalPrice, discountedPrice) {
+            const discount = originalPrice - discountedPrice;
+            const percentage = (discount / originalPrice) * 100;
+            return Math.round(percentage);
+        }
+
+        async function renderProductsBySubcategory(subcategory) {
+    const products = await fetchProducts();
+    const productGrid = document.querySelector('.product-grid');
+    productGrid.innerHTML = '';
+
+    const filteredProducts = products.filter(product => product.subcategory === subcategory);
+    if (filteredProducts.length === 0) {
+        productGrid.innerHTML = '<p>No products found in this subcategory.</p>';
+    } else {
+        filteredProducts.forEach(product => {
+            // Parse originalPrice and discountedPrice into numbers
+            const originalPrice = parseFloat(product.originalPrice);
+            const discountedPrice = parseFloat(product.discountedPrice);
+
+            if (isNaN(originalPrice) || isNaN(discountedPrice)) {
+                console.error('Invalid price data', product);
+                return;
+            }
+
+            const discountPercentage = calculateDiscountPercentage(originalPrice, discountedPrice);
+
+            const productItem = document.createElement('div');
+            productItem.className = 'product-item';
+
+            const productImage = document.createElement('img');
+            productImage.src = product.image; // Use 'image' instead of 'imageUrl'
+            productImage.alt = product.name;
+
+            const productName = document.createElement('h3');
+            productName.textContent = product.name;
+
+            const discountBadge = document.createElement('div');
+            discountBadge.className = 'discount';
+            discountBadge.textContent = `${discountPercentage}% OFF`;
+
+            const pricesDiv = document.createElement('div');
+            pricesDiv.className = 'prices';
+
+            const originalPriceElement = document.createElement('span');
+            originalPriceElement.className = 'original-price';
+            originalPriceElement.textContent = `₹${originalPrice.toFixed(2)}`;
+
+            const discountedPriceElement = document.createElement('span');
+            discountedPriceElement.className = 'discounted-price';
+            discountedPriceElement.textContent = `₹${discountedPrice.toFixed(2)}`;
+
+            const productButton = document.createElement('button');
+            productButton.textContent = 'Add to Cart';
+            productButton.onclick = () => alert(`Added ${product.name} to cart!`);
+
+            productItem.appendChild(discountBadge);
+            productItem.appendChild(productImage);
+            productItem.appendChild(productName);
+            pricesDiv.appendChild(originalPriceElement);
+            pricesDiv.appendChild(discountedPriceElement);
+            productItem.appendChild(pricesDiv);
+            productItem.appendChild(productButton);
+
+            productGrid.appendChild(productItem);
+        });
+    }
+}
+
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const categories = document.querySelectorAll('nav ul li a');
+            categories.forEach(category => {
+                category.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const selectedCategory = e.target.parentElement.getAttribute('data-category');
+                    renderSubcategories(selectedCategory);
+                });
+            });
+
+            renderProductsBySubcategory('Leafy Greens'); // Default subcategory to show on page load
+        });
+
+        document.getElementById('search').addEventListener('input', async (e) => {
+            const searchQuery = e.target.value.toLowerCase();
+            const products = await fetchProducts();
             const productGrid = document.querySelector('.product-grid');
             productGrid.innerHTML = '';
 
-            const filteredProducts = products.filter(product => product.subcategory === subcategory);
+            const filteredProducts = products.filter(product => 
+                product.name.toLowerCase().includes(searchQuery) ||
+                product.subcategory.toLowerCase().includes(searchQuery)
+            );
+
             if (filteredProducts.length === 0) {
-                productGrid.innerHTML = '<p>No products found in this subcategory.</p>';
+                productGrid.innerHTML = '<p>No products found.</p>';
             } else {
                 filteredProducts.forEach(product => {
-                    const productDiv = document.createElement('div');
-                    productDiv.className = 'product-item';
-                    productDiv.innerHTML = `
-                        <img src="${product.image}" alt="${product.name}">
-                        <h3>${product.name}</h3>
-                        <p>Price: ₹${product.price} - Qty: <span id="${product.name}-quantity">${product.quantityValue} ${product.quantityUnit}</span></p>
-                        <button class="add-to-cart-btn" onclick="addToCart('${product.name}', ${product.price})">Add to Cart</button>
-                    `;
-                    productGrid.appendChild(productDiv);
+                    if (typeof product.originalPrice !== 'number' || typeof product.discountedPrice !== 'number') {
+                        console.error('Invalid price data', product);
+                        return;
+                    }
+
+                    const discountPercentage = calculateDiscountPercentage(product.originalPrice, product.discountedPrice);
+
+                    const productItem = document.createElement('div');
+                    productItem.className = 'product-item';
+
+                    const productImage = document.createElement('img');
+                    productImage.src = product.imageUrl;
+                    productImage.alt = product.name;
+
+                    const productName = document.createElement('h3');
+                    productName.textContent = product.name;
+
+                    const discountBadge = document.createElement('div');
+                    discountBadge.className = 'discount';
+                    discountBadge.textContent = `${discountPercentage}% OFF`;
+
+                    const pricesDiv = document.createElement('div');
+                    pricesDiv.className = 'prices';
+
+                    const originalPrice = document.createElement('span');
+                    originalPrice.className = 'original-price';
+                    originalPrice.textContent = `$${product.originalPrice.toFixed(2)}`;
+
+                    const discountedPrice = document.createElement('span');
+                    discountedPrice.className = 'discounted-price';
+                    discountedPrice.textContent = `$${product.discountedPrice.toFixed(2)}`;
+
+                    const productButton = document.createElement('button');
+                    productButton.textContent = 'Add to Cart';
+                    productButton.onclick = () => alert(`Added ${product.name} to cart!`);
+
+                    productItem.appendChild(discountBadge);
+                    productItem.appendChild(productImage);
+                    productItem.appendChild(productName);
+                    productItem.appendChild(pricesDiv);
+                    productItem.appendChild(productButton);
+
+                    productGrid.appendChild(productItem);
                 });
             }
-        }
-
-        // Function to handle category click
-        function showCategory(category) {
-            renderSubcategories(category);
-        }
-
-        // Function to add product to cart
-        async function addToCart(name, price) {
-            let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
-            const existingItem = cartItems.find(item => item.name === name);
-            if (existingItem) {
-                existingItem.quantity++;
-            } else {
-                cartItems.push({ name, price, quantity: 1 });
-            }
-            localStorage.setItem('cartItems', JSON.stringify(cartItems));
-
-            // Get the token and userId from localStorage
-            const token = localStorage.getItem('token');
-            const userId = localStorage.getItem('userId');
-
-            if (token && userId) {
-                try {
-                    const response = await fetch('https://m1wala1.onrender.com/add-to-cart', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'x-auth-token': token,
-                        },
-                        body: JSON.stringify({ productName: name, price }),
-                    });
-
-                    const data = await response.json();
-                    if (data.success) {
-                        alert('Product added to cart.');
-                    } else {
-                        alert('Failed to add product to cart: ' + data.msg);
-                    }
-                } catch (error) {
-                    console.error('Error adding item to cart:', error);
-                    alert('An error occurred while adding item to cart: ' + error.message);
-                }
-            } else {
-                alert('You need to log in first.');
-            }
-        }
-
-        // Handle category click events
-        document.querySelectorAll('#categories li').forEach(li => {
-            li.addEventListener('click', () => {
-                const category = li.getAttribute('data-category');
-                showCategory(category);
-            });
         });
-
-        // Initial category load
-        showCategory("vegetables-fruits");
     </script>
-
 </body>
 </html>
+
+
+                   
