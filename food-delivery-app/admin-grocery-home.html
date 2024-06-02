@@ -194,7 +194,7 @@
                     ${product.quantities.map(quantity => `
                         <p><strong>Quantity:</strong> ${quantity.quantityValue} ${quantity.quantityUnit} - ${quantity.price}</p>
                     `).join('')}
-                    <img src="${product.image}" alt="${product.name}">
+                    <img src="https://m1wala1.onrender.com/public/uploads/${product.image}" alt="${product.name}">
                     <div class="product-actions">
                         <button class="edit" onclick="editProduct('${product._id}')">Edit</button>
                         <button class="delete" onclick="deleteProduct('${product._id}')">Delete</button>
