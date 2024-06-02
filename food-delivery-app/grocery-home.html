@@ -10,7 +10,7 @@
     <link rel="manifest" href="../manifest.json" />
 
     <link rel="icon" href="../assets/images/logo/favicon.png" type="image/x-icon" />
-    <title>m1wala</title>
+    <title>m1wala instamart</title>
     <link rel="apple-touch-icon" href="../assets/images/logo/favicon.png" />
     <meta name="theme-color" content="#ff8d2f" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -21,6 +21,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <title>Grocery Shopping</title>
     <style>
+        /* Your existing styles here */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -40,6 +41,11 @@
             padding: 5px;
             width: 80%;
             margin-top: 10px;
+        }
+
+        main {
+            display: flex;
+            padding: 10px;
         }
 
         nav ul {
@@ -112,6 +118,9 @@
             text-align: center;
             background-color: #fff;
             position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
 
         .product-item img {
@@ -181,46 +190,84 @@
             background-color: rgba(255, 255, 255, 0.8);
             color: red;
             font-size: 1.5em;
+            font-weight: bold;
+            text-align: center;
         }
 
-        form {
-            display: flex;
-            flex-direction: column;
-            max-width: 400px;
-            margin: 20px auto;
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1001; /* Make sure it's above the header */
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+            padding-top: 60px;
         }
 
-        form label {
-            margin-top: 10px;
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            box-sizing: border-box;
+            max-width: 600px; /* Limit the width to avoid clumsiness */
         }
 
-        form input {
-            padding: 5px;
-            margin-top: 5px;
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
         }
 
-        form button {
-            margin-top: 20px;
-            padding: 10px;
-            background-color: #007bff;
-            color: white;
-            border: none;
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
             cursor: pointer;
         }
 
-        form button:hover {
-            background-color: #0056b3;
+        .quantity-option {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 10px;
+        }
+
+        .quantity-option span {
+            margin: 0 10px;
+        }
+
+        .quantity-option button {
+            background-color: #4CAF50; /* Green color for "Add to Cart" button */
+            border: none;
+            color: white;
+            padding: 5px 10px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+
+        .quantity-option button:hover {
+            background-color: #45a049;
         }
 
         .navbar-menu {
-            background-color: rgba(var(--white), 1);
             position: fixed;
             bottom: 0;
             width: 100%;
-            display: flex;
-            justify-content: space-around;
-            padding: 10px 0;
-            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+            background-color: #333;
             z-index: 1000;
         }
 
@@ -229,7 +276,6 @@
             padding: 0;
             margin: 0;
             display: flex;
-            width: 100%;
             justify-content: space-around;
         }
 
@@ -239,16 +285,17 @@
         }
 
         .navbar-menu a {
-            color: rgba(34, 139, 34);
+            color: rgba(34, 139, 34, 1);
             text-decoration: none;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            padding: 10px;
         }
 
         .navbar-menu a.active {
-            color: rgba(var(--light-theme-color), 1);
+            color: rgba(0, 123, 255, 1);
         }
 
         .navbar-menu img {
@@ -278,23 +325,25 @@
         <ul>
             <li class="active">
                 <a href="grocery-home.html" class="icon">
-                    <img class="unactive" src="../assets/images/svg/grocery.svg" alt="grocery">
+                    <img class="unactive" src="path/to/your/grocery-icon.svg" alt="grocery">
                     <span>Grocery</span>
                 </a>
             </li>
             <li>
-                <a href="cart.html" class="icon">
-                    <img class="unactive" src="../assets/images/svg/user.svg" alt="cart">
-                    <span>Cart</span>
-                </a>
-            </li>
-            <li>
                 <a href="profile.html" class="icon">
-                    <img class="unactive" src="../assets/images/svg/user.svg" alt="user">
+                    <img class="unactive" src="path/to/your/user-icon.svg" alt="user">
                     <span>Profile</span>
                 </a>
             </li>
         </ul>
+    </div>
+
+    <!-- Modal for product options -->
+    <div id="productOptionsModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div id="productOptionsContent"></div>
+        </div>
     </div>
 
     <script>
@@ -316,6 +365,9 @@
                     subcategoryUl.appendChild(li);
                 });
                 subcategoryList.appendChild(subcategoryUl);
+
+                // Automatically render products for the first subcategory
+                renderProductsBySubcategory(subcategories[category][0]);
             }
         }
 
@@ -332,115 +384,323 @@
         }
 
         async function renderProductsBySubcategory(subcategory) {
-    const products = await fetchProducts();
-    const productGrid = document.querySelector('.product-grid');
-    productGrid.innerHTML = '';
+            try {
+                const products = await fetchProducts();
+                const productGrid = document.querySelector('.product-grid');
+                productGrid.innerHTML = '';
 
-    const filteredProducts = products.filter(product => product.subcategory === subcategory);
-    if (filteredProducts.length === 0) {
-        productGrid.innerHTML = '<p>No products found in this subcategory.</p>';
-    } else {
-        filteredProducts.forEach(product => {
-            // Parse originalPrice and discountedPrice into numbers
-            const originalPrice = parseFloat(product.originalPrice);
-            const discountedPrice = parseFloat(product.discountedPrice);
+                const filteredProducts = products.filter(product => product.subcategory === subcategory);
 
-            if (isNaN(originalPrice) || isNaN(discountedPrice)) {
-                console.error('Invalid price data', product);
+                if (filteredProducts.length === 0) {
+                    productGrid.innerHTML = '<p>No products found in this subcategory.</p>';
+                } else {
+                    filteredProducts.forEach(product => {
+                        const originalPrice = parseFloat(product.originalPrice);
+                        const discountedPrice = parseFloat(product.discountedPrice);
+
+                        if (isNaN(originalPrice) || isNaN(discountedPrice)) {
+                            console.error('Invalid price data', product);
+                            return;
+                        }
+
+                        const discountPercentage = calculateDiscountPercentage(originalPrice, discountedPrice);
+
+                        const productItem = document.createElement('div');
+                        productItem.className = 'product-item';
+
+                        const productImage = document.createElement('img');
+                        productImage.src = `${product.image}`;
+                        productImage.alt = product.name;
+
+                        const productName = document.createElement('h3');
+                        productName.textContent = product.name;
+
+                        const discountBadge = document.createElement('div');
+                        discountBadge.className = 'discount';
+                        discountBadge.textContent = `${discountPercentage}% OFF`;
+
+                        const pricesDiv = document.createElement('div');
+                        pricesDiv.className = 'prices';
+
+                        const originalPriceElem = document.createElement('span');
+                        originalPriceElem.className = 'original-price';
+                        originalPriceElem.textContent = `₹${originalPrice.toFixed(2)}`;
+
+                        const discountedPriceElem = document.createElement('span');
+                        discountedPriceElem.className = 'discounted-price';
+                        discountedPriceElem.textContent = `₹${discountedPrice.toFixed(2)}`;
+
+                        const quantityDiv = document.createElement('div');
+                        quantityDiv.className = 'quantity';
+
+                        if (product.quantities && product.quantities.length > 1) {
+                            quantityDiv.textContent = `${product.quantities[0].quantityValue} ${product.quantities[0].quantityUnit}`;
+
+                            productItem.appendChild(discountBadge);
+                            productItem.appendChild(productImage);
+                            productItem.appendChild(productName);
+                            productItem.appendChild(quantityDiv);
+                            productItem.appendChild(pricesDiv);
+
+                            const optionsButton = document.createElement('button');
+                            optionsButton.textContent = 'Options';
+                            optionsButton.onclick = () => showProductOptions(product);
+                            productItem.appendChild(optionsButton);
+                        } else {
+                            const productButton = document.createElement('button');
+                            productButton.textContent = 'Add to Cart';
+                            productButton.onclick = () => addToCart(product);
+
+                            if (product.quantities && product.quantities.length === 1) {
+                                quantityDiv.textContent = `${product.quantities[0].quantityValue} ${product.quantities[0].quantityUnit}`;
+                            }
+
+                            productItem.appendChild(discountBadge);
+                            productItem.appendChild(productImage);
+                            productItem.appendChild(productName);
+                            productItem.appendChild(quantityDiv);
+                            productItem.appendChild(pricesDiv);
+                            productItem.appendChild(productButton);
+                        }
+
+                        pricesDiv.appendChild(originalPriceElem);
+                        pricesDiv.appendChild(discountedPriceElem);
+
+                        if (!product.available) {
+                            const notAvailableOverlay = document.createElement('div');
+                            notAvailableOverlay.className = 'not-available';
+                            notAvailableOverlay.textContent = 'Product Not Available';
+                            productItem.appendChild(notAvailableOverlay);
+                        }
+
+                        productGrid.appendChild(productItem);
+                    });
+                }
+            } catch (error) {
+                console.error('Error rendering products by subcategory:', error);
+            }
+        }
+
+        function showProductOptions(product) {
+            const modal = document.getElementById('productOptionsModal');
+            const content = document.getElementById('productOptionsContent');
+            content.innerHTML = '';
+
+            product.quantities.forEach(quantity => {
+                const quantityDiv = document.createElement('div');
+                quantityDiv.className = 'quantity-option';
+
+                const quantityText = document.createElement('span');
+                quantityText.textContent = `${quantity.quantityValue} ${quantity.quantityUnit}`;
+
+                const originalPrice = parseFloat(quantity.originalPrice || product.originalPrice);
+                const discountedPrice = parseFloat(quantity.discountedPrice || quantity.price);
+
+                if (isNaN(originalPrice) || isNaN(discountedPrice)) {
+                    console.error('Invalid price data', quantity);
+                    return;
+                }
+
+                const originalPriceElem = document.createElement('span');
+                originalPriceElem.className = 'original-price';
+                originalPriceElem.textContent = `₹${originalPrice.toFixed(2)}`;
+
+                const discountedPriceElem = document.createElement('span');
+                discountedPriceElem.className = 'discounted-price';
+                discountedPriceElem.textContent = `₹${discountedPrice.toFixed(2)}`;
+
+                const addButton = document.createElement('button');
+                addButton.textContent = 'Add to Cart';
+                addButton.onclick = () => addToCart(product, quantity);
+
+                quantityDiv.appendChild(quantityText);
+                quantityDiv.appendChild(originalPriceElem);
+                quantityDiv.appendChild(discountedPriceElem);
+                quantityDiv.appendChild(addButton);
+
+                content.appendChild(quantityDiv);
+            });
+
+            modal.style.display = 'block';
+        }
+
+        async function addToCart(product, quantity = null) {
+            const item = {
+                name: product.name,
+                quantity: quantity ? quantity.quantityValue : product.quantities[0].quantityValue,
+                unit: quantity ? quantity.quantityUnit : product.quantities[0].quantityUnit,
+                price: quantity ? parseFloat(quantity.price) : parseFloat(product.discountedPrice),
+                originalPrice: quantity ? parseFloat(quantity.originalPrice || product.originalPrice) : parseFloat(product.originalPrice),
+                imageUrl: product.image,
+            };
+
+            const token = localStorage.getItem('token');
+
+            if (!token) {
+                alert('You need to log in first.');
                 return;
             }
 
-            const discountPercentage = calculateDiscountPercentage(originalPrice, discountedPrice);
+            try {
+                const response = await fetch('https://m1wala1.onrender.com/add-to-cart', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-auth-token': token,
+                    },
+                    body: JSON.stringify(item),
+                });
 
-            const productItem = document.createElement('div');
-            productItem.className = 'product-item';
+                const data = await response.json();
+                if (response.ok) {
+                    alert('Product added to cart.');
+                } else {
+                    alert('Failed to add product to cart: ' + data.msg);
+                }
+            } catch (error) {
+                console.error('Error adding item to cart:', error);
+                alert('An error occurred while adding item to cart: ' + error.message);
+            }
+        }
 
-            const productImage = document.createElement('img');
-            productImage.src = product.image; // Use 'image' instead of 'imageUrl'
-            productImage.alt = product.name;
+        async function searchProducts(searchTerm) {
+            try {
+                const products = await fetchProducts();
+                const productGrid = document.querySelector('.product-grid');
+                productGrid.innerHTML = '';
 
-            const productName = document.createElement('h3');
-            productName.textContent = product.name;
+                const filteredProducts = products.filter(product => product.name.toLowerCase().includes(searchTerm.toLowerCase()));
 
-            const discountBadge = document.createElement('div');
-            discountBadge.className = 'discount';
-            discountBadge.textContent = `${discountPercentage}% OFF`;
+                if (filteredProducts.length === 0) {
+                    productGrid.innerHTML = '<p>No products found.</p>';
+                } else {
+                    filteredProducts.forEach(product => {
+                        const originalPrice = parseFloat(product.originalPrice);
+                        const discountedPrice = parseFloat(product.discountedPrice);
 
-            const pricesDiv = document.createElement('div');
-            pricesDiv.className = 'prices';
+                        if (isNaN(originalPrice) || isNaN(discountedPrice)) {
+                            console.error('Invalid price data', product);
+                            return;
+                        }
 
-            const originalPriceElement = document.createElement('span');
-            originalPriceElement.className = 'original-price';
-            originalPriceElement.textContent = `₹${originalPrice.toFixed(2)}`;
+                        const discountPercentage = calculateDiscountPercentage(originalPrice, discountedPrice);
 
-            const discountedPriceElement = document.createElement('span');
-            discountedPriceElement.className = 'discounted-price';
-            discountedPriceElement.textContent = `₹${discountedPrice.toFixed(2)}`;
+                        const productItem = document.createElement('div');
+                        productItem.className = 'product-item';
 
-            const productButton = document.createElement('button');
-            productButton.textContent = 'Add to Cart';
-            productButton.onclick = () => alert(`Added ${product.name} to cart!`);
+                        const productImage = document.createElement('img');
+                        productImage.src = `${product.image}`;
+                        productImage.alt = product.name;
 
-            productItem.appendChild(discountBadge);
-            productItem.appendChild(productImage);
-            productItem.appendChild(productName);
-            pricesDiv.appendChild(originalPriceElement);
-            pricesDiv.appendChild(discountedPriceElement);
-            productItem.appendChild(pricesDiv);
-            productItem.appendChild(productButton);
+                        const productName = document.createElement('h3');
+                        productName.textContent = product.name;
 
-            productGrid.appendChild(productItem);
-        });
-    }
-}
+                        const discountBadge = document.createElement('div');
+                        discountBadge.className = 'discount';
+                        discountBadge.textContent = `${discountPercentage}% OFF`;
 
+                        const pricesDiv = document.createElement('div');
+                        pricesDiv.className = 'prices';
+
+                        const originalPriceElem = document.createElement('span');
+                        originalPriceElem.className = 'original-price';
+                        originalPriceElem.textContent = `₹${originalPrice.toFixed(2)}`;
+
+                        const discountedPriceElem = document.createElement('span');
+                        discountedPriceElem.className = 'discounted-price';
+                        discountedPriceElem.textContent = `₹${discountedPrice.toFixed(2)}`;
+
+                        const quantityDiv = document.createElement('div');
+                        quantityDiv.className = 'quantity';
+
+                        if (product.quantities && product.quantities.length > 1) {
+                            quantityDiv.textContent = `${product.quantities[0].quantityValue} ${product.quantities[0].quantityUnit}`;
+
+                            productItem.appendChild(discountBadge);
+                            productItem.appendChild(productImage);
+                            productItem.appendChild(productName);
+                            productItem.appendChild(quantityDiv);
+                            productItem.appendChild(pricesDiv);
+
+                            const optionsButton = document.createElement('button');
+                            optionsButton.textContent = 'Options';
+                            optionsButton.onclick = () => showProductOptions(product);
+                            productItem.appendChild(optionsButton);
+                        } else {
+                            const productButton = document.createElement('button');
+                            productButton.textContent = 'Add to Cart';
+                            productButton.onclick = () => addToCart(product);
+
+                            if (product.quantities && product.quantities.length === 1) {
+                                quantityDiv.textContent = `${product.quantities[0].quantityValue} ${product.quantities[0].quantityUnit}`;
+                            }
+
+                            productItem.appendChild(discountBadge);
+                            productItem.appendChild(productImage);
+                            productItem.appendChild(productName);
+                            productItem.appendChild(quantityDiv);
+                            productItem.appendChild(pricesDiv);
+                            productItem.appendChild(productButton);
+                        }
+
+                        pricesDiv.appendChild(originalPriceElem);
+                        pricesDiv.appendChild(discountedPriceElem);
+
+                        if (!product.available) {
+                            const notAvailableOverlay = document.createElement('div');
+                            notAvailableOverlay.className = 'not-available';
+                            notAvailableOverlay.textContent = 'Product Not Available';
+                            productItem.appendChild(notAvailableOverlay);
+                        }
+
+                        productGrid.appendChild(productItem);
+                    });
+                }
+            } catch (error) {
+                console.error('Error searching products:', error);
+            }
+        }
 
         document.addEventListener('DOMContentLoaded', () => {
-            const categories = document.querySelectorAll('nav ul li a');
+            const categories = document.querySelectorAll('#categories li');
             categories.forEach(category => {
-                category.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    const selectedCategory = e.target.parentElement.getAttribute('data-category');
-                    renderSubcategories(selectedCategory);
+                category.addEventListener('click', () => {
+                    renderSubcategories(category.dataset.category);
                 });
             });
 
-            renderProductsBySubcategory('Leafy Greens'); // Default subcategory to show on page load
+            const modal = document.getElementById('productOptionsModal');
+            const closeModalButton = modal.querySelector('.close');
+            closeModalButton.onclick = () => {
+                modal.style.display = 'none';
+            };
+
+            window.onclick = (event) => {
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            };
+
+            const searchInput = document.getElementById('search');
+            searchInput.addEventListener('input', () => {
+                const searchTerm = searchInput.value.trim();
+                if (searchTerm) {
+                    searchProducts(searchTerm);
+                } else {
+                    // Show the first category and its first subcategory products by default
+                    const firstCategory = Object.keys(subcategories)[0];
+                    if (firstCategory) {
+                        renderSubcategories(firstCategory);
+                    }
+                }
+            });
+
+            // Show the first category and its first subcategory products by default
+            const firstCategory = Object.keys(subcategories)[0];
+            if (firstCategory) {
+                renderSubcategories(firstCategory);
+            }
         });
-
-        // Event listener for search input
-document.getElementById('search').addEventListener('input', async (event) => {
-    const searchTerm = event.target.value.toLowerCase();
-    const products = await fetchProducts();
-    const productGrid = document.querySelector('.product-grid');
-    productGrid.innerHTML = '';
-
-    const filteredProducts = products.filter(product =>
-        product.name.toLowerCase().includes(searchTerm)
-    );
-
-    if (filteredProducts.length === 0) {
-        productGrid.innerHTML = '<p>No products found.</p>';
-    } else {
-        filteredProducts.forEach(product => {
-            const productItem = document.createElement('div');
-            productItem.classList.add('product-item');
-            productItem.innerHTML = `
-                <img src="${product.imageUrl}" alt="${product.name}">
-                <h3>${product.name}</h3>
-                <div class="prices">
-                    <span class="original-price">₹${parseFloat(product.originalPrice).toFixed(2)}</span>
-                    <span class="discounted-price">₹${parseFloat(product.discountedPrice).toFixed(2)}</span>
-                </div>
-                <button>Add to Cart</button>
-            `;
-            productGrid.appendChild(productItem);
-        });
-    }
-});
     </script>
 </body>
 </html>
-
-
-                   
