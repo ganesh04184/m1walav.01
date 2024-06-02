@@ -201,34 +201,37 @@
       document.getElementById('resetOtp').value = otp;
     }
 
-    async function login(email, password) {
-      try {
-        const response = await fetch('/api/auth/login', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ email: email.trim(), password: password.trim() }),
-        });
+async function login(email, password) {
+  try {
+    const response = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email: email.trim(), password: password.trim() }),
+    });
 
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.msg || 'Unknown error');
-        }
-
-        const data = await response.json();
-        if (data.token) {
-          localStorage.setItem('token', data.token);
-          localStorage.setItem('userId', data.userId);
-          alert('Login successful!');
-          window.location.href = 'grocery-home.html';
-        } else {
-          alert('Login failed: Unknown error');
-        }
-      } catch (error) {
-        alert('An error occurred during login: ' + error.message);
-      }
+    // Check if the response is okay
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.msg || 'Unknown error');
     }
+
+    // Parse the response JSON
+    const data = await response.json();
+    if (data.token) {
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('userId', data.userId);
+      alert('Login successful!');
+      window.location.href = 'grocery-home.html';
+    } else {
+      alert('Login failed: Unknown error');
+    }
+  } catch (error) {
+    console.error('An error occurred during login:', error);
+    alert('An error occurred during login: ' + error.message);
+  }
+}
 
     async function sendOtp(email) {
       try {
