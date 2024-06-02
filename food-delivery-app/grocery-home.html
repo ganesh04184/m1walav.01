@@ -374,25 +374,34 @@
             }
         }
 
-        async function fetchProducts() {
-            const response = await fetch('https://m1wala1.onrender.com/products');
-            const products = await response.json();
-            const container = document.getElementById('products-container');
-            products.forEach(product => {
-                const productDiv = document.createElement('div');
-                productDiv.innerHTML = `
-                    <h2>${product.name}</h2>
-                    <img src="${product.image}" alt="${product.name}" style="width: 200px; height: auto;">
-                    <p>Category: ${product.category}</p>
-                    <p>Subcategory: ${product.subcategory}</p>
-                    <p>Original Price: ${product.originalPrice}</p>
-                    <p>Discounted Price: ${product.discountedPrice}</p>
-                `;
-                container.appendChild(productDiv);
-            });
-        }
+         document.addEventListener('DOMContentLoaded', async () => {
+            async function fetchProducts() {
+                try {
+                    const response = await fetch('/products');
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    const products = await response.json();
+                    const container = document.getElementById('products-container');
+                    products.forEach(product => {
+                        const productDiv = document.createElement('div');
+                        productDiv.innerHTML = `
+                            <h2>${product.name}</h2>
+                            <img src="${product.image}" alt="${product.name}" style="width: 200px; height: auto;">
+                            <p>Category: ${product.category}</p>
+                            <p>Subcategory: ${product.subcategory}</p>
+                            <p>Original Price: ${product.originalPrice}</p>
+                            <p>Discounted Price: ${product.discountedPrice}</p>
+                        `;
+                        container.appendChild(productDiv);
+                    });
+                } catch (error) {
+                    console.error('Error fetching products:', error);
+                }
+            }
 
-        fetchProducts();
+            fetchProducts();
+        });
 
         function calculateDiscountPercentage(originalPrice, discountedPrice) {
             const discount = originalPrice - discountedPrice;
