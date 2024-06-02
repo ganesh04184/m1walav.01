@@ -5,14 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Grocery</title>
     <style>
-        /* Styles from your original code... */
-        /* Add new styles for product list display */
-        .product-list {
-            margin-top: 40px;
-            max-width: 500px;
-            width: 100%;
-        }
-
+        /* Your existing styles */
         .product {
             margin-bottom: 20px;
             padding: 20px;
@@ -58,10 +51,15 @@
             color: white;
         }
 
+        .product-actions button.toggle {
+            background-color: #ffc107;
+            color: white;
+        }
+
         #product-form {
             display: none;
         }
-
+        
         .quantity-group {
             display: flex;
             gap: 10px;
@@ -70,6 +68,12 @@
         .quantity-group select,
         .quantity-group input {
             flex: 1;
+        }
+
+        .quantity-entry {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
         }
 
         #form-message {
@@ -83,10 +87,8 @@
         <h1>Admin - Add Product</h1>
     </header>
     <main>
-        <!-- Add Product Button -->
         <button id="add-product-btn">Add Product</button>
 
-        <!-- Product Form -->
         <form id="product-form" enctype="multipart/form-data">
             <label for="name">Product Name:</label>
             <input type="text" id="name" required>
@@ -100,166 +102,140 @@
             <label for="image">Image:</label>
             <input type="file" id="image" accept="image/*" required>
             
-            <label for="price">Price:</label>
-            <input type="text" id="price" required>
+            <label for="originalPrice">Original Price:</label>
+            <input type="text" id="originalPrice" required>
+            
+            <label for="discountedPrice">Discounted Price:</label>
+            <input type="text" id="discountedPrice" required>
             
             <label for="time">Delivery Time:</label>
             <input type="text" id="time" required>
             
-            <label for="quantity">Quantity:</label>
-            <div class="quantity-group">
-                <select id="quantity-unit" required>
-                    <option value="kg">kg</option>
-                    <option value="grams">grams</option>
-                    <option value="units">units</option>
-                    <option value="ml">ml</option>
-                </select>
-                <input type="number" id="quantity-value" min="1" required>
+            <label>Quantities:</label>
+            <div id="quantity-container">
+                <div class="quantity-entry">
+                    <select class="quantity-unit" required>
+                        <option value="kg">kg</option>
+                        <option value="grams">grams</option>
+                        <option value="units">units</option>
+                        <option value="ml">ml</option>
+                    </select>
+                    <input type="number" class="quantity-value" min="1" required>
+                    <input type="text" class="quantity-price" placeholder="Price" required>
+                    <button type="button" class="remove-quantity">Remove</button>
+                </div>
             </div>
+            <button type="button" id="add-quantity">Add Another Quantity</button>
             
             <button type="submit">Add Product</button>
             <div id="form-message"></div>
         </form>
         
-        <!-- Product List Section -->
         <div class="product-list" id="product-list">
             <!-- Existing products will be displayed here -->
         </div>
     </main>
     <script>
-        // Event listener for "Add Product" button click
         document.getElementById('add-product-btn').addEventListener('click', function() {
-            // Show the product form
             document.getElementById('product-form').style.display = 'block';
         });
 
-        // Function to display existing products
-        function displayProducts() {
-            const products = JSON.parse(localStorage.getItem('products')) || [];
+        document.getElementById('add-quantity').addEventListener('click', function() {
+            const quantityContainer = document.getElementById('quantity-container');
+            const quantityEntry = document.createElement('div');
+            quantityEntry.classList.add('quantity-entry');
+            quantityEntry.innerHTML = `
+                <select class="quantity-unit" required>
+                    <option value="kg">kg</option>
+                    <option value="grams">grams</option>
+                    <option value="units">units</option>
+                    <option value="ml">ml</option>
+                </select>
+                <input type="number" class="quantity-value" min="1" required>
+                <input type="text" class="quantity-price" placeholder="Price" required>
+                <button type="button" class="remove-quantity">Remove</button>
+            `;
+            quantityEntry.querySelector('.remove-quantity').addEventListener('click', function() {
+                quantityContainer.removeChild(quantityEntry);
+            });
+            quantityContainer.appendChild(quantityEntry);
+        });
+
+        async function fetchProducts() {
+            const response = await fetch('https://m1wala1.onrender.com/products');
+            const products = await response.json();
+            displayProducts(products);
+        }
+
+        async function deleteProduct(id) {
+            await fetch(`https://m1wala1.onrender.com/product/${id}`, { method: 'DELETE' });
+            fetchProducts();
+        }
+
+        async function toggleAvailability(id) {
+            await fetch(`https://m1wala1.onrender.com/product/${id}/toggle-availability`, { method: 'PATCH' });
+            fetchProducts();
+        }
+
+        function displayProducts(products) {
             const productList = document.getElementById('product-list');
             productList.innerHTML = '';
 
-            products.forEach((product, index) => {
+            products.forEach((product) => {
                 const productDiv = document.createElement('div');
                 productDiv.classList.add('product');
                 productDiv.innerHTML = `
                     <h3>${product.name}</h3>
                     <p><strong>Category:</strong> ${product.category}</p>
                     <p><strong>Subcategory:</strong> ${product.subcategory}</p>
-                    <p><strong>Price:</strong> ${product.price}</p>
+                    <p><strong>Original Price:</strong> ${product.originalPrice}</p>
+                    <p><strong>Discounted Price:</strong> ${product.discountedPrice}</p>
                     <p><strong>Delivery Time:</strong> ${product.time}</p>
-                    <p><strong>Quantities:</strong> ${product.quantityValue} ${product.quantityUnit}</p>
+                    ${product.quantities.map(quantity => `
+                        <p><strong>Quantity:</strong> ${quantity.quantityValue} ${quantity.quantityUnit} - ${quantity.price}</p>
+                    `).join('')}
                     <img src="${product.image}" alt="${product.name}">
                     <div class="product-actions">
-                        <button class="edit" onclick="editProduct(${index})">Edit</button>
-                        <button class="delete" onclick="deleteProduct(${index})">Delete</button>
+                        <button class="edit" onclick="editProduct('${product._id}')">Edit</button>
+                        <button class="delete" onclick="deleteProduct('${product._id}')">Delete</button>
+                        <button class="toggle" onclick="toggleAvailability('${product._id}')">${product.available ? 'Mark as Unavailable' : 'Mark as Available'}</button>
                     </div>
                 `;
                 productList.appendChild(productDiv);
             });
         }
 
-        // Function to edit a product
-        function editProduct(index) {
-            const products = JSON.parse(localStorage.getItem('products')) || [];
-            const product = products[index];
-            if (!product) {
-                alert('Invalid product');
-                return;
-            }
+        document.getElementById('product-form').addEventListener('submit', async function(event) {
+            event.preventDefault();
 
-            // Fill the form with existing product details for editing
-            document.getElementById('name').value = product.name;
-            document.getElementById('category').value = product.category;
-            document.getElementById('subcategory').value = product.subcategory;
-            document.getElementById('price').value = product.price;
-            document.getElementById('time').value = product.time;
+            const formData = new FormData();
+            formData.append('name', document.getElementById('name').value);
+            formData.append('category', document.getElementById('category').value);
+            formData.append('subcategory', document.getElementById('subcategory').value);
+            formData.append('image', document.getElementById('image').files[0]);
+            formData.append('originalPrice', document.getElementById('originalPrice').value);
+            formData.append('discountedPrice', document.getElementById('discountedPrice').value);
+            formData.append('time', document.getElementById('time').value);
+            
+            const quantities = Array.from(document.querySelectorAll('#quantity-container .quantity-entry')).map(entry => ({
+                quantityUnit: entry.querySelector('.quantity-unit').value,
+                quantityValue: entry.querySelector('.quantity-value').value,
+                price: entry.querySelector('.quantity-price').value,
+            }));
 
-            // Split the quantity into unit and value for editing
-            document.getElementById('quantity-unit').value = product.quantityUnit;
-            document.getElementById('quantity-value').value = product.quantityValue;
+            formData.append('quantities', JSON.stringify(quantities));
 
-            // Remove the product from the list since we are editing it
-            products.splice(index, 1);
-            localStorage.setItem('products', JSON.stringify(products));
+            const response = await fetch('https://m1wala1.onrender.com/add-product', {
+                method: 'POST',
+                body: formData
+            });
 
-            // Scroll to the top of the form for better user experience
-            document.getElementById('product-form').scrollIntoView({ behavior: 'smooth' });
-        }
-
-        // Function to delete a product
-        function deleteProduct(index) {
-            const products = JSON.parse(localStorage.getItem('products')) || [];
-            if (index < 0 || index >= products.length) {
-                alert('Invalid product');
-                return;
-            }
-
-            // Remove the product from the list and update local storage
-            products.splice(index, 1);
-            localStorage.setItem('products', JSON.stringify(products));
-
-            // Refresh the product list
-            displayProducts();
-        }
-
-        // Function to add a new product
-        function addProduct(product) {
-            let products = JSON.parse(localStorage.getItem('products')) || [];
-            products.push(product);
-            localStorage.setItem('products', JSON.stringify(products));
-
-            // Display success message
-            const formMessage = document.getElementById('form-message');
-            formMessage.textContent = 'Product added successfully!';
-            formMessage.style.color = 'green';
-
-            // Clear form fields after successful submission
-            document.getElementById('product-form').reset();
-
-            // Refresh the product list
-            displayProducts();
-        }
-
-        // Event listener for form submission
-        document.getElementById('product-form').addEventListener('submit', function (e) {
-            e.preventDefault();
-
-            // Get form data
-            const name = document.getElementById('name').value;
-            const category = document.getElementById('category').value;
-            const subcategory = document.getElementById('subcategory').value;
-            const price = document.getElementById('price').value;
-            const time = document.getElementById('time').value;
-            const quantityUnit = document.getElementById('quantity-unit').value;
-            const quantityValue = document.getElementById('quantity-value').value;
-            const image = document.getElementById('image').files[0];
-
-            // Convert image to base64 to store in localStorage
-            const reader = new FileReader();
-            reader.readAsDataURL(image);
-            reader.onload = function () {
-                const imageBase64 = reader.result;
-
-                // Create product object
-                const product = { 
-                    name, 
-                    category, 
-                    subcategory, 
-                    price, 
-                    time, 
-                    quantityUnit, 
-                    quantityValue, 
-                    image: imageBase64 
-                };
-
-                // Add product to the list
-                addProduct(product);
-            };
+            const result = await response.json();
+            document.getElementById('form-message').textContent = result.success ? 'Product added successfully!' : 'Failed to add product';
+            fetchProducts();
         });
 
-        // Call displayProducts() to show existing products when the page loads
-        displayProducts();
+        fetchProducts();
     </script>
 </body>
 </html>
