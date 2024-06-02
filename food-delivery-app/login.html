@@ -22,134 +22,126 @@
 
     <title>Login</title>
     <style>
-        /* Updated CSS with green color */
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-        }
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
 
-        h1 {
-            color: #4CAF50; /* Green color */
-            text-align: center;
-            margin-top: 50px; /* Adjust as needed */
-        }
+    h1 {
+      color: #4CAF50;
+      text-align: center;
+      margin-top: 50px;
+    }
 
-        form {
-            width: 300px;
-            margin: 0 auto;
-            background-color: #f2f2f2; /* Light grey background */
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Light shadow */
-        }
+    form {
+      width: 300px;
+      margin: 0 auto;
+      background-color: #f2f2f2;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
 
-        label {
-            font-weight: bold;
-        }
+    label {
+      font-weight: bold;
+    }
 
-        input[type="text"],
-        input[type="password"],
-        input[type="email"] {
-            width: 100%;
-            padding: 10px;
-            margin: 5px 0;
-            border: 1px solid #ddd; /* Light grey border */
-            border-radius: 5px;
-            box-sizing: border-box;
-        }
+    input[type="text"],
+    input[type="password"],
+    input[type="email"] {
+      width: 100%;
+      padding: 10px;
+      margin: 5px 0;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      box-sizing: border-box;
+    }
 
-        button[type="submit"],
-        button[type="button"] {
-            width: 100%;
-            padding: 10px;
-            margin-top: 10px;
-            background-color: #4CAF50; /* Green button */
-            color: #fff; /* White text */
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
+    button[type="submit"],
+    button[type="button"] {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      background-color: #4CAF50;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
 
-        button[type="submit"]:hover,
-        button[type="button"]:hover {
-            background-color: #45a049; /* Darker green color on hover */
-        }
+    button[type="submit"]:hover,
+    button[type="button"]:hover {
+      background-color: #45a049;
+    }
 
-        .signup-button {
-            background-color: #008CBA; /* Blue button */
-            margin-top: 20px;
-        }
+    .signup-button {
+      background-color: #008CBA;
+      margin-top: 20px;
+    }
 
-        .signup-button:hover {
-            background-color: #007B9A; /* Darker blue on hover */
-        }
-    </style>
+    .signup-button:hover {
+      background-color: #007B9A;
+    }
+
+    #passwordRequirements {
+      color: red;
+      display: none;
+    }
+  </style>
 </head>
 <body>
-    <h1>Login</h1>
-    <form id="loginForm" onsubmit="event.preventDefault(); login(document.getElementById('loginEmail').value, document.getElementById('loginPassword').value);">
-        <label for="loginEmail">Email:</label>
-        <input type="email" id="loginEmail" required>
-        <label for="loginPassword">Password:</label>
-        <input type="password" id="loginPassword" required>
-        <button type="submit">Login</button>
-        <button type="button" class="signup-button" onclick="redirectToSignup()">Sign Up</button>
-    </form>
+  <h1>Login</h1>
+  <form id="loginForm" onsubmit="event.preventDefault(); login(document.getElementById('loginEmail').value, document.getElementById('loginPassword').value);">
+    <label for="loginEmail">Email:</label>
+    <input type="email" id="loginEmail" required>
+    <label for="loginPassword">Password:</label>
+    <input type="password" id="loginPassword" required oninput="showPasswordRequirements()">
+    <div id="passwordRequirements">Password must be at least 6 characters long and include at least one special character.</div>
+    <button type="submit">Login</button>
+    <button type="button" class="signup-button" onclick="redirectToSignup()">Sign Up</button>
+  </form>
 
-    <script>
-        function redirectToSignup() {
-            window.location.href = './signup.html';
+  <script>
+    function redirectToSignup() {
+      window.location.href = './signup.html';
+    }
+
+    function showPasswordRequirements() {
+      const password = document.getElementById('loginPassword').value;
+      const requirements = document.getElementById('passwordRequirements');
+      const regex = /^(?=.*[!@#$%^&*])/;
+
+      if (password.length < 6 || !regex.test(password)) {
+        requirements.style.display = 'block';
+      } else {
+        requirements.style.display = 'none';
+      }
+    }
+
+    async function login(email, password) {
+      try {
+        const response = await fetch('https://m1wala1.onrender.com/api/auth/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ email: email.trim(), password: password.trim() }),
+        });
+
+        const data = await response.json();
+        if (response.ok && data.token) {
+          localStorage.setItem('token', data.token);
+          localStorage.setItem('userId', data.userId);
+          alert('Login successful!');
+          window.location.href = 'grocery-home.html';
+        } else {
+          alert('Login failed: ' + (data.msg || 'Unknown error'));
         }
-
-        async function login(email, password) {
-            try {
-                const response = await fetch('https://m1wala1.onrender.com/api/auth/login', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ email, password }),
-                });
-
-                const data = await response.json();
-
-                if (response.ok && data.token) {
-                    localStorage.setItem('token', data.token);
-                    localStorage.setItem('userId', data.userId);
-                    alert('Login successful!');
-                    window.location.href = 'grocery-home.html'; // Redirect to grocery-home page
-                } else {
-                    console.log('Login failed:', data); // Log detailed error
-                    alert('Login failed: ' + (data.msg || 'Unknown error'));
-                }
-            } catch (error) {
-                console.error('Error logging in:', error);
-                alert('An error occurred during login: ' + error.message);
-            }
-        }
-
-        function logout() {
-            localStorage.removeItem('token');
-            localStorage.removeItem('userId');
-            alert('Logged out successfully.');
-            window.location.href = 'login.html'; // Redirect to login page
-
-            // Optionally, notify the server about the logout
-            fetch('https://m1wala1.onrender.com/api/auth/logout', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                }
-            }).then(response => {
-                if (response.ok) {
-                    console.log('Logged out on the server');
-                } else {
-                    console.log('Failed to log out on the server');
-                }
-            }).catch(error => console.error('Error logging out on the server:', error));
-        }
-    </script>
+      } catch (error) {
+        alert('An error occurred during login: ' + error.message);
+      }
+    }
+  </script>
 </body>
 </html>
