@@ -168,12 +168,12 @@
         }
 
         async function deleteProduct(id) {
-            await fetch(`http://localhost:3000/product/${id}`, { method: 'DELETE' });
+            await fetch(`https://m1wala1.onrender.com/product/${id}`, { method: 'DELETE' });
             fetchProducts();
         }
 
         async function toggleAvailability(id) {
-            await fetch(`http://localhost:3000/product/${id}/toggle-availability`, { method: 'PATCH' });
+            await fetch(`https://m1wala1.onrender.com/product/${id}/toggle-availability`, { method: 'PATCH' });
             fetchProducts();
         }
 
@@ -194,7 +194,7 @@
                     ${product.quantities.map(quantity => `
                         <p><strong>Quantity:</strong> ${quantity.quantityValue} ${quantity.quantityUnit} - ${quantity.price}</p>
                     `).join('')}
-                    <img src="${product.image}" alt="${product.name}">
+                    <img src="https://m1wala1.onrender.com${product.image}" alt="${product.name}">
                     <div class="product-actions">
                         <button class="edit" onclick="editProduct('${product._id}')">Edit</button>
                         <button class="delete" onclick="deleteProduct('${product._id}')">Delete</button>
