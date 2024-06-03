@@ -1,14 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="m1wala" />
     <meta name="keywords" content="m1wala" />
     <meta name="author" content="m1wala" />
     <link rel="manifest" href="../manifest.json" />
-
     <link rel="icon" href="../assets/images/logo/favicon.png" type="image/x-icon" />
     <title>m1wala register</title>
     <link rel="apple-touch-icon" href="../assets/images/logo/favicon.png" />
@@ -84,7 +83,7 @@
 <body>
     <div class="container">
         <h1>Sign Up</h1>
-        <form id="signupForm" onsubmit="event.preventDefault(); register(document.getElementById('signupName').value, document.getElementById('signupEmail').value, document.getElementById('signupPassword').value);">
+        <form id="signupForm" onsubmit="event.preventDefault(); register();">
             <label for="signupName">Name:</label>
             <input type="text" id="signupName" required>
             <label for="signupEmail">Email:</label>
@@ -94,6 +93,7 @@
             <div id="passwordRequirements">Password must be at least 6 characters long and include at least one special character.</div>
             <button type="submit">Signup</button>
         </form>
+        <div id="errorMessage" class="error"></div>
     </div>
 
     <script>
@@ -109,9 +109,14 @@
             }
         }
 
-        async function register(name, email, password) {
+        async function register() {
+            const name = document.getElementById('signupName').value;
+            const email = document.getElementById('signupEmail').value;
+            const password = document.getElementById('signupPassword').value;
+            const errorMessage = document.getElementById('errorMessage');
+
             try {
-                const response = await fetch('http://localhost:3000/api/auth/register', {
+                const response = await fetch('https://m1wala1.onrender.com/api/auth/register', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -127,11 +132,11 @@
                     alert('Registration successful!');
                     window.location.href = 'grocery-home.html'; // Redirect to grocery-home page
                 } else {
-                    alert('Registration failed: ' + (data.msg || 'Unknown error'));
+                    errorMessage.textContent = 'Registration failed: ' + (data.msg || 'Unknown error');
                 }
             } catch (error) {
                 console.error('Error during registration:', error);
-                alert('An error occurred during registration: ' + error.message);
+                errorMessage.textContent = 'An error occurred during registration: ' + error.message;
             }
         }
     </script>
