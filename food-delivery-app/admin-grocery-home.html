@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Grocery</title>
     <style>
+        /* Your existing styles */
         .item {
             margin-bottom: 20px;
             padding: 20px;
@@ -193,7 +194,6 @@
             <button type="submit">Add Product</button>
             <button type="submit">Update Product</button>
           </form>
-          
 
         <div class="category-list" id="category-list"></div>
         <div class="subcategory-list" id="subcategory-list"></div>
@@ -218,180 +218,520 @@
         <div class="logo-list" id="logo-list"></div>
     </main>
     <script>
-document.addEventListener('DOMContentLoaded', function () {
-    const addCategoryBtn = document.getElementById('add-category-btn');
-    const addSubcategoryBtn = document.getElementById('add-subcategory-btn');
-    const addProductBtn = document.getElementById('add-product-btn');
-    const categoryForm = document.getElementById('category-form');
-    const subcategoryForm = document.getElementById('subcategory-form');
-    const productForm = document.getElementById('product-form');
-    const bannerForm = document.getElementById('banner-form');
-    const logoForm = document.getElementById('logo-form');
-    const addBannerBtn = document.getElementById('add-banner-btn');
-    const addLogoBtn = document.getElementById('add-logo-btn');
+        document.addEventListener('DOMContentLoaded', function () {
+            const addCategoryBtn = document.getElementById('add-category-btn');
+            const addSubcategoryBtn = document.getElementById('add-subcategory-btn');
+            const addProductBtn = document.getElementById('add-product-btn');
+            const categoryForm = document.getElementById('category-form');
+            const subcategoryForm = document.getElementById('subcategory-form');
+            const productForm = document.getElementById('product-form');
+            const bannerForm = document.getElementById('banner-form');
+            const logoForm = document.getElementById('logo-form');
+            const addBannerBtn = document.getElementById('add-banner-btn');
+            const addLogoBtn = document.getElementById('add-logo-btn');
 
-    if (addCategoryBtn) {
-        addCategoryBtn.addEventListener('click', () => {
-            categoryForm.style.display = 'block';
-        });
-    }
-
-    if (addSubcategoryBtn) {
-        addSubcategoryBtn.addEventListener('click', () => {
-            subcategoryForm.style.display = 'block';
-            renderCategoriesForSubcategory();
-        });
-    }
-
-    if (addProductBtn) {
-        addProductBtn.addEventListener('click', () => {
-            productForm.style.display = 'block';
-            renderCategoriesForProduct();
-        });
-    }
-
-    if (addBannerBtn) {
-        addBannerBtn.addEventListener('click', () => {
-            bannerForm.classList.remove('hidden');
-            logoForm.classList.add('hidden');
-        });
-    }
-
-    if (addLogoBtn) {
-        addLogoBtn.addEventListener('click', () => {
-            logoForm.classList.remove('hidden');
-            bannerForm.classList.add('hidden');
-        });
-    }
-
-    const addQuantityBtn = document.getElementById('add-quantity');
-    if (addQuantityBtn) {
-        addQuantityBtn.addEventListener('click', function () {
-            const quantityContainer = document.getElementById('quantity-container');
-            if (quantityContainer) {
-                const quantityEntry = document.createElement('div');
-                quantityEntry.classList.add('quantity-entry');
-                quantityEntry.innerHTML = `
-                    <select class="quantity-unit" name="quantityUnit[]" required>
-                        <option value="kg">kg</option>
-                        <option value="grams">grams</option>
-                        <option value="units">units</option>
-                        <option value="ml">ml</option>
-                    </select>
-                    <input type="number" class="quantity-value" name="quantityValue[]" min="1" required>
-                    <input type="text" class="quantity-price" name="quantityPrice[]" placeholder="Price" required>
-                    <input type="text" class="quantity-original-price" name="quantityOriginalPrice[]" placeholder="Original Price" required>
-                    <input type="text" class="quantity-discounted-price" name="quantityDiscountedPrice[]" placeholder="Discounted Price" required>
-                    <button type="button" class="remove-quantity">Remove</button>
-                `;
-                quantityEntry.querySelector('.remove-quantity').addEventListener('click', function () {
-                    quantityContainer.removeChild(quantityEntry);
+            if (addCategoryBtn) {
+                addCategoryBtn.addEventListener('click', () => {
+                    categoryForm.style.display = 'block';
                 });
-                quantityContainer.appendChild(quantityEntry);
             }
+
+            if (addSubcategoryBtn) {
+                addSubcategoryBtn.addEventListener('click', () => {
+                    subcategoryForm.style.display = 'block';
+                    renderCategoriesForSubcategory();
+                });
+            }
+
+            if (addProductBtn) {
+                addProductBtn.addEventListener('click', () => {
+                    productForm.style.display = 'block';
+                    renderCategoriesForProduct();
+                });
+            }
+
+            if (addBannerBtn) {
+                addBannerBtn.addEventListener('click', () => {
+                    bannerForm.classList.remove('hidden');
+                    logoForm.classList.add('hidden');
+                });
+            }
+
+            if (addLogoBtn) {
+                addLogoBtn.addEventListener('click', () => {
+                    logoForm.classList.remove('hidden');
+                    bannerForm.classList.add('hidden');
+                });
+            }
+
+            const addQuantityBtn = document.getElementById('add-quantity');
+            if (addQuantityBtn) {
+                addQuantityBtn.addEventListener('click', function () {
+                    const quantityContainer = document.getElementById('quantity-container');
+                    if (quantityContainer) {
+                        const quantityEntry = document.createElement('div');
+                        quantityEntry.classList.add('quantity-entry');
+                        quantityEntry.innerHTML = `
+                            <select class="quantity-unit" name="quantityUnit[]" required>
+                                <option value="kg">kg</option>
+                                <option value="grams">grams</option>
+                                <option value="units">units</option>
+                                <option value="ml">ml</option>
+                            </select>
+                            <input type="number" class="quantity-value" name="quantityValue[]" min="1" required>
+                            <input type="number" class="quantity-price" name="quantityPrice[]" step="1" placeholder="Price" required>
+                            <button type="button" class="remove-quantity">Remove</button>
+                        `;
+                        quantityEntry.querySelector('.remove-quantity').addEventListener('click', function () {
+                            quantityContainer.removeChild(quantityEntry);
+                        });
+                        quantityContainer.appendChild(quantityEntry);
+                    }
+                });
+            }
+
+            async function fetchCategories() {
+                try {
+                    const response = await fetch('https://m1wala1.onrender.com/api/categories');
+                    const data = await response.json();
+                    return Array.isArray(data) ? data : [];
+                } catch (error) {
+                    console.error('Error fetching categories:', error);
+                    return [];
+                }
+            }
+
+            async function fetchSubcategories(categoryId) {
+                try {
+                    const response = await fetch(`https://m1wala1.onrender.com/api/subcategories/${categoryId}`);
+                    const data = await response.json();
+                    return Array.isArray(data) ? data : [];
+                } catch (error) {
+                    console.error('Error fetching subcategories:', error);
+                    return [];
+                }
+            }
+
+            async function fetchProducts(subcategoryId) {
+                try {
+                    const response = await fetch(`https://m1wala1.onrender.com/api/products?subcategoryId=${subcategoryId}`);
+                    const products = await response.json();
+                    displayProducts(products);
+                } catch (error) {
+                    console.error('Error fetching products:', error);
+                }
+            }
+
+            async function fetchBanners() {
+                try {
+                    const response = await fetch('https://m1wala1.onrender.com/api/banners');
+                    const data = await response.json();
+                    return Array.isArray(data) ? data : [];
+                } catch (error) {
+                    console.error('Error fetching banners:', error);
+                    return [];
+                }
+            }
+
+            async function fetchLogos() {
+                try {
+                    const response = await fetch('https://m1wala1.onrender.com/api/logos');
+                    const data = await response.json();
+                    return Array.isArray(data) ? data : [];
+                } catch (error) {
+                    console.error('Error fetching logos:', error);
+                    return [];
+                }
+            }
+
+            async function deleteProduct(id) {
+                try {
+                    await fetch(`https://m1wala1.onrender.com/api/products/${id}`, { method: 'DELETE' });
+                    const selectedSubcategoryId = document.getElementById('product-subcategory').value;
+                    await fetchProducts(selectedSubcategoryId);
+                } catch (error) {
+                    console.error('Error deleting product:', error);
+                }
+            }
+
+            async function toggleAvailability(id) {
+                try {
+                    await fetch(`https://m1wala1.onrender.com/api/products/${id}/toggle-availability`, { method: 'PATCH' });
+                    const selectedSubcategoryId = document.getElementById('product-subcategory').value;
+                    await fetchProducts(selectedSubcategoryId);
+                } catch (error) {
+                    console.error('Error toggling product availability:', error);
+                }
+            }
+
+            async function editProduct(id) {
+                try {
+                    const response = await fetch(`https://m1wala1.onrender.com/api/products/${id}`);
+                    const product = await response.json();
+                    if (!product) throw new Error('Product not found');
+
+                    document.getElementById('product-name').value = product.name;
+                    document.getElementById('product-category').value = product.categoryId;
+                    document.getElementById('product-subcategory').value = product.subcategoryId;
+
+                    const quantityContainer = document.getElementById('quantity-container');
+                    quantityContainer.innerHTML = '';
+                    product.quantities.forEach((quantity, index) => {
+                        const quantityEntry = document.createElement('div');
+                        quantityEntry.classList.add('quantity-entry');
+                        quantityEntry.innerHTML = `
+                            <select class="quantity-unit" name="quantityUnit[]" required>
+                                <option value="kg" ${quantity.quantityUnit === 'kg' ? 'selected' : ''}>kg</option>
+                                <option value="grams" ${quantity.quantityUnit === 'grams' ? 'selected' : ''}>grams</option>
+                                <option value="units" ${quantity.quantityUnit === 'units' ? 'selected' : ''}>units</option>
+                                <option value="ml" ${quantity.quantityUnit === 'ml' ? 'selected' : ''}>ml</option>
+                            </select>
+                            <input type="number" class="quantity-value" name="quantityValue[]" value="${quantity.quantityValue}" min="1" required>
+                            <input type="number" class="quantity-price" name="quantityPrice[]" value="${quantity.price}" placeholder="Price" required>
+                            <button type="button" class="remove-quantity">Remove</button>
+                        `;
+                        quantityEntry.querySelector('.remove-quantity').addEventListener('click', function () {
+                            quantityContainer.removeChild(quantityEntry);
+                        });
+                        quantityContainer.appendChild(quantityEntry);
+                    });
+
+                    document.getElementById('product-form').style.display = 'block';
+                } catch (error) {
+                    console.error('Error fetching product details:', error);
+                }
+            }
+
+            async function deleteCategory(id) {
+                try {
+                    await fetch(`https://m1wala1.onrender.com/api/categories/${id}`, { method: 'DELETE' });
+                    await renderCategories();
+                } catch (error) {
+                    console.error('Error deleting category:', error);
+                }
+            }
+
+            async function deleteSubcategory(id) {
+                try {
+                    await fetch(`https://m1wala1.onrender.com/api/subcategories/${id}`, { method: 'DELETE' });
+                    const selectedCategoryId = document.getElementById('category-id').value;
+                    await renderSubcategories(selectedCategoryId);
+                } catch (error) {
+                    console.error('Error deleting subcategory:', error);
+                }
+            }
+
+            async function deleteBanner(filename) {
+                try {
+                    await fetch(`https://m1wala1.onrender.com/api/banners/${filename}`, { method: 'DELETE' });
+                    alert('Banner deleted successfully!');
+                    renderBanners();
+                } catch (error) {
+                    console.error('Error deleting banner:', error);
+                }
+            }
+
+            async function deleteLogo(filename) {
+                try {
+                    await fetch(`https://m1wala1.onrender.com/api/logos/${filename}`, { method: 'DELETE' });
+                    alert('Logo deleted successfully!');
+                    renderLogos();
+                } catch (error) {
+                    console.error('Error deleting logo:', error);
+                }
+            }
+
+            const renderCategories = async () => {
+                const categories = await fetchCategories();
+                const categoryList = document.getElementById('category-list');
+                const categorySelect = document.getElementById('category-id');
+                const productCategorySelect = document.getElementById('product-category');
+                if (categoryList && categorySelect && productCategorySelect) {
+                    categoryList.innerHTML = '';
+                    categorySelect.innerHTML = '';
+                    productCategorySelect.innerHTML = '';
+
+                    categories.forEach(category => {
+                        const categoryDiv = document.createElement('div');
+                        categoryDiv.className = 'category';
+                        categoryDiv.innerHTML = `
+                            <img src="https://m1wala1.onrender.com${category.image}" alt="${category.name}" crossorigin="anonymous">
+                            <p>${category.name}</p>
+                            <div class="category-actions">
+                                <button class="delete-category" onclick="deleteCategory('${category._id}')">Delete</button>
+                                <button class="view-subcategories" onclick="renderSubcategories('${category._id}')">View Subcategories</button>
+                            </div>
+                        `;
+                        categoryList.appendChild(categoryDiv);
+
+                        const option = document.createElement('option');
+                        option.value = category._id;
+                        option.textContent = category.name;
+                        categorySelect.appendChild(option);
+
+                        const productOption = document.createElement('option');
+                        productOption.value = category._id;
+                        productOption.textContent = category.name;
+                        productCategorySelect.appendChild(productOption);
+                    });
+
+                    categorySelect.addEventListener('change', async function () {
+                        const selectedCategoryId = categorySelect.value;
+                        await renderSubcategories(selectedCategoryId);
+                    });
+
+                    productCategorySelect.addEventListener('change', async function () {
+                        const selectedCategoryId = productCategorySelect.value;
+                        await renderSubcategories(selectedCategoryId);
+                    });
+
+                    if (categories.length > 0) {
+                        await renderSubcategories(categories[0]._id);
+                    }
+                }
+            };
+
+            const renderSubcategories = async (categoryId) => {
+                const subcategories = await fetchSubcategories(categoryId);
+                const subcategoryList = document.getElementById('subcategory-list');
+                const subcategorySelect = document.getElementById('product-subcategory');
+                if (subcategoryList && subcategorySelect) {
+                    subcategoryList.innerHTML = '';
+                    subcategorySelect.innerHTML = '';
+
+                    subcategories.forEach(subcategory => {
+                        const subcategoryDiv = document.createElement('div');
+                        subcategoryDiv.className = 'subcategory';
+                        subcategoryDiv.innerHTML = `
+                            <img src="https://m1wala1.onrender.com${subcategory.image}" alt="${subcategory.name}" crossorigin="anonymous">
+                            <p>${subcategory.name}</p>
+                            <div class="subcategory-actions">
+                                <button class="delete-subcategory" onclick="deleteSubcategory('${subcategory._id}')">Delete</button>
+                                <button class="view-products" onclick="fetchProducts('${subcategory._id}')">View Products</button>
+                            </div>
+                        `;
+                        subcategoryList.appendChild(subcategoryDiv);
+
+                        const option = document.createElement('option');
+                        option.value = subcategory._id;
+                        option.textContent = subcategory.name;
+                        subcategorySelect.appendChild(option);
+                    });
+
+                    subcategorySelect.addEventListener('change', function () {
+                        const selectedSubcategoryId = subcategorySelect.value;
+                        fetchProducts(selectedSubcategoryId);
+                    });
+
+                    if (subcategories.length > 0) {
+                        fetchProducts(subcategories[0]._id);
+                    }
+                }
+            };
+
+            const renderCategoriesForSubcategory = async () => {
+                const categories = await fetchCategories();
+                const categorySelect = document.getElementById('category-id');
+                if (categorySelect) {
+                    categorySelect.innerHTML = '';
+
+                    categories.forEach(category => {
+                        const option = document.createElement('option');
+                        option.value = category._id;
+                        option.textContent = category.name;
+                        categorySelect.appendChild(option);
+                    });
+
+                    if (categories.length > 0) {
+                        renderSubcategories(categories[0]._id);
+                    }
+                }
+            };
+
+            const renderCategoriesForProduct = async () => {
+                const categories = await fetchCategories();
+                const productCategorySelect = document.getElementById('product-category');
+                if (productCategorySelect) {
+                    productCategorySelect.innerHTML = '';
+
+                    categories.forEach(category => {
+                        const option = document.createElement('option');
+                        option.value = category._id;
+                        option.textContent = category.name;
+                        productCategorySelect.appendChild(option);
+                    });
+
+                    if (categories.length > 0) {
+                        renderSubcategories(categories[0]._id);
+                    }
+                }
+            };
+
+            const renderBanners = async () => {
+                const banners = await fetchBanners();
+                const bannerList = document.getElementById('banner-list');
+                if (bannerList) {
+                    bannerList.innerHTML = '';
+                    banners.forEach(banner => {
+                        const bannerDiv = document.createElement('div');
+                        bannerDiv.className = 'item';
+                        bannerDiv.innerHTML = `
+                            <img src="https://m1wala1.onrender.com/uploads/${banner.filename}" alt="Banner Image" crossorigin="anonymous">
+                            <button onclick="deleteBanner('${banner.filename}')">Delete</button>
+                        `;
+                        bannerList.appendChild(bannerDiv);
+                    });
+                }
+            };
+
+            const renderLogos = async () => {
+                const logos = await fetchLogos();
+                const logoList = document.getElementById('logo-list');
+                if (logoList) {
+                    logoList.innerHTML = '';
+                    logos.forEach(logo => {
+                        const logoDiv = document.createElement('div');
+                        logoDiv.className = 'item';
+                        logoDiv.innerHTML = `
+                            <img src="/uploads/${logo.filename}" alt="Logo Image">
+                            <button onclick="deleteLogo('${logo.filename}')">Delete</button>
+                        `;
+                        logoList.appendChild(logoDiv);
+                    });
+                }
+            };
+
+            const displayProducts = (products) => {
+                const productList = document.getElementById('product-list');
+                if (productList) {
+                    productList.innerHTML = '';
+                    products.forEach(product => {
+                        const productDiv = document.createElement('div');
+                        productDiv.className = 'product';
+                        const quantity = product.quantities[0] || {};
+                        productDiv.innerHTML = `
+                            <img src="https://m1wala1.onrender.com${product.image}" alt="${product.name}" crossorigin="anonymous">
+                            <h3>${product.name}</h3>
+                            <p>${quantity.quantityValue || ''} ${quantity.quantityUnit || ''}</p>
+                            <p>₹${quantity.originalPrice || 'N/A'} - ₹${quantity.discountedPrice || 'N/A'}</p>
+                            <div class="product-actions">
+                                <button class="edit" onclick="editProduct('${product._id}')">Edit</button>
+                                <button class="delete" onclick="deleteProduct('${product._id}')">Delete</button>
+                                <button class="toggle" onclick="toggleAvailability('${product._id}')">${product.available ? 'Mark as Unavailable' : 'Mark as Available'}</button>
+                            </div>
+                        `;
+                        productList.appendChild(productDiv);
+                    });
+                }
+            };
+
+            document.getElementById('category-form').addEventListener('submit', async function (event) {
+                event.preventDefault();
+                const formData = new FormData();
+                formData.append('name', document.getElementById('category-name').value);
+                formData.append('image', document.getElementById('category-image').files[0]);
+
+                try {
+                    await fetch('https://m1wala1.onrender.com/api/categories', {
+                        method: 'POST',
+                        body: formData,
+                    });
+                    renderCategories();
+                } catch (error) {
+                    console.error('Error adding category:', error);
+                }
+            });
+
+            document.getElementById('subcategory-form').addEventListener('submit', async function (event) {
+                event.preventDefault();
+                const formData = new FormData();
+                formData.append('name', document.getElementById('subcategory-name').value);
+                formData.append('image', document.getElementById('subcategory-image').files[0]);
+                formData.append('categoryId', document.getElementById('category-id').value);
+
+                try {
+                    await fetch('https://m1wala1.onrender.com/api/subcategories', {
+                        method: 'POST',
+                        body: formData,
+                    });
+                    const selectedCategoryId = document.getElementById('category-id').value;
+                    renderSubcategories(selectedCategoryId);
+                } catch (error) {
+                    console.error('Error adding subcategory:', error);
+                }
+            });
+
+            document.getElementById('product-form').addEventListener('submit', async function (event) {
+                event.preventDefault();
+
+                const formData = new FormData();
+                formData.append('name', document.getElementById('product-name').value);
+                formData.append('categoryId', document.getElementById('product-category').value);
+                formData.append('subcategoryId', document.getElementById('product-subcategory').value);
+                formData.append('image', document.getElementById('product-image').files[0]);
+                formData.append('originalPrice', document.getElementById('original-price').value);
+                formData.append('discountedPrice', document.getElementById('discounted-price').value);
+
+                const quantities = [];
+                document.querySelectorAll('.quantity-entry').forEach(entry => {
+                    quantities.push({
+                        quantityUnit: entry.querySelector('.quantity-unit').value,
+                        quantityValue: entry.querySelector('.quantity-value').value,
+                        price: entry.querySelector('.quantity-price').value,
+                    });
+                });
+                formData.append('quantities', JSON.stringify(quantities));
+
+                try {
+                    await fetch('https://m1wala1.onrender.com/api/products', {
+                        method: 'POST',
+                        body: formData,
+                    });
+                    const selectedSubcategoryId = document.getElementById('product-subcategory').value;
+                    fetchProducts(selectedSubcategoryId);
+                } catch (error) {
+                    console.error('Error adding product:', error);
+                }
+            });
+
+            renderCategories();
+            renderBanners();
+            renderLogos();
         });
-    }
 
-    async function fetchCategories() {
-        try {
-            const response = await fetch('https://m1wala1.onrender.com/api/categories');
-            if (!response.ok) throw new Error('Failed to fetch categories');
-            const data = await response.json();
-            return Array.isArray(data) ? data : [];
-        } catch (error) {
-            console.error('Error fetching categories:', error);
-            return [];
-        }
-    }
-
-    async function fetchSubcategories(categoryId) {
-        try {
-            const response = await fetch(`https://m1wala1.onrender.com/api/subcategories/${categoryId}`);
-            if (!response.ok) throw new Error('Failed to fetch subcategories');
-            const data = await response.json();
-            return Array.isArray(data) ? data : [];
-        } catch (error) {
-            console.error('Error fetching subcategories:', error);
-            return [];
-        }
-    }
-
-    async function fetchProducts(subcategoryId) {
-        try {
-            const response = await fetch(`https://m1wala1.onrender.com/api/products?subcategoryId=${subcategoryId}`);
-            if (!response.ok) throw new Error('Failed to fetch products');
-            const products = await response.json();
-            displayProducts(products);
-        } catch (error) {
-            console.error('Error fetching products:', error);
-        }
-    }
-
-    async function fetchBanners() {
-        try {
-            const response = await fetch('https://m1wala1.onrender.com/api/banners');
-            if (!response.ok) throw new Error('Failed to fetch banners');
-            const data = await response.json();
-            return Array.isArray(data) ? data : [];
-        } catch (error) {
-            console.error('Error fetching banners:', error);
-            return [];
-        }
-    }
-
-    async function fetchLogos() {
-        try {
-            const response = await fetch('https://m1wala1.onrender.com/api/logos');
-            if (!response.ok) throw new Error('Failed to fetch logos');
-            const data = await response.json();
-            return Array.isArray(data) ? data : [];
-        } catch (error) {
-            console.error('Error fetching logos:', error);
-            return [];
-        }
-    }
-
-    async function deleteProduct(id) {
-        try {
-            await fetch(`https://m1wala1.onrender.com/api/products/${id}`, { method: 'DELETE' });
-            const selectedSubcategoryId = document.getElementById('product-subcategory').value;
-            await fetchProducts(selectedSubcategoryId);
-        } catch (error) {
-            console.error('Error deleting product:', error);
-        }
-    }
-
-    async function toggleAvailability(id) {
-        try {
-            await fetch(`https://m1wala1.onrender.com/api/products/${id}/toggle-availability`, { method: 'PATCH' });
-            const selectedSubcategoryId = document.getElementById('product-subcategory').value;
-            await fetchProducts(selectedSubcategoryId);
-        } catch (error) {
-            console.error('Error toggling product availability:', error);
-        }
-    }
-
-    async function editProduct(id) {
-        try {
-            const response = await fetch(`https://m1wala1.onrender.com/api/products/${id}`);
-            if (!response.ok) {
-                throw new Error('Failed to fetch product details');
+        async function deleteProduct(id) {
+            try {
+                await fetch(`https://m1wala1.onrender.com/api/products/${id}`, { method: 'DELETE' });
+                const selectedSubcategoryId = document.getElementById('product-subcategory').value;
+                await fetchProducts(selectedSubcategoryId);
+            } catch (error) {
+                console.error('Error deleting product:', error);
             }
-            const product = await response.json();
-            if (!product) {
-                throw new Error('Product not found');
+        }
+
+        async function toggleAvailability(id) {
+            try {
+                await fetch(`https://m1wala1.onrender.com/api/products/${id}/toggle-availability`, { method: 'PATCH' });
+                const selectedSubcategoryId = document.getElementById('product-subcategory').value;
+                await fetchProducts(selectedSubcategoryId);
+            } catch (error) {
+                console.error('Error toggling product availability:', error);
             }
+        }
 
-            document.getElementById('product-name').value = product.name;
-            document.getElementById('product-category').value = product.categoryId;
-            document.getElementById('product-subcategory').value = product.subcategoryId;
+        async function editProduct(id) {
+            try {
+                const response = await fetch(`https://m1wala1.onrender.com/api/products/${id}`);
+                const product = await response.json();
+                if (!product) throw new Error('Product not found');
 
-            const quantityContainer = document.getElementById('quantity-container');
-            quantityContainer.innerHTML = '';
-            
-            // Check if quantities is an array and has elements
-            if (Array.isArray(product.quantities) && product.quantities.length > 0) {
-                product.quantities.forEach(quantity => {
+                document.getElementById('product-name').value = product.name;
+                document.getElementById('product-category').value = product.categoryId;
+                document.getElementById('product-subcategory').value = product.subcategoryId;
+
+                const quantityContainer = document.getElementById('quantity-container');
+                quantityContainer.innerHTML = '';
+                product.quantities.forEach((quantity, index) => {
                     const quantityEntry = document.createElement('div');
                     quantityEntry.classList.add('quantity-entry');
                     quantityEntry.innerHTML = `
@@ -402,7 +742,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             <option value="ml" ${quantity.quantityUnit === 'ml' ? 'selected' : ''}>ml</option>
                         </select>
                         <input type="number" class="quantity-value" name="quantityValue[]" value="${quantity.quantityValue}" min="1" required>
-                        <input type="number" class="quantity-price" name="quantityPrice[]" value="${quantity.price}" step="0.01" placeholder="Price" required>
+                        <input type="number" class="quantity-price" name="quantityPrice[]" value="${quantity.price}" placeholder="Price" required>
                         <button type="button" class="remove-quantity">Remove</button>
                     `;
                     quantityEntry.querySelector('.remove-quantity').addEventListener('click', function () {
@@ -410,491 +750,92 @@ document.addEventListener('DOMContentLoaded', function () {
                     });
                     quantityContainer.appendChild(quantityEntry);
                 });
-            } else {
-                const quantityEntry = document.createElement('div');
-                quantityEntry.classList.add('quantity-entry');
-                quantityEntry.innerHTML = `
-                    <select class="quantity-unit" name="quantityUnit[]" required>
-                        <option value="kg">kg</option>
-                        <option value="grams">grams</option>
-                        <option value="units">units</option>
-                        <option value="ml">ml</option>
-                    </select>
-                    <input type="number" class="quantity-value" name="quantityValue[]" min="1" required>
-                    <input type="number" class="quantity-price" name="quantityPrice[]" step="0.01" placeholder="Price" required>
-                    <button type="button" class="remove-quantity">Remove</button>
-                `;
-                quantityEntry.querySelector('.remove-quantity').addEventListener('click', function () {
-                    quantityContainer.removeChild(quantityEntry);
-                });
-                quantityContainer.appendChild(quantityEntry);
+
+                document.getElementById('product-form').style.display = 'block';
+            } catch (error) {
+                console.error('Error fetching product details:', error);
             }
-
-            document.getElementById('product-form').style.display = 'block';
-        } catch (error) {
-            console.error('Error fetching product details:', error);
-            alert('Error fetching product details: ' + error.message);
         }
-    }
 
-    async function deleteCategory(id) {
-        try {
-            await fetch(`https://m1wala1.onrender.com/api/categories/${id}`, { method: 'DELETE' });
-            await renderCategories();
-        } catch (error) {
-            console.error('Error deleting category:', error);
+        async function deleteCategory(id) {
+            try {
+                await fetch(`https://m1wala1.onrender.com/api/categories/${id}`, { method: 'DELETE' });
+                await renderCategories();
+            } catch (error) {
+                console.error('Error deleting category:', error);
+            }
         }
-    }
 
-    async function deleteSubcategory(id) {
-        try {
-            await fetch(`https://m1wala1.onrender.com/api/subcategories/${id}`, { method: 'DELETE' });
-            const selectedCategoryId = document.getElementById('category-id').value;
-            await renderSubcategories(selectedCategoryId);
-        } catch (error) {
-            console.error('Error deleting subcategory:', error);
-        }
-    }
-
-    async function deleteBanner(filename) {
-        try {
-            await fetch(`https://m1wala1.onrender.com/api/banners/${filename}`, { method: 'DELETE' });
-            alert('Banner deleted successfully!');
-            renderBanners();
-        } catch (error) {
-            console.error('Error deleting banner:', error);
-        }
-    }
-
-    async function deleteLogo(filename) {
-        try {
-            await fetch(`https://m1wala1.onrender.com/api/logos/${filename}`, { method: 'DELETE' });
-            alert('Logo deleted successfully!');
-            renderLogos();
-        } catch (error) {
-            console.error('Error deleting logo:', error);
-        }
-    }
-
-    const renderCategories = async () => {
-        const categories = await fetchCategories();
-        const categoryList = document.getElementById('category-list');
-        const categorySelect = document.getElementById('category-id');
-        const productCategorySelect = document.getElementById('product-category');
-        if (categoryList && categorySelect && productCategorySelect) {
-            categoryList.innerHTML = '';
-            categorySelect.innerHTML = '';
-            productCategorySelect.innerHTML = '';
-
-            categories.forEach(category => {
-                const categoryDiv = document.createElement('div');
-                categoryDiv.className = 'category';
-                categoryDiv.innerHTML = `
-                    <img src="https://m1wala1.onrender.com${category.image}" alt="${category.name}" crossorigin="anonymous">
-                    <p>${category.name}</p>
-                    <div class="category-actions">
-                        <button class="delete-category" data-id="${category._id}">Delete</button>
-                        <button class="view-subcategories" data-id="${category._id}">View Subcategories</button>
-                    </div>
-                `;
-                categoryList.appendChild(categoryDiv);
-
-                const option = document.createElement('option');
-                option.value = category._id;
-                option.textContent = category.name;
-                categorySelect.appendChild(option);
-
-                const productOption = document.createElement('option');
-                productOption.value = category._id;
-                productOption.textContent = category.name;
-                productCategorySelect.appendChild(productOption);
-            });
-
-            categorySelect.addEventListener('change', async function () {
-                const selectedCategoryId = categorySelect.value;
+        async function deleteSubcategory(id) {
+            try {
+                await fetch(`https://m1wala1.onrender.com/api/subcategories/${id}`, { method: 'DELETE' });
+                const selectedCategoryId = document.getElementById('category-id').value;
                 await renderSubcategories(selectedCategoryId);
-            });
-
-            productCategorySelect.addEventListener('change', async function () {
-                const selectedCategoryId = productCategorySelect.value;
-                await renderSubcategories(selectedCategoryId);
-            });
-
-            if (categories.length > 0) {
-                await renderSubcategories(categories[0]._id);
-            }
-
-            document.querySelectorAll('.view-subcategories').forEach(button => {
-                button.addEventListener('click', function () {
-                    const categoryId = this.dataset.id;
-                    renderSubcategories(categoryId);
-                });
-            });
-        }
-    };
-
-    const renderSubcategories = async (categoryId) => {
-        const subcategories = await fetchSubcategories(categoryId);
-        const subcategoryList = document.getElementById('subcategory-list');
-        const subcategorySelect = document.getElementById('product-subcategory');
-        if (subcategoryList && subcategorySelect) {
-            subcategoryList.innerHTML = '';
-            subcategorySelect.innerHTML = '';
-
-            subcategories.forEach(subcategory => {
-                const subcategoryDiv = document.createElement('div');
-                subcategoryDiv.className = 'subcategory';
-                subcategoryDiv.innerHTML = `
-                    <img src="https://m1wala1.onrender.com${subcategory.image}" alt="${subcategory.name}" crossorigin="anonymous">
-                    <p>${subcategory.name}</p>
-                    <div class="subcategory-actions">
-                        <button class="delete-subcategory" data-id="${subcategory._id}">Delete</button>
-                        <button class="view-products" data-id="${subcategory._id}">View Products</button>
-                    </div>
-                `;
-                subcategoryList.appendChild(subcategoryDiv);
-
-                const option = document.createElement('option');
-                option.value = subcategory._id;
-                option.textContent = subcategory.name;
-                subcategorySelect.appendChild(option);
-            });
-
-            subcategorySelect.addEventListener('change', function () {
-                const selectedSubcategoryId = subcategorySelect.value;
-                fetchProducts(selectedSubcategoryId);
-            });
-
-            if (subcategories.length > 0) {
-                fetchProducts(subcategories[0]._id);
-            }
-
-            document.querySelectorAll('.view-products').forEach(button => {
-                button.addEventListener('click', function () {
-                    const subcategoryId = this.dataset.id;
-                    fetchProducts(subcategoryId);
-                });
-            });
-        }
-    };
-
-    const renderCategoriesForSubcategory = async () => {
-        const categories = await fetchCategories();
-        const categorySelect = document.getElementById('category-id');
-        if (categorySelect) {
-            categorySelect.innerHTML = '';
-
-            categories.forEach(category => {
-                const option = document.createElement('option');
-                option.value = category._id;
-                option.textContent = category.name;
-                categorySelect.appendChild(option);
-            });
-
-            if (categories.length > 0) {
-                renderSubcategories(categories[0]._id);
+            } catch (error) {
+                console.error('Error deleting subcategory:', error);
             }
         }
-    };
 
-    const renderCategoriesForProduct = async () => {
-        const categories = await fetchCategories();
-        const productCategorySelect = document.getElementById('product-category');
-        if (productCategorySelect) {
-            productCategorySelect.innerHTML = '';
-
-            categories.forEach(category => {
-                const option = document.createElement('option');
-                option.value = category._id;
-                option.textContent = category.name;
-                productCategorySelect.appendChild(option);
-            });
-
-            if (categories.length > 0) {
-                renderSubcategories(categories[0]._id);
+        async function deleteBanner(filename) {
+            try {
+                await fetch(`https://m1wala1.onrender.com/api/banners/${filename}`, { method: 'DELETE' });
+                alert('Banner deleted successfully!');
+                renderBanners();
+            } catch (error) {
+                console.error('Error deleting banner:', error);
             }
         }
-    };
 
-    const renderBanners = async () => {
-        const banners = await fetchBanners();
-        const bannerList = document.getElementById('banner-list');
-        if (bannerList) {
-            bannerList.innerHTML = '';
-            banners.forEach(banner => {
-                const bannerDiv = document.createElement('div');
-                bannerDiv.className = 'item';
-                bannerDiv.innerHTML = `
-                    <img src="https://m1wala1.onrender.com/uploads/${banner.filename}" alt="Banner Image" crossorigin="anonymous">
-                    <button onclick="deleteBanner('${banner.filename}')">Delete</button>
-                `;
-                bannerList.appendChild(bannerDiv);
-            });
-        }
-    };
-
-    const renderLogos = async () => {
-        const logos = await fetchLogos();
-        const logoList = document.getElementById('logo-list');
-        if (logoList) {
-            logoList.innerHTML = '';
-            logos.forEach(logo => {
-                const logoDiv = document.createElement('div');
-                logoDiv.className = 'item';
-                logoDiv.innerHTML = `
-                    <img src="https://m1wala1.onrender.com/uploads/${logo.filename}" alt="Logo Image" crossorigin="anonymous">
-                    <button onclick="deleteLogo('${logo.filename}')">Delete</button>
-                `;
-                logoList.appendChild(logoDiv);
-            });
-        }
-    };
-
-    const displayProducts = (products) => {
-        const productList = document.getElementById('product-list');
-        if (productList) {
-          productList.innerHTML = '';
-          if (Array.isArray(products)) {
-              products.forEach(product => {
-                const quantity = product.quantities[0] || {};
-                productList.innerHTML += `
-                  <div class="product">
-                    <img src="https://m1wala1.onrender.com${product.image}" alt="${product.name}" crossorigin="anonymous">
-                    <h3>${product.name}</h3>
-                    <p>${quantity.quantityValue || ''} ${quantity.quantityUnit || ''}</p>
-                    <p>₹${quantity.originalPrice || 'N/A'} - ₹${quantity.discountedPrice || 'N/A'}</p>
-                    <div class="product-actions">
-                      <button class="edit" onclick="editProduct('${product._id}')">Edit</button>
-                      <button class="delete" onclick="deleteProduct('${product._id}')">Delete</button>
-                      <button class="toggle" onclick="toggleAvailability('${product._id}')">${product.available ? 'Mark as Unavailable' : 'Mark as Available'}</button>
-                    </div>
-                  </div>
-                `;
-              });
-          } else {
-              console.error('Invalid products data:', products);
-          }
-        }
-    };
-
-    document.getElementById('category-form').addEventListener('submit', async function (event) {
-        event.preventDefault();
-        const formData = new FormData();
-        formData.append('name', document.getElementById('category-name').value);
-        formData.append('image', document.getElementById('category-image').files[0]);
-
-        try {
-            await fetch('https://m1wala1.onrender.com/api/categories', {
-                method: 'POST',
-                body: formData,
-            });
-            renderCategories();
-        } catch (error) {
-            console.error('Error adding category:', error);
-        }
-    });
-
-    document.getElementById('subcategory-form').addEventListener('submit', async function (event) {
-        event.preventDefault();
-        const formData = new FormData();
-        formData.append('name', document.getElementById('subcategory-name').value);
-        formData.append('image', document.getElementById('subcategory-image').files[0]);
-        formData.append('categoryId', document.getElementById('category-id').value);
-
-        try {
-            await fetch('https://m1wala1.onrender.com/api/subcategories', {
-                method: 'POST',
-                body: formData,
-            });
-            const selectedCategoryId = document.getElementById('category-id').value;
-            renderSubcategories(selectedCategoryId);
-        } catch (error) {
-            console.error('Error adding subcategory:', error);
-        }
-    });
-
-    document.getElementById('product-form').addEventListener('submit', async function (event) {
-        event.preventDefault();
-
-        const formData = new FormData();
-        formData.append('name', document.getElementById('product-name').value);
-        formData.append('categoryId', document.getElementById('product-category').value);
-        formData.append('subcategoryId', document.getElementById('product-subcategory').value);
-        formData.append('image', document.getElementById('product-image').files[0]);
-        formData.append('originalPrice', document.getElementById('original-price').value);
-        formData.append('discountedPrice', document.getElementById('discounted-price').value);
-
-        const quantities = [];
-        document.querySelectorAll('.quantity-entry').forEach(entry => {
-            quantities.push({
-                quantityUnit: entry.querySelector('.quantity-unit').value,
-                quantityValue: entry.querySelector('.quantity-value').value,
-                price: entry.querySelector('.quantity-price').value,
-            });
-        });
-        formData.append('quantities', JSON.stringify(quantities));
-
-        try {
-            const response = await fetch('https://m1wala1.onrender.com/api/products', {
-                method: 'POST',
-                body: formData,
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || 'Unknown error occurred');
+        async function deleteLogo(filename) {
+            try {
+                await fetch(`https://m1wala1.onrender.com/api/logos/${filename}`, { method: 'DELETE' });
+                alert('Logo deleted successfully!');
+                renderLogos();
+            } catch (error) {
+                console.error('Error deleting logo:', error);
             }
-
-            const data = await response.json();
-            console.log('Product added successfully:', data);
-            alert('Product added successfully!');
-            const selectedSubcategoryId = document.getElementById('product-subcategory').value;
-            fetchProducts(selectedSubcategoryId);
-        } catch (error) {
-            console.error('Error adding product:', error);
-            alert('Error adding product: ' + error.message);
-        }
-    });
-
-    renderCategories();
-    renderBanners();
-    renderLogos();
-});
-
-async function deleteProduct(id) {
-    try {
-        await fetch(`https://m1wala1.onrender.com/api/products/${id}`, { method: 'DELETE' });
-        const selectedSubcategoryId = document.getElementById('product-subcategory').value;
-        await fetchProducts(selectedSubcategoryId);
-    } catch (error) {
-        console.error('Error deleting product:', error);
-    }
-}
-
-async function toggleAvailability(id) {
-    try {
-        await fetch(`https://m1wala1.onrender.com/api/products/${id}/toggle-availability`, { method: 'PATCH' });
-        const selectedSubcategoryId = document.getElementById('product-subcategory').value;
-        await fetchProducts(selectedSubcategoryId);
-    } catch (error) {
-        console.error('Error toggling product availability:', error);
-    }
-}
-
-async function editProduct(id) {
-    try {
-        const response = await fetch(`https://m1wala1.onrender.com/api/products/${id}`);
-        if (!response.ok) {
-            throw new Error('Failed to fetch product details');
-        }
-        const product = await response.json();
-        if (!product) {
-            throw new Error('Product not found');
         }
 
-        document.getElementById('product-name').value = product.name;
-        document.getElementById('product-category').value = product.categoryId;
-        document.getElementById('product-subcategory').value = product.subcategoryId;
-
-        const quantityContainer = document.getElementById('quantity-container');
-        quantityContainer.innerHTML = '';
-        
-        // Check if quantities is an array and has elements
-        if (Array.isArray(product.quantities) && product.quantities.length > 0) {
-            product.quantities.forEach(quantity => {
-                const quantityEntry = document.createElement('div');
-                quantityEntry.classList.add('quantity-entry');
-                quantityEntry.innerHTML = `
-                    <select class="quantity-unit" name="quantityUnit[]" required>
-                        <option value="kg" ${quantity.quantityUnit === 'kg' ? 'selected' : ''}>kg</option>
-                        <option value="grams" ${quantity.quantityUnit === 'grams' ? 'selected' : ''}>grams</option>
-                        <option value="units" ${quantity.quantityUnit === 'units' ? 'selected' : ''}>units</option>
-                        <option value="ml" ${quantity.quantityUnit === 'ml' ? 'selected' : ''}>ml</option>
-                    </select>
-                    <input type="number" class="quantity-value" name="quantityValue[]" value="${quantity.quantityValue}" min="1" required>
-                    <input type="number" class="quantity-price" name="quantityPrice[]" value="${quantity.price}" step="0.01" placeholder="Price" required>
-                    <button type="button" class="remove-quantity">Remove</button>
-                `;
-                quantityEntry.querySelector('.remove-quantity').addEventListener('click', function () {
-                    quantityContainer.removeChild(quantityEntry);
-                });
-                quantityContainer.appendChild(quantityEntry);
-            });
-        } else {
-            const quantityEntry = document.createElement('div');
-            quantityEntry.classList.add('quantity-entry');
-            quantityEntry.innerHTML = `
-                <select class="quantity-unit" name="quantityUnit[]" required>
-                    <option value="kg">kg</option>
-                    <option value="grams">grams</option>
-                    <option value="units">units</option>
-                    <option value="ml">ml</option>
-                </select>
-                <input type="number" class="quantity-value" name="quantityValue[]" min="1" required>
-                <input type="number" class="quantity-price" name="quantityPrice[]" step="0.01" placeholder="Price" required>
-                <button type="button" class="remove-quantity">Remove</button>
-            `;
-            quantityEntry.querySelector('.remove-quantity').addEventListener('click', function () {
-                quantityContainer.removeChild(quantityEntry);
-            });
-            quantityContainer.appendChild(quantityEntry);
+        async function fetchProducts(subcategoryId) {
+            try {
+                const response = await fetch(`https://m1wala1.onrender.com/api/products?subcategoryId=${subcategoryId}`);
+                const products = await response.json();
+                displayProducts(products);
+            } catch (error) {
+                console.error('Error fetching products:', error);
+            }
         }
 
-        document.getElementById('product-form').style.display = 'block';
-    } catch (error) {
-        console.error('Error fetching product details:', error);
-        alert('Error fetching product details: ' + error.message);
-    }
-}
-
-async function fetchProducts(subcategoryId) {
-    try {
-        const response = await fetch(`https://m1wala1.onrender.com/api/products?subcategoryId=${subcategoryId}`);
-        if (!response.ok) throw new Error('Failed to fetch products');
-        const products = await response.json();
-        displayProducts(products);
-    } catch (error) {
-        console.error('Error fetching products:', error);
-    }
-}
-
-const displayProducts = (products) => {
-    const productList = document.getElementById('product-list');
-    if (productList) {
-        productList.innerHTML = '';
-        if (Array.isArray(products)) {
-            products.forEach(product => {
-                const quantity = product.quantities[0] || {};
-                productList.innerHTML += `
-                    <div class="product">
-                        <img src="https://m1wala1.onrender.com${product.image}" alt="${product.name}" crossorigin="anonymous">
-                        <h3>${product.name}</h3>
-                        <p>${quantity.quantityValue || ''} ${quantity.quantityUnit || ''}</p>
-                        <p>₹${quantity.originalPrice || 'N/A'} - ₹${quantity.discountedPrice || 'N/A'}</p>
-                        <div class="product-actions">
-                            <button class="edit" onclick="editProduct('${product._id}')">Edit</button>
-                            <button class="delete" onclick="deleteProduct('${product._id}')">Delete</button>
-                            <button class="toggle" onclick="toggleAvailability('${product._id}')">${product.available ? 'Mark as Unavailable' : 'Mark as Available'}</button>
+        const displayProducts = (products) => {
+            const productList = document.getElementById('product-list');
+            if (productList) {
+                productList.innerHTML = '';
+                products.forEach(product => {
+                    const quantity = product.quantities[0] || {};
+                    productList.innerHTML += `
+                        <div class="product">
+                            <img src="https://m1wala1.onrender.com${product.image}" alt="${product.name}" crossorigin="anonymous">
+                            <h3>${product.name}</h3>
+                            <p>${quantity.quantityValue || ''} ${quantity.quantityUnit || ''}</p>
+                            <p>₹${product.originalPrice ?? 'N/A'} - ₹${product.discountedPrice ?? 'N/A'}</p>
+                            <div class="product-actions">
+                                <button class="edit" onclick="editProduct('${product._id}')">Edit</button>
+                                <button class="delete" onclick="deleteProduct('${product._id}')">Delete</button>
+                                <button class="toggle" onclick="toggleAvailability('${product._id}')">${product.available ? 'Mark as Unavailable' : 'Mark as Available'}</button>
+                            </div>
                         </div>
-                    </div>
-                `;
-            });
-        } else {
-            console.error('Invalid products data:', products);
-        }
-    }
-};
+                    `;
+                });
+            }
+        };
 
-// Fetch and display products on page load
-document.addEventListener('DOMContentLoaded', async () => {
-    const response = await fetch('https://m1wala1.onrender.com/api/products');
-    if (response.ok) {
-        const products = await response.json();
-        displayProducts(products);
-    } else {
-        console.error('Failed to fetch products on page load');
-    }
-});
+        // Fetch and display products on page load
+        document.addEventListener('DOMContentLoaded', async () => {
+            const response = await fetch('https://m1wala1.onrender.com/api/products');
+            const products = await response.json();
+            displayProducts(products);
+        });
+
         async function fetchProducts(subcategoryId) {
             try {
                 const response = await fetch(`https://m1wala1.onrender.com/api/products?subcategoryId=${subcategoryId}`);
