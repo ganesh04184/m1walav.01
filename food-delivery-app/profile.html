@@ -299,122 +299,123 @@
   
       <script>
         function setLoading(isLoading) {
-          const loadingElement = document.getElementById('loading');
-          const profileElements = document.querySelectorAll('#profileName, #mobileForm, #profileOptions');
-  
-          if (isLoading) {
-            loadingElement.style.display = 'block';
-            profileElements.forEach(el => el.style.display = 'none');
-          } else {
-            loadingElement.style.display = 'none';
-            profileElements.forEach(el => el.style.display = 'block');
-          }
+    const loadingElement = document.getElementById('loading');
+    const profileElements = document.querySelectorAll('#profileName, #mobileForm, #profileOptions');
+
+    if (isLoading) {
+        loadingElement.style.display = 'block';
+        profileElements.forEach(el => el.style.display = 'none');
+    } else {
+        loadingElement.style.display = 'none';
+        profileElements.forEach(el => el.style.display = 'block');
+    }
+}
+
+// Function to handle logout
+function logout() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('userId');
+    alert('Logged out successfully.');
+    window.location.href = 'login.html';
+}
+
+// Function to fetch user profile
+function fetchUserProfile() {
+    setLoading(true);
+    const token = localStorage.getItem('token');
+    const userId = localStorage.getItem('userId');
+
+    if (!token || !userId) {
+        alert('No token or user ID found. Redirecting to login page.');
+        window.location.href = 'login.html';
+        return;
+    }
+
+    fetch(`https://m1wala1.onrender.com/api/users/${userId}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
         }
-  
-        // Function to handle logout
-        function logout() {
-          localStorage.removeItem('token');
-          localStorage.removeItem('userId');
-          alert('Logged out successfully.');
-          window.location.href = 'login.html';
-        }
-  
-        // Function to fetch user profile
-        function fetchUserProfile() {
-          setLoading(true);
-          const token = localStorage.getItem('token');
-          const userId = localStorage.getItem('userId');
-  
-          if (!token || !userId) {
-            alert('No token or user ID found. Redirecting to login page.');
+    })
+    .then(response => {
+        console.log('Fetch response status:', response.status);
+        if (response.status === 401) {
+            alert('Unauthorized request. Redirecting to login page.');
             window.location.href = 'login.html';
             return;
-          }
-  
-          fetch(`http://localhost:3000/api/users/${userId}`, {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`,
-            }
-          })
-          .then(response => {
-            console.log('Fetch response status:', response.status);
-            if (response.status === 401) {
-              alert('Unauthorized request. Redirecting to login page.');
-              window.location.href = 'login.html';
-              return;
-            } else if (response.status === 404) {
-              alert('User not found. Redirecting to login page.');
-              window.location.href = 'login.html';
-              return;
-            }
-            return response.json();
-          })
-          .then(data => {
-            console.log('Fetched user data:', data);
-            if (data && data.name && data.email) {
-              document.getElementById('profileName').innerHTML = `<h5>${data.name}</h5><h6>${data.email}</h6>`;
-              if (data.mobile) {
+        } else if (response.status === 404) {
+            alert('User not found. Redirecting to login page.');
+            window.location.href = 'login.html';
+            return;
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('Fetched user data:', data);
+        if (data && data.name && data.email) {
+            document.getElementById('profileName').innerHTML = `<h5>${data.name}</h5><h6>${data.email}</h6>`;
+            if (data.mobile) {
                 document.getElementById('mobile').value = data.mobile;
-              }
-              setLoading(false);
-            } else {
-              console.error('Unexpected data format:', data);
-              alert('Failed to fetch user profile. Redirecting to login page.');
-              window.location.href = 'login.html';
             }
-          })
-          .catch(error => {
-            console.error('Error fetching user profile:', error);
+            setLoading(false);
+        } else {
+            console.error('Unexpected data format:', data);
             alert('Failed to fetch user profile. Redirecting to login page.');
             window.location.href = 'login.html';
-          });
         }
-  
-        // Function to update mobile number
-        function updateMobile(event) {
-          event.preventDefault();
-          
-          const token = localStorage.getItem('token');
-          const userId = localStorage.getItem('userId');
-          const mobile = document.getElementById('mobile').value;
-  
-          if (!token || !userId) {
-            alert('No token or user ID found. Redirecting to login page.');
-            window.location.href = 'login.html';
-            return;
-          }
-  
-          fetch(`http://localhost:3000/api/users/${userId}`, {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`,
-            },
-            body: JSON.stringify({ mobile })
-          })
-          .then(response => response.json())
-          .then(data => {
-            console.log('Updated user data:', data);
-            if (data && data.mobile) {
-              alert('Mobile number updated successfully.');
-            } else {
-              console.error('Failed to update mobile number:', data);
-              alert('Failed to update mobile number.');
-            }
-          })
-          .catch(error => {
-            console.error('Error updating mobile number:', error);
+    })
+    .catch(error => {
+        console.error('Error fetching user profile:', error);
+        alert('Failed to fetch user profile. Redirecting to login page.');
+        window.location.href = 'login.html';
+    });
+}
+
+// Function to update mobile number
+function updateMobile(event) {
+    event.preventDefault();
+    
+    const token = localStorage.getItem('token');
+    const userId = localStorage.getItem('userId');
+    const mobile = document.getElementById('mobile').value;
+
+    if (!token || !userId) {
+        alert('No token or user ID found. Redirecting to login page.');
+        window.location.href = 'login.html';
+        return;
+    }
+
+    fetch(`https://m1wala1.onrender.com/api/users/${userId}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({ mobile })
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Updated user data:', data);
+        if (data && data.mobile) {
+            alert('Mobile number updated successfully.');
+        } else {
+            console.error('Failed to update mobile number:', data);
             alert('Failed to update mobile number.');
-          });
         }
-  
-        document.addEventListener('DOMContentLoaded', function() {
-          fetchUserProfile();
-        });
-  
-        document.getElementById('mobileForm').addEventListener('submit', updateMobile);
+    })
+    .catch(error => {
+        console.error('Error updating mobile number:', error);
+        alert('Failed to update mobile number.');
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    fetchUserProfile();
+});
+
+document.getElementById('mobileForm').addEventListener('submit', updateMobile);
+
       </script>
     </body>
 </html>
