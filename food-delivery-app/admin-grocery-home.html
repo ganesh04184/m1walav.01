@@ -490,7 +490,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 const categoryDiv = document.createElement('div');
                 categoryDiv.className = 'category';
                 categoryDiv.innerHTML = `
-                    <img src="https://m1wala1.onrender.com${category.image}" alt="${category.name}">
+                    <img src="https://m1wala1.onrender.com${category.image}" alt="${category.name}" crossorigin="anonymous">
                     <p>${category.name}</p>
                     <div class="category-actions">
                         <button class="delete-category" data-id="${category._id}">Delete</button>
@@ -545,7 +545,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 const subcategoryDiv = document.createElement('div');
                 subcategoryDiv.className = 'subcategory';
                 subcategoryDiv.innerHTML = `
-                    <img src="https://m1wala1.onrender.com${subcategory.image}" alt="${subcategory.name}">
+                    <img src="https://m1wala1.onrender.com${subcategory.image}" alt="${subcategory.name}" crossorigin="anonymous">
                     <p>${subcategory.name}</p>
                     <div class="subcategory-actions">
                         <button class="delete-subcategory" data-id="${subcategory._id}">Delete</button>
@@ -625,7 +625,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 const bannerDiv = document.createElement('div');
                 bannerDiv.className = 'item';
                 bannerDiv.innerHTML = `
-                    <img src="https://m1wala1.onrender.com/uploads/${banner.filename}" alt="Banner Image">
+                    <img src="https://m1wala1.onrender.com/uploads/${banner.filename}" alt="Banner Image" crossorigin="anonymous">
                     <button onclick="deleteBanner('${banner.filename}')">Delete</button>
                 `;
                 bannerList.appendChild(bannerDiv);
@@ -642,7 +642,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 const logoDiv = document.createElement('div');
                 logoDiv.className = 'item';
                 logoDiv.innerHTML = `
-                    <img src="https://m1wala1.onrender.com/uploads/${logo.filename}" alt="Logo Image">
+                    <img src="https://m1wala1.onrender.com/uploads/${logo.filename}" alt="Logo Image" crossorigin="anonymous">
                     <button onclick="deleteLogo('${logo.filename}')">Delete</button>
                 `;
                 logoList.appendChild(logoDiv);
@@ -659,7 +659,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 const quantity = product.quantities[0] || {};
                 productList.innerHTML += `
                   <div class="product">
-                    <img src="https://m1wala1.onrender.com${product.image}" alt="${product.name}">
+                    <img src="https://m1wala1.onrender.com${product.image}" alt="${product.name}" crossorigin="anonymous">
                     <h3>${product.name}</h3>
                     <p>${quantity.quantityValue || ''} ${quantity.quantityUnit || ''}</p>
                     <p>₹${quantity.originalPrice || 'N/A'} - ₹${quantity.discountedPrice || 'N/A'}</p>
@@ -867,7 +867,7 @@ const displayProducts = (products) => {
                 const quantity = product.quantities[0] || {};
                 productList.innerHTML += `
                     <div class="product">
-                        <img src="https://m1wala1.onrender.com${product.image}" alt="${product.name}">
+                        <img src="https://m1wala1.onrender.com${product.image}" alt="${product.name}" crossorigin="anonymous">
                         <h3>${product.name}</h3>
                         <p>${quantity.quantityValue || ''} ${quantity.quantityUnit || ''}</p>
                         <p>₹${quantity.originalPrice || 'N/A'} - ₹${quantity.discountedPrice || 'N/A'}</p>
