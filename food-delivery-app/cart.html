@@ -20,15 +20,6 @@
     <meta name="msapplication-TileColor" content="#FFFFFF" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
-    <!-- font link -->
-    <link rel="stylesheet" href="../assets/css/vendors/metropolis.min.css" />
-
-    <!-- remixicon css -->
-    <link rel="stylesheet" type="text/css" href="../assets/css/vendors/remixicon.css" />
-
-    <!-- bootstrap css -->
-    <link rel="stylesheet" id="rtl-link" type="text/css" href="../assets/css/vendors/bootstrap.min.css" />
-
     <title>Shopping Cart</title>
     <style>
         * {
@@ -196,7 +187,6 @@
     <section class="bill-details">
         <h2>Subtotal</h2>
         <p id="subtotal">Subtotal: ₹<span id="subtotal-value">0</span></p>
-
     </section>
     <section class="proceed">
         <button id="proceed-btn">Proceed to Payment</button>
@@ -214,7 +204,7 @@
         return;
     }
 
-    fetch('https://m1wala1.onrender.com/api/cart', {
+    fetch('/api/cart', {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -241,6 +231,7 @@
     });
 
     function renderCartItems(items) {
+        const cartItemsContainer = document.getElementById('cart-items');
         cartItemsContainer.innerHTML = '';
         let totalCost = 0;
 
@@ -249,14 +240,15 @@
             itemElement.classList.add('cart-item');
             itemElement.setAttribute('data-id', item._id);
 
-            const subtotal = item.price * item.quantity;
+            const productPrice = item.price;
+            const subtotal = productPrice; // Use the total price directly
             totalCost += subtotal;
 
             itemElement.innerHTML = `
                 <div class="item-details">
                     <h4>${item.productName}</h4>
-                    <p>Price: ₹${item.price}</p>
-                    <p>Quantity: <span class="quantity">${item.quantity}</span></p>
+                    <p>Price: ₹${productPrice} per ${item.unit}</p>
+                    <p>Quantity: <span class="quantity">${item.quantity} ${item.unit}</span></p>
                     <p>Subtotal: ₹${subtotal}</p>
                     <div class="item-quantity">
                         <button class="quantity-btn increase-quantity" data-id="${item._id}">+</button>
@@ -267,6 +259,7 @@
             `;
             cartItemsContainer.appendChild(itemElement);
         });
+
         document.getElementById('subtotal-value').textContent = totalCost;
     }
 
@@ -282,35 +275,11 @@
     });
 
     function updateQuantity(itemId, action) {
-    fetch(`https://m1wala1.onrender.com/api/cart/${itemId}/${action}`, {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json',
-            'x-auth-token': token,
-        },
-    })
-    .then(response => {
-        if (!response.ok) {
-            console.error(`HTTP error! Status: ${response.status}`);
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        return response.json();
-    })
-    .then(data => {
-        renderCartItems(data);
-    })
-    .catch(error => {
-        console.error('Error updating cart item quantity:', error);
-        alert('An error occurred while updating cart item quantity.');
-    });
-}
-
-    function fetchCartItems() {
-        fetch('https://m1wala1.onrender.com/api/cart', {
-            method: 'GET',
+        fetch(`https://m1wala1.onrender.com/api/cart/${itemId}/${action}`, {
+            method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
-                'x-auth-token': token
+                'x-auth-token': token,
             },
         })
         .then(response => {
@@ -324,8 +293,8 @@
             renderCartItems(data);
         })
         .catch(error => {
-            console.error('Error fetching cart items:', error);
-            alert('An error occurred while fetching cart items.');
+            console.error('Error updating cart item quantity:', error);
+            alert('session expired please login.');
         });
     }
 
@@ -343,6 +312,6 @@
     document.getElementById('ContinueShopping-btn').addEventListener('click', continueShopping);
 });
 
-</script>
+    </script>
 </body>
 </html>
