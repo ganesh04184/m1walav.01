@@ -163,37 +163,34 @@
 
         <form id="product-form" enctype="multipart/form-data">
             <label for="product-name">Product Name:</label>
-            <input type="text" id="product-name" name="name" required>
+            <input type="text" id="product-name" name="product-name" required>
             <label for="product-category">Category:</label>
-            <select id="product-category" name="categoryId" required></select>
+            <select id="product-category" name="category-id" required></select>
             <label for="product-subcategory">Subcategory:</label>
-            <select id="product-subcategory" name="subcategoryId" required></select>
+            <select id="product-subcategory" name="subcategory-id" required></select>
             <label for="product-image">Product Image:</label>
             <input type="file" id="product-image" name="image" accept="image/*" required>
-            
-            <label for="original-price">Original Price:</label>
-            <input type="number" id="original-price" name="originalPrice" step="0.01" required>
-            <label for="discounted-price">Discounted Price:</label>
-            <input type="number" id="discounted-price" name="discountedPrice" step="0.01" required>
-          
+
             <div id="quantity-container">
-              <div class="quantity-entry">
-                <select class="quantity-unit" name="quantityUnit[]" required>
-                  <option value="kg">kg</option>
-                  <option value="grams">grams</option>
-                  <option value="units">units</option>
-                  <option value="ml">ml</option>
-                </select>
-                <input type="number" class="quantity-value" name="quantityValue[]" min="1" required>
-                <input type="number" class="quantity-price" name="quantityPrice[]" step="1" placeholder="Price" required>
-                <button type="button" class="remove-quantity">Remove</button>
-              </div>
+                <div class="quantity-entry">
+                    <select class="quantity-unit" name="quantity-unit[]" required>
+                        <option value="kg">kg</option>
+                        <option value="grams">grams</option>
+                        <option value="units">units</option>
+                        <option value="ml">ml</option>
+                    </select>
+                    <input type="number" class="quantity-value" name="quantity-value[]" min="1" required>
+                    <input type="number" class="quantity-price" name="quantity-price[]" step="0.01" placeholder="Price" required>
+                    <input type="number" class="quantity-original-price" name="quantity-original-price[]" step="0.01" placeholder="Original Price" required>
+                    <input type="number" class="quantity-discounted-price" name="quantity-discounted-price[]" step="0.01" placeholder="Discounted Price" required>
+                    <button type="button" class="remove-quantity">Remove</button>
+                </div>
             </div>
-            
+
             <button type="button" id="add-quantity">Add More Quantity</button>
             <button type="submit">Add Product</button>
             <button type="submit">Update Product</button>
-          </form>
+        </form>
 
         <div class="category-list" id="category-list"></div>
         <div class="subcategory-list" id="subcategory-list"></div>
