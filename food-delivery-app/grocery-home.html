@@ -377,7 +377,7 @@
                 categoryItem.className = 'category-item';
                 categoryItem.innerHTML = `
                     <a href="#" onclick="navigateToSubcategories('${category._id}')">
-                        <img src="https://m1wala1.onrender.com${category.image}" alt="${category.name}">
+                        <img src="https://m1wala1.onrender.com${category.image}" alt="${category.name}" crossorigin="anonymous">
                         <span>${category.name}</span>
                     </a>
                 `;
@@ -397,7 +397,7 @@
                 subcategoryItem.className = 'subcategory-item';
                 subcategoryItem.innerHTML = `
                     <a href="#" onclick="renderProducts('${subcategory._id}')">
-                        <img src="https://m1wala1.onrender.com${subcategory.image}" alt="${subcategory.name}">
+                        <img src="https://m1wala1.onrender.com${subcategory.image}" alt="${subcategory.name}" crossorigin="anonymous">
                         <span>${subcategory.name}</span>
                     </a>
                 `;
@@ -604,6 +604,7 @@
                                 const productImage = document.createElement('img');
                                 productImage.src = `https://m1wala1.onrender.com${product.image}`;
                                 productImage.alt = product.name;
+                                crossorigin="anonymous";
 
                                 const productName = document.createElement('h3');
                                 productName.textContent = product.name;
