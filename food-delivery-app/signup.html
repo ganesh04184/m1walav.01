@@ -9,7 +9,7 @@
     <meta name="author" content="m1wala" />
     <link rel="manifest" href="../manifest.json" />
     <link rel="icon" href="../assets/images/logo/favicon.png" type="image/x-icon" />
-    <title>m1wala register</title>
+    <title>m1wala signup</title>
     <link rel="apple-touch-icon" href="../assets/images/logo/favicon.png" />
     <meta name="theme-color" content="#ff8d2f" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -21,23 +21,50 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+            background: url('https://p4.wallpaperbetter.com/wallpaper/910/11/748/background-fruit-vegetables-cuts-hd-wallpaper-thumb.jpg') no-repeat center center fixed;
+            background-size: cover;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
+            padding: 0;
         }
 
         .container {
-            background-color: #fff;
+            max-width: 400px;
+            background-color: rgba(255, 255, 255, 0.1); /* Transparent white background */
+            backdrop-filter: blur(10px); /* Glass effect */
+            border: 1px solid rgba(255, 255, 255, 0.2); /* Semi-transparent border */
+            border-radius: 8px;
             padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+            transform: translateZ(0); /* For 3D effect */
+            overflow: hidden; /* For 3D effect */
+			
         }
 
-        h1 {
+        .header {
+            text-align: center;
             margin-bottom: 20px;
+            transform: translateZ(0); /* For 3D effect */
+        }
+
+        .header img {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 10px;
+            border-radius: 50%; /* Rounded delivery logo */
+        }
+
+        .header h1 {
+            font-size: 28px;
+            color: #ffffff; /* White color for company name */
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); /* Text shadow */
+            font-family: 'Arial', sans-serif; /* Font family */
+            font-weight: bold; /* Bold font weight */
+            text-transform: uppercase; /* Uppercase text */
+            text-align: center;
         }
 
         .form-group {
@@ -82,8 +109,12 @@
 </head>
 <body>
     <div class="container">
-        <h1>Sign Up</h1>
-        <form id="signupForm" onsubmit="event.preventDefault(); register();">
+        <div class="header">
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjohGD5DVMP3YmjTOtHGi8qey-zIap1-NGCS-qu7tSSAWxm1OMIxjljA_zEv4ymVA3-PN6RNI-H85Xg1ZFiZUJa0EkWRf0sI9V96sGkNl_c0Z4OThzSyHPi7fK9eUQhww3DXS5UKSOzKvK9JXggtG5Jkhl1rXubsHtv0rtTDZR8icLVfAHywuBTiyjIkmUf/w1684-h1069-p-k-no-nu/M1%20WALA%20(1).png" alt="Delivery Logo">
+            <h1> M1wala</h1>
+            <h1>Signup</h1>
+        </div>
+        <form id="signupForm" onsubmit="event.preventDefault(); register(document.getElementById('signupName').value, document.getElementById('signupEmail').value, document.getElementById('signupPassword').value);">
             <label for="signupName">Name:</label>
             <input type="text" id="signupName" required>
             <label for="signupEmail">Email:</label>
@@ -93,7 +124,6 @@
             <div id="passwordRequirements">Password must be at least 6 characters long and include at least one special character.</div>
             <button type="submit">Signup</button>
         </form>
-        <div id="errorMessage" class="error"></div>
     </div>
 
     <script>
@@ -109,12 +139,7 @@
             }
         }
 
-        async function register() {
-            const name = document.getElementById('signupName').value;
-            const email = document.getElementById('signupEmail').value;
-            const password = document.getElementById('signupPassword').value;
-            const errorMessage = document.getElementById('errorMessage');
-
+        async function register(name, email, password) {
             try {
                 const response = await fetch('https://m1wala1.onrender.com/api/auth/register', {
                     method: 'POST',
@@ -132,11 +157,11 @@
                     alert('Registration successful!');
                     window.location.href = 'grocery-home.html'; // Redirect to grocery-home page
                 } else {
-                    errorMessage.textContent = 'Registration failed: ' + (data.msg || 'Unknown error');
+                    alert('Registration failed: ' + (data.msg || 'Unknown error'));
                 }
             } catch (error) {
                 console.error('Error during registration:', error);
-                errorMessage.textContent = 'An error occurred during registration: ' + error.message;
+                alert('An error occurred during registration: ' + error.message);
             }
         }
     </script>
