@@ -2,67 +2,201 @@
 <html lang="en">
 
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Zomo App" />
-  <meta name="keywords" content="Zomo App" />
-  <meta name="author" content="Zomo App" />
-  <link rel="icon" href="assets/images/logo/favicon.png" type="image/x-icon" />
-  <title>Zomo App</title>
-  <link rel="icon" href="assets/images/logo/favicon.png" type="image/x-icon" />
-  <link rel="apple-touch-icon" href="assets/images/logo/favicon.png" />
-  <meta name="theme-color" content="#205dee" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-  <meta name="apple-mobile-web-app-title" content="Zomo App" />
-  <meta name="msapplication-TileImage" content="assets/images/logo/favicon.png" />
-  <meta name="msapplication-TileColor" content="#FFFFFF" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <style>/* Updated CSS with green color */
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome to m1wala</title>
+  <style>
     body {
-        font-family: Arial, sans-serif;
-        margin: 0;
-        padding: 0;
-        background-color: #f8f8f8; /* Light grey background */
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f8f8f8;
     }
-    
-    h1 {
-        color: #205dee; /* Blue color */
-        text-align: center;
-        margin-top: 50px; /* Adjust as needed */
-    }
-    
-    p {
-        text-align: center;
-        color: #333; /* Dark grey text */
-    }
-    
-    button {
-        display: block;
-        margin: 0 auto;
-        padding: 10px 20px;
-        background-color: #4CAF50; /* Green button */
-        color: #fff; /* White text */
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-    }
-    
-    button:hover {
-        background-color: #45a049; /* Darker green color on hover */
-    }
-    </style>
 
-  
+    header.hero-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      background-color: #fff;
+      padding: 20px;
+    }
+
+    .hero-content {
+      max-width: 600px;
+    }
+
+    .logo {
+      width: 50px;
+    }
+
+    h1 {
+      color: #205dee;
+      margin-top: 20px;
+    }
+
+    p {
+      color: #333;
+    }
+
+    .search-form {
+      display: flex;
+      margin-top: 20px;
+    }
+
+    .search-form input {
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 5px 0 0 5px;
+      flex: 1;
+    }
+
+    .search-form button {
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: #fff;
+      border: none;
+      border-radius: 0 5px 5px 0;
+      cursor: pointer;
+    }
+
+    .search-form button:hover {
+      background-color: #45a049;
+    }
+
+    .hero-image img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      margin-top: 20px;
+    }
+
+    .features {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      background-color: #333;
+      color: #fff;
+      padding: 20px;
+    }
+
+    .feature {
+      flex: 1 1 300px;
+      max-width: 300px;
+      margin: 10px;
+      text-align: center;
+    }
+
+    .feature img {
+      width: 50px;
+    }
+
+    .auth-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .auth-buttons a {
+      padding: 10px 20px;
+      background-color: #205dee;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 5px;
+      font-size: 16px;
+      text-align: center;
+    }
+
+    .auth-buttons a:hover {
+      background-color: #184cad;
+    }
+
+    @media (min-width: 768px) {
+      header.hero-section {
+        flex-direction: row;
+        justify-content: space-between;
+        text-align: left;
+      }
+
+      .hero-content {
+        max-width: none;
+      }
+
+      .search-form {
+        margin-top: 0;
+      }
+
+      .hero-image {
+        max-width: 500px;
+      }
+    }
+  </style>
 </head>
 
 <body>
-  <h1>Welcome to m1wala</h1>
-  <p>Get started by logging in:</p>
-  <a href="./login.html"><button>Get Started</button></a>
-</body>
+  <header class="hero-section">
+    <div class="hero-content">
+      <img id="logo-img" src="" alt="Logo" class="logo">
+      <h1>Welcome to m1wala</h1>
+      <p>Order fresh food products from m1wala.</p>
+      <div class="auth-buttons">
+        <a href="./login.html">Login</a>
+        <a href="./signup.html">Sign Up</a>
+      </div>
+    </div>
+    <div class="hero-image">
+      <img id="hero-banner" src="" alt="Delicious food">
+    </div>
+  </header>
 
+  <section class="features">
+    <div class="feature">
+      <img id="feature-icon-1" src="" alt="No Minimum Order">
+      <h3>No Minimum Order</h3>
+      <p>Order in for yourself or for the group, with no restrictions on order value.</p>
+    </div>
+    <div class="feature">
+      <img id="feature-icon-2" src="" alt="Live Order Tracking">
+      <h3>Live Order Tracking</h3>
+      <p>Know where your order is at all times, from the restaurant to your doorstep.</p>
+    </div>
+    <div class="feature">
+      <img id="feature-icon-3" src="" alt="Lightning-Fast Delivery">
+      <h3>Lightning-Fast Delivery</h3>
+      <p>Experience superfast delivery for food delivered fresh & on time.</p>
+    </div>
+  </section>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const bannerImg = document.getElementById('hero-banner');
+      const logoImg = document.getElementById('logo-img');
+
+      const featureIcons = [
+        document.getElementById('feature-icon-1'),
+        document.getElementById('feature-icon-2'),
+        document.getElementById('feature-icon-3')
+      ];
+
+      // Set the URLs for the images
+      const logoUrl = 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjohGD5DVMP3YmjTOtHGi8qey-zIap1-NGCS-qu7tSSAWxm1OMIxjljA_zEv4ymVA3-PN6RNI-H85Xg1ZFiZUJa0EkWRf0sI9V96sGkNl_c0Z4OThzSyHPi7fK9eUQhww3DXS5UKSOzKvK9JXggtG5Jkhl1rXubsHtv0rtTDZR8icLVfAHywuBTiyjIkmUf/w1684-h1069-p-k-no-nu/M1%20WALA%20(1).png"';
+      const bannerUrl = 'https://your-s3-bucket-url/banner.jpg';
+      const featureIconUrls = [
+        'https://your-s3-bucket-url/feature-icon-1.png',
+        'https://your-s3-bucket-url/feature-icon-2.png',
+        'https://your-s3-bucket-url/feature-icon-3.png'
+      ];
+
+      // Set the src attributes for the images
+      logoImg.src = logoUrl;
+      bannerImg.src = bannerUrl;
+
+      featureIcons.forEach((icon, index) => {
+        icon.src = featureIconUrls[index];
+      });
+    });
+  </script>
+</body>
 
 </html>
