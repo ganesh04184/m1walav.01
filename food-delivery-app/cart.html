@@ -8,7 +8,6 @@
     <meta name="keywords" content="zomo" />
     <meta name="author" content="zomo" />
     <link rel="manifest" href="../manifest.json" />
-
     <link rel="icon" href="../assets/images/logo/favicon.png" type="image/x-icon" />
     <title>zomo App</title>
     <link rel="apple-touch-icon" href="../assets/images/logo/favicon.png" />
@@ -175,6 +174,15 @@
         button:hover {
             background-color: #45a049;
         }
+
+        .empty-cart-message {
+            text-align: center;
+            padding: 20px;
+            background-color: #ff4d4d;
+            color: #fff;
+            border-radius: 5px;
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -194,76 +202,81 @@
     <section class="ContinueShopping">
         <button id="ContinueShopping-btn">Continue Shopping</button>
     </section>
+    <div id="empty-cart-message" class="empty-cart-message">
+        Your cart is empty. Please add products to your cart before proceeding to payment.
+    </div>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-    const cartItemsContainer = document.getElementById('cart-items');
-    const token = localStorage.getItem('token');
-    if (!token) {
-        alert('You need to log in first.');
-        window.location.href = '/login.html';
-        return;
-    }
-
-    fetch('https://m1wala1.onrender.com/api/cart', {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-            'x-auth-token': token
-        },
-    })
-    .then(response => {
-        if (!response.ok) {
-            console.error(`HTTP error! Status: ${response.status}`);
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        return response.json();
-    })
-    .then(data => {
-        if (data.msg) {
-            alert(data.msg);
-        } else {
-            renderCartItems(data);
-        }
-    })
-    .catch(error => {
-        console.error('Error fetching cart items:', error);
-        alert('An error occurred while fetching cart items.');
-    });
-
-    function renderCartItems(items) {
-        const cartItemsContainer = document.getElementById('cart-items');
-        cartItemsContainer.innerHTML = '';
-        let totalCost = 0;
-
-        items.forEach(item => {
-            const itemElement = document.createElement('div');
-            itemElement.classList.add('cart-item');
-            itemElement.setAttribute('data-id', item._id);
-
-            const productPrice = item.price;
-            const subtotal = productPrice; // Use the total price directly
-            totalCost += subtotal;
-
-            itemElement.innerHTML = `
-                <div class="item-details">
-                    <h4>${item.productName}</h4>
-                    <p>Price: ₹${productPrice} per ${item.unit}</p>
-                    <p>Quantity: <span class="quantity">${item.quantity} ${item.unit}</span></p>
-                    <p>Subtotal: ₹${subtotal}</p>
-                    <div class="item-quantity">
-                        <button class="quantity-btn increase-quantity" data-id="${item._id}">+</button>
-                        <span class="quantity">${item.quantity}</span>
-                        <button class="quantity-btn decrease-quantity" data-id="${item._id}">-</button>
-                    </div>
-                </div>
-            `;
-            cartItemsContainer.appendChild(itemElement);
-        });
-
-        document.getElementById('subtotal-value').textContent = totalCost;
-    }
-
-    cartItemsContainer.addEventListener('click', event => {
+            const cartItemsContainer = document.getElementById('cart-items');
+            const token = localStorage.getItem('token');
+            if (!token) {
+                alert('You need to log in first.');
+                window.location.href = '/login.html';
+                return;
+            }
+    
+            function fetchCart() {
+                fetch('https://m1wala1.onrender.com/api/cart', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-auth-token': token
+                    },
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        console.error(`HTTP error! Status: ${response.status}`);
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.msg) {
+                        alert(data.msg);
+                    } else {
+                        renderCartItems(data);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching cart items:', error);
+                    alert('Error fetching cart items. Please try again later.');
+                });
+            }
+    
+            function renderCartItems(items) {
+                cartItemsContainer.innerHTML = '';
+                let totalCost = 0;
+    
+                items.forEach(item => {
+                    const itemElement = document.createElement('div');
+                    itemElement.classList.add('cart-item');
+                    itemElement.setAttribute('data-id', item.productId);
+    
+                    const productPrice = parseFloat(item.price) || 0;
+                    const subtotal = productPrice * item.quantity;
+                    totalCost += subtotal;
+    
+                    itemElement.innerHTML = `
+                        <img src="${item.imageUrl}" alt="${item.productName}">
+                        <div class="item-details">
+                            <h4>${item.productName}</h4>
+                            <p>Price: ₹${productPrice.toFixed(2)} per ${item.unit}</p>
+                            <p>Quantity: <span class="quantity">${item.quantity} ${item.unit}</span></p>
+                            <p>Subtotal: ₹${subtotal.toFixed(2)}</p>
+                            <div class="item-quantity">
+                                <button class="quantity-btn increase-quantity" data-id="${item.productId}">+</button>
+                                <span class="quantity">${item.quantity}</span>
+                                <button class="quantity-btn decrease-quantity" data-id="${item.productId}">-</button>
+                            </div>
+                        </div>
+                    `;
+                    cartItemsContainer.appendChild(itemElement);
+                });
+    
+                document.getElementById('subtotal-value').textContent = totalCost.toFixed(2);
+            }
+    
+            cartItemsContainer.addEventListener('click', event => {
         const target = event.target;
         if (target.classList.contains('increase-quantity')) {
             const itemId = target.getAttribute('data-id');
@@ -273,8 +286,8 @@
             updateQuantity(itemId, 'decrease');
         }
     });
-
-    function updateQuantity(itemId, action) {
+    
+            function updateQuantity(itemId, action) {
         fetch(`https://m1wala1.onrender.com/api/cart/${itemId}/${action}`, {
             method: 'PUT',
             headers: {
@@ -298,20 +311,26 @@
         });
     }
 
-    function proceedToPayment() {
-        const subtotal = document.getElementById('subtotal-value').textContent;
-        localStorage.setItem('Subtotal', subtotal);
-        window.location.href = "./payment-method.html";
-    }
-
-    function continueShopping() {
-        window.location.href = "./grocery-home.html";
-    }
-
-    document.getElementById('proceed-btn').addEventListener('click', proceedToPayment);
-    document.getElementById('ContinueShopping-btn').addEventListener('click', continueShopping);
-});
-
-    </script>
+    
+            function proceedToPayment() {
+                const subtotal = parseFloat(document.getElementById('subtotal-value').textContent);
+                if (subtotal === 0) {
+                    document.getElementById('empty-cart-message').style.display = 'block';
+                } else {
+                    localStorage.setItem('Subtotal', subtotal);
+                    window.location.href = "./payment-method.html";
+                }
+            }
+    
+            function continueShopping() {
+                window.location.href = "./grocery-home.html";
+            }
+    
+            document.getElementById('proceed-btn').addEventListener('click', proceedToPayment);
+            document.getElementById('ContinueShopping-btn').addEventListener('click', continueShopping);
+    
+            fetchCart();
+        });
+    </script>    
 </body>
 </html>
