@@ -7,23 +7,22 @@
     <meta name="description" content="m1wala" />
     <meta name="keywords" content="m1wala" />
     <meta name="author" content="m1wala" />
-    
-    <link rel="icon" href="../assets/images/logo/favicon.png" type="image/x-icon" />
+    <link rel="icon" href="/assets/images/logo/favicon.png" type="image/x-icon" />
     <title>m1wala instamart</title>
-    <link rel="apple-touch-icon" href="../assets/images/logo/favicon.png" />
+    <link rel="apple-touch-icon" href="/assets/images/logo/favicon.png" />
     <meta name="theme-color" content="#ff8d2f" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
     <meta name="apple-mobile-web-app-title" content="m1wala" />
-    <meta name="msapplication-TileImage" content="../assets/images/logo/favicon.png" />
+    <meta name="msapplication-TileImage" content="/assets/images/logo/favicon.png" />
     <meta name="msapplication-TileColor" content="#FFFFFF" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <title>Grocery Shopping</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
         }
 
         header {
@@ -35,62 +34,133 @@
             z-index: 1000;
         }
 
+        #banner-container {
+            display: flex;
+            overflow-x: auto;
+            white-space: nowrap;
+            padding: 10px 0;
+            background-color: #ffc107;
+        }
+
+        .banner {
+            display: inline-block;
+            margin-right: 10px;
+        }
+
+        .banner img {
+            display: block;
+            max-width: 100%;
+            height: auto;
+        }
+
         #search {
             padding: 5px;
             width: 80%;
             margin-top: 10px;
         }
-
-        .category-grid, .product-grid {
+        .category-grid {
+            flex-grow: 1; /* Take the remaining width for the product list */
+            padding: 20px;
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 10px;
-            padding: 10px;
-        }
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Responsive grid layout */
+            gap: 20px;
+            overflow-y: auto; /* Scroll if content overflows */
+}
 
-        .category-item, .subcategory-item, .product-item {
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            padding: 10px;
+.category-item {
+    border: 1px solid #ddd; /* Border around product items */
+            border-radius: 5px; /* Rounded corners */
+            padding: 15px;
             text-align: center;
-            background-color: #fff;
-            position: relative;
+            background-color: #fff; /* White background for products */
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-        }
+            position: relative;
+}
 
-        .category-item img, .subcategory-item img, .product-item img {
-            max-width: 100%;
-            height: auto;
-            border-bottom: 1px solid #ddd;
-            padding-bottom: 10px;
-            margin-bottom: 10px;
+.category-item img {
+    max-width: 100%;
+    height: auto;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+}
+
+        #content {
+            display: flex;
+            height: calc(100vh - 180px); /* Full height minus header and navbar */
         }
 
         .subcategory-grid {
-            display: flex;
-            flex-direction: column;
-            width: 10%;
+            width: 250px; /* Fixed width for the subcategory list */
+            background-color: #f8f8f8; /* Light background color */
+            border-right: 1px solid #ddd; /* Border to separate subcategory and product grids */
             padding: 10px;
+            overflow-y: auto; /* Scroll if content overflows */
+            flex-shrink: 0; /* Ensure it doesn't shrink */
+            height: 100%; /* Ensure it takes full height */
+        }
+
+        .subcategory-item {
+            padding: 10px;
+            margin-bottom: 5px; /* Spacing between subcategories */
+            cursor: pointer;
+            transition: background-color 0.3s;
+            border-radius: 5px; /* Rounded corners */
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: #000; /* Black color for text */
+            background-color: #fff;
+        }
+
+        .subcategory-item:hover, .subcategory-item.active {
+            background-color: #e0e0e0; /* Hover and active state color */
+        }
+
+        .subcategory-item img {
+            max-width: 30px; /* Smaller image size for subcategories */
+            margin-right: 10px; /* Space between image and text */
         }
 
         .product-grid {
-            width: 90%;
-            padding: 10px;
+            flex-grow: 1; /* Take the remaining width for the product list */
+            padding: 20px;
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 10px;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Responsive grid layout */
+            gap: 20px;
+            overflow-y: auto; /* Scroll if content overflows */
+        }
+
+        .product-item {
+            border: 1px solid #ddd; /* Border around product items */
+            border-radius: 5px; /* Rounded corners */
+            padding: 15px;
+            text-align: center;
+            background-color: #fff; /* White background for products */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        .product-item img {
+            max-width: 100%; /* Ensure images fit within product item */
+            height: auto;
+            border-bottom: 1px solid #ddd; /* Border below the image */
+            padding-bottom: 15px;
+            margin-bottom: 15px;
         }
 
         .product-item .discount {
             position: absolute;
             top: 10px;
-            right: 10px;
-            background-color: #ff5c5c;
+            left: 10px;
+            background-color: #ff5c5c; /* Red background for discount tag */
             color: white;
             padding: 5px;
-            border-radius: 5px;
+            border-radius: 5px; /* Rounded corners */
             font-weight: bold;
         }
 
@@ -99,29 +169,31 @@
             justify-content: center;
             align-items: center;
             gap: 10px;
+            margin-top: 10px;
         }
 
         .product-item .original-price {
             text-decoration: line-through;
-            color: #888;
+            color: #888; /* Grey color for original price */
         }
 
         .product-item .discounted-price {
-            color: #28a745;
+            color: #28a745; /* Green color for discounted price */
             font-weight: bold;
         }
 
         .product-item button {
-            background-color: #28a745;
+            background-color: #28a745; /* Green background for button */
             color: white;
             border: none;
             padding: 10px;
-            border-radius: 5px;
+            border-radius: 5px; /* Rounded corners */
             cursor: pointer;
+            margin-top: 10px; /* Space above the button */
         }
 
         .product-item button:hover {
-            background-color: #218838;
+            background-color: #218838; /* Darker green on hover */
         }
 
         .product-item.unavailable {
@@ -146,7 +218,51 @@
             text-align: center;
         }
 
-        /* Modal styles */
+        .navbar-menu {
+            background-color: rgba(var(--white), 1);
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+        .navbar-menu ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            width: 100%;
+            justify-content: space-around;
+        }
+
+        .navbar-menu li {
+            flex: 1;
+            text-align: center;
+        }
+
+        .navbar-menu a {
+            color: rgba(34, 139, 34);
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .navbar-menu a.active {
+            color: rgba(var(--light-theme-color), 1);
+        }
+
+        .navbar-menu img {
+            max-width: 24px;
+            margin-bottom: 5px;
+        }
+
         .modal {
             display: none;
             position: fixed;
@@ -244,64 +360,30 @@
         .item-total span {
             font-size: 1.2em;
         }
-        .navbar-menu {
-            background-color: rgba(var(--white), 1);
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            display: flex;
-            justify-content: space-around;
-            padding: 10px 0;
-            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
-            z-index: 1000;
-        }
-
-        .navbar-menu ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            display: flex;
-            width: 100%;
-            justify-content: space-around;
-        }
-
-        .navbar-menu li {
-            flex: 1;
-            text-align: center;
-        }
-
-        .navbar-menu a {
-            color: rgba(34, 139, 34);
-            text-decoration: none;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .navbar-menu a.active {
-            color: rgba(var(--light-theme-color), 1);
-        }
-
-        .navbar-menu img {
-            max-width: 24px;
-            margin-bottom: 5px;
-        }
     </style>
 </head>
 <body>
     <header>
         <h1>Grocery Shopping</h1>
+        <div id="banner-container">
+            <div class="banner"><img src="https://via.placeholder.com/728x90.png?text=Promotional+Banner+1" alt="Promotional Banner 1"></div>
+            <div class="banner"><img src="https://via.placeholder.com/728x90.png?text=Promotional+Banner+2" alt="Promotional Banner 2"></div>
+            <div class="banner"><img src="https://via.placeholder.com/728x90.png?text=Promotional+Banner+3" alt="Promotional Banner 3"></div>
+        </div>
         <input type="text" id="search" placeholder="Search...">
     </header>
-    <div id="content"></div>
+    <div id="content">
+        <div class="container">
+            <div id="subcategory-grid" class="subcategory-grid"></div>
+            <div id="product-grid" class="product-grid"></div>
+        </div>
+    </div>
     <div class="navbar-menu">
         <ul>
             <li class="active">
                 <a href="grocery-home.html" class="icon"><span>Grocery</span></a>
             </li>
-            <li class="active">
+            <li>
                 <a href="cart.html" class="icon"><span>Cart</span></a>
             </li>
             <li>
@@ -315,10 +397,11 @@
             <div id="productOptionsContent"></div>
         </div>
     </div>
+
     <script>
         async function fetchCategories() {
             try {
-                const response = await fetch('https://m1wala1.onrender.com/api/categories');
+                const response = await fetch('/api/categories');
                 if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
                 return await response.json();
             } catch (error) {
@@ -329,7 +412,7 @@
 
         async function fetchSubcategories(categoryId) {
             try {
-                const response = await fetch(`https://m1wala1.onrender.com/api/subcategories/${categoryId}`);
+                const response = await fetch(`/api/subcategories?categoryId=${categoryId}`);
                 if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
                 return await response.json();
             } catch (error) {
@@ -340,7 +423,11 @@
 
         async function fetchProducts(subcategoryId) {
             try {
-                const response = await fetch(`https://m1wala1.onrender.com/api/products/${subcategoryId}`);
+                if (!subcategoryId || !isValidObjectId(subcategoryId)) {
+                    throw new Error('Invalid or missing Subcategory ID');
+                }
+
+                const response = await fetch(`/api/products?subcategoryId=${subcategoryId}`);
                 if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
                 return await response.json();
             } catch (error) {
@@ -351,7 +438,7 @@
 
         async function searchProducts(query) {
             try {
-                const response = await fetch(`https://m1wala1.onrender.com/api/search?query=${query}`);
+                const response = await fetch(`/api/search?query=${query}`);
                 if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
                 return await response.json();
             } catch (error) {
@@ -366,6 +453,10 @@
             return Math.round(percentage);
         }
 
+        function isValidObjectId(id) {
+            return /^[0-9a-fA-F]{24}$/.test(id);
+        }
+
         async function renderCategories() {
             const categories = await fetchCategories();
             const content = document.getElementById('content');
@@ -377,7 +468,7 @@
                 categoryItem.className = 'category-item';
                 categoryItem.innerHTML = `
                     <a href="#" onclick="navigateToSubcategories('${category._id}')">
-                        <img src="${category.image}" alt="${category.name}" crossorigin="anonymous">
+                        <img src="${category.image}" alt="${category.name}">
                         <span>${category.name}</span>
                     </a>
                 `;
@@ -397,7 +488,7 @@
                 subcategoryItem.className = 'subcategory-item';
                 subcategoryItem.innerHTML = `
                     <a href="#" onclick="renderProducts('${subcategory._id}')">
-                        <img src="${subcategory.image}" alt="${subcategory.name}" crossorigin="anonymous">
+                        <img src="${subcategory.image}" alt="${subcategory.name}">
                         <span>${subcategory.name}</span>
                     </a>
                 `;
@@ -419,79 +510,72 @@
                     productGrid.innerHTML = '<p>No products found in this subcategory.</p>';
                 } else {
                     products.forEach(product => {
-                        const originalPrice = parseFloat(product.originalPrice);
-                        const discountedPrice = parseFloat(product.discountedPrice);
-                        const discountPercentage = calculateDiscountPercentage(originalPrice, discountedPrice);
-                        const productItem = document.createElement('div');
-                        productItem.className = 'product-item';
-
-                        const productImage = document.createElement('img');
-                        productImage.src = `${product.image}`;
-                        productImage.alt = product.name;
-
-                        const productName = document.createElement('h3');
-                        productName.textContent = product.name;
-
-                        const discountBadge = document.createElement('div');
-                        discountBadge.className = 'discount';
-                        discountBadge.textContent = `${discountPercentage}% OFF`;
-
-                        const pricesDiv = document.createElement('div');
-                        pricesDiv.className = 'prices';
-
-                        const originalPriceElem = document.createElement('span');
-                        originalPriceElem.className = 'original-price';
-                        originalPriceElem.textContent = `₹${originalPrice.toFixed(2)}`;
-
-                        const discountedPriceElem = document.createElement('span');
-                        discountedPriceElem.className = 'discounted-price';
-                        discountedPriceElem.textContent = `₹${discountedPrice.toFixed(2)}`;
-
-                        const quantityDiv = document.createElement('div');
-                        quantityDiv.className = 'quantity';
-
-                        if (product.quantities && product.quantities.length > 1) {
-                            quantityDiv.textContent = `${product.quantities[0].quantityValue} ${product.quantities[0].quantityUnit}`;
-                            productItem.appendChild(discountBadge);
-                            productItem.appendChild(productImage);
-                            productItem.appendChild(productName);
-                            productItem.appendChild(quantityDiv);
-                            productItem.appendChild(pricesDiv);
-
-                            const optionsButton = document.createElement('button');
-                            optionsButton.textContent = 'Options';
-                            optionsButton.onclick = () => showProductOptions(product);
-                            productItem.appendChild(optionsButton);
-                        } else {
-                            const productButton = document.createElement('button');
-                            productButton.textContent = 'Add to Cart';
-                            productButton.onclick = () => addToCart(product);
-
-                            if (product.quantities && product.quantities.length === 1) {
-                                quantityDiv.textContent = `${product.quantities[0].quantityValue} ${product.quantities[0].quantityUnit}`;
-                            }
-
-                            productItem.appendChild(discountBadge);
-                            productItem.appendChild(productImage);
-                            productItem.appendChild(productName);
-                            productItem.appendChild(quantityDiv);
-                            productItem.appendChild(pricesDiv);
-                            productItem.appendChild(productButton);
-                        }
-
-                        pricesDiv.appendChild(originalPriceElem);
-                        pricesDiv.appendChild(discountedPriceElem);
-
-                        if (!product.available) {
-                            const notAvailableOverlay = document.createElement('div');
-                            notAvailableOverlay.className = 'not-available';
-                            notAvailableOverlay.textContent = 'Product Not Available';
-                            productItem.appendChild(notAvailableOverlay);
-                        }
-
-                        productGrid.appendChild(productItem);
+                        renderProductItem(product);
                     });
                 }
+            } else {
+                console.error('.product-grid element not found.');
+            }
+        }
+
+        function renderProductItem(product) {
+            const originalPrice = parseFloat(product.quantities[0].originalPrice);
+            const discountedPrice = parseFloat(product.quantities[0].discountedPrice);
+            const discountPercentage = calculateDiscountPercentage(originalPrice, discountedPrice);
+            const productItem = document.createElement('div');
+            productItem.className = 'product-item';
+            productItem.dataset.productId = product._id; // Add product ID
+
+            const productImage = document.createElement('img');
+            productImage.src = `${product.image}`;
+            productImage.alt = product.name;
+
+            const productName = document.createElement('h3');
+            productName.textContent = product.name;
+
+            const discountBadge = document.createElement('div');
+            discountBadge.className = 'discount';
+            discountBadge.textContent = `${discountPercentage}% OFF`;
+
+            const pricesDiv = document.createElement('div');
+            pricesDiv.className = 'prices';
+
+            const originalPriceElem = document.createElement('span');
+            originalPriceElem.className = 'original-price';
+            originalPriceElem.textContent = `₹${originalPrice.toFixed(2)}`;
+
+            const discountedPriceElem = document.createElement('span');
+            discountedPriceElem.className = 'discounted-price';
+            discountedPriceElem.textContent = `₹${discountedPrice.toFixed(2)}`;
+
+            const quantityDiv = document.createElement('div');
+            quantityDiv.className = 'quantity';
+            quantityDiv.textContent = `${product.quantities[0].quantityValue} ${product.quantities[0].quantityUnit}`;
+
+            const productButton = document.createElement('button');
+            productButton.textContent = 'Add to Cart';
+            productButton.onclick = () => addToCart(product);
+
+            productItem.appendChild(discountBadge);
+            productItem.appendChild(productImage);
+            productItem.appendChild(productName);
+            productItem.appendChild(quantityDiv);
+            productItem.appendChild(pricesDiv);
+            productItem.appendChild(productButton);
+
+            pricesDiv.appendChild(originalPriceElem);
+            pricesDiv.appendChild(discountedPriceElem);
+
+            if (!product.available) {
+                const notAvailableOverlay = document.createElement('div');
+                notAvailableOverlay.className = 'not-available';
+                notAvailableOverlay.textContent = 'Product Not Available';
+                productItem.appendChild(notAvailableOverlay);
+            }
+
+            const productGrid = document.querySelector('.product-grid');
+            if (productGrid) {
+                productGrid.appendChild(productItem);
             } else {
                 console.error('.product-grid element not found.');
             }
@@ -558,7 +642,7 @@
             }
 
             try {
-                const response = await fetch('https://m1wala1.onrender.com/add-to-cart', {
+                const response = await fetch('/add-to-cart', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -571,17 +655,19 @@
                 if (response.ok) {
                     alert('Product added to cart.');
                 } else {
-                    alert('Failed to add product to cart: ' + (data.msg || data.errors[0].msg));
+                    alert('session expired please login. ' + (data.msg || data.errors[0].msg));
                 }
             } catch (error) {
                 console.error('Error adding item to cart:', error);
-                alert('An error occurred while adding item to cart: ' + error.message);
+                alert('session expired please login.');
             }
         }
 
         document.addEventListener('DOMContentLoaded', () => {
+            // Fetch and render categories
             renderCategories();
 
+            // Handle search input
             const searchInput = document.getElementById('search');
             searchInput.addEventListener('input', async (event) => {
                 const query = event.target.value.trim();
@@ -595,78 +681,7 @@
                             productGrid.innerHTML = '<p>No products found for this search query.</p>';
                         } else {
                             products.forEach(product => {
-                                const originalPrice = parseFloat(product.originalPrice);
-                                const discountedPrice = parseFloat(product.discountedPrice);
-                                const discountPercentage = calculateDiscountPercentage(originalPrice, discountedPrice);
-                                const productItem = document.createElement('div');
-                                productItem.className = 'product-item';
-
-                                const productImage = document.createElement('img');
-                                productImage.src = `${product.image}`;
-                                productImage.alt = product.name;
-                                crossorigin="anonymous";
-
-                                const productName = document.createElement('h3');
-                                productName.textContent = product.name;
-
-                                const discountBadge = document.createElement('div');
-                                discountBadge.className = 'discount';
-                                discountBadge.textContent = `${discountPercentage}% OFF`;
-
-                                const pricesDiv = document.createElement('div');
-                                pricesDiv.className = 'prices';
-
-                                const originalPriceElem = document.createElement('span');
-                                originalPriceElem.className = 'original-price';
-                                originalPriceElem.textContent = `₹${originalPrice.toFixed(2)}`;
-
-                                const discountedPriceElem = document.createElement('span');
-                                discountedPriceElem.className = 'discounted-price';
-                                discountedPriceElem.textContent = `₹${discountedPrice.toFixed(2)}`;
-
-                                const quantityDiv = document.createElement('div');
-                                quantityDiv.className = 'quantity';
-
-                                if (product.quantities && product.quantities.length > 1) {
-                                    quantityDiv.textContent = `${product.quantities[0].quantityValue} ${product.quantities[0].quantityUnit}`;
-                                    productItem.appendChild(discountBadge);
-                                    productItem.appendChild(productImage);
-                                    productItem.appendChild(productName);
-                                    productItem.appendChild(quantityDiv);
-                                    productItem.appendChild(pricesDiv);
-
-                                    const optionsButton = document.createElement('button');
-                                    optionsButton.textContent = 'Options';
-                                    optionsButton.onclick = () => showProductOptions(product);
-                                    productItem.appendChild(optionsButton);
-                                } else {
-                                    const productButton = document.createElement('button');
-                                    productButton.textContent = 'Add to Cart';
-                                    productButton.onclick = () => addToCart(product);
-
-                                    if (product.quantities && product.quantities.length === 1) {
-                                        quantityDiv.textContent = `${product.quantities[0].quantityValue} ${product.quantities[0].quantityUnit}`;
-                                    }
-
-                                    productItem.appendChild(discountBadge);
-                                    productItem.appendChild(productImage);
-                                    productItem.appendChild(productName);
-                                    productItem.appendChild(quantityDiv);
-                                    productItem.appendChild(pricesDiv);
-                                    productItem.appendChild(productButton);
-                                }
-
-                                pricesDiv.appendChild(originalPriceElem);
-                                pricesDiv.appendChild(discountedPriceElem);
-
-                                if (!product.available) {
-                                    const notAvailableOverlay = document.createElement('div');
-                                    notAvailableOverlay.className = 'not-available';
-                                    notAvailableOverlay.textContent = 'Product Not Available';
-                                    productItem.appendChild(notAvailableOverlay);
-                                }
-
-                                productGrid.appendChild(productItem);
+                                renderProductItem(product);
                             });
                         }
                     } else {
@@ -676,6 +691,22 @@
                     renderCategories();
                 }
             });
+
+            // Check for URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const productId = urlParams.get('productId');
+            const subCategoryId = urlParams.get('subCategoryId');
+
+            if (productId && subCategoryId && isValidObjectId(productId) && isValidObjectId(subCategoryId)) {
+                // Fetch and display the specific product
+                renderProducts(subCategoryId).then(() => {
+                    const productElement = document.querySelector(`[data-product-id="${productId}"]`);
+                    if (productElement) {
+                        productElement.scrollIntoView({ behavior: 'smooth' });
+                        productElement.classList.add('highlight');
+                    }
+                });
+            }
         });
 
         const modal = document.getElementById('productOptionsModal');
