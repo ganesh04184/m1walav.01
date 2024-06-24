@@ -213,7 +213,7 @@
                     const itemDiv = document.createElement('div');
                     itemDiv.classList.add('cart-item');
                     itemDiv.dataset.id = item._id; // Use data attribute to store cart item ID
-                    const savings = item.originalPrice - item.price;
+                   const savings = (item.originalPrice - item.price) * item.quantity;
                     totalSavings += savings;
                     itemDiv.innerHTML = `
                         <img src="${item.imageUrl}" alt="${item.productName}" />
