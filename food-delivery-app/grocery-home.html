@@ -58,87 +58,88 @@
             width: 80%;
             margin-top: 10px;
         }
+
         .category-grid {
-            flex-grow: 1; /* Take the remaining width for the product list */
+            flex-grow: 1;
             padding: 20px;
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Responsive grid layout */
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 20px;
-            overflow-y: auto; /* Scroll if content overflows */
-}
+            overflow-y: auto;
+        }
 
-.category-item {
-    border: 1px solid #ddd; /* Border around product items */
-            border-radius: 5px; /* Rounded corners */
+        .category-item {
+            border: 1px solid #ddd;
+            border-radius: 5px;
             padding: 15px;
             text-align: center;
-            background-color: #fff; /* White background for products */
+            background-color: #fff;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             position: relative;
-}
+        }
 
-.category-item img {
-    max-width: 100%;
-    height: auto;
-    border-bottom: 1px solid #ddd;
-    padding-bottom: 10px;
-    margin-bottom: 10px;
-}
+        .category-item img {
+            max-width: 100%;
+            height: auto;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+        }
 
         #content {
             display: flex;
-            height: calc(100vh - 180px); /* Full height minus header and navbar */
+            height: calc(100vh - 180px);
         }
 
         .subcategory-grid {
-            width: 250px; /* Fixed width for the subcategory list */
-            background-color: #f8f8f8; /* Light background color */
-            border-right: 1px solid #ddd; /* Border to separate subcategory and product grids */
+            width: 250px;
+            background-color: #f8f8f8;
+            border-right: 1px solid #ddd;
             padding: 10px;
-            overflow-y: auto; /* Scroll if content overflows */
-            flex-shrink: 0; /* Ensure it doesn't shrink */
-            height: 100%; /* Ensure it takes full height */
+            overflow-y: auto;
+            flex-shrink: 0;
+            height: 100%;
         }
 
         .subcategory-item {
             padding: 10px;
-            margin-bottom: 5px; /* Spacing between subcategories */
+            margin-bottom: 5px;
             cursor: pointer;
             transition: background-color 0.3s;
-            border-radius: 5px; /* Rounded corners */
+            border-radius: 5px;
             display: flex;
             align-items: center;
             text-decoration: none;
-            color: #000; /* Black color for text */
+            color: #000;
             background-color: #fff;
         }
 
         .subcategory-item:hover, .subcategory-item.active {
-            background-color: #e0e0e0; /* Hover and active state color */
+            background-color: #e0e0e0;
         }
 
         .subcategory-item img {
-            max-width: 30px; /* Smaller image size for subcategories */
-            margin-right: 10px; /* Space between image and text */
+            max-width: 30px;
+            margin-right: 10px;
         }
 
         .product-grid {
-            flex-grow: 1; /* Take the remaining width for the product list */
+            flex-grow: 1;
             padding: 20px;
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Responsive grid layout */
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 20px;
-            overflow-y: auto; /* Scroll if content overflows */
+            overflow-y: auto;
         }
 
         .product-item {
-            border: 1px solid #ddd; /* Border around product items */
-            border-radius: 5px; /* Rounded corners */
+            border: 1px solid #ddd;
+            border-radius: 5px;
             padding: 15px;
             text-align: center;
-            background-color: #fff; /* White background for products */
+            background-color: #fff;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
@@ -146,9 +147,9 @@
         }
 
         .product-item img {
-            max-width: 100%; /* Ensure images fit within product item */
+            max-width: 100%;
             height: auto;
-            border-bottom: 1px solid #ddd; /* Border below the image */
+            border-bottom: 1px solid #ddd;
             padding-bottom: 15px;
             margin-bottom: 15px;
         }
@@ -157,10 +158,10 @@
             position: absolute;
             top: 10px;
             left: 10px;
-            background-color: #ff5c5c; /* Red background for discount tag */
+            background-color: #ff5c5c;
             color: white;
             padding: 5px;
-            border-radius: 5px; /* Rounded corners */
+            border-radius: 5px;
             font-weight: bold;
         }
 
@@ -174,26 +175,26 @@
 
         .product-item .original-price {
             text-decoration: line-through;
-            color: #888; /* Grey color for original price */
+            color: #888;
         }
 
         .product-item .discounted-price {
-            color: #28a745; /* Green color for discounted price */
+            color: #28a745;
             font-weight: bold;
         }
 
         .product-item button {
-            background-color: #28a745; /* Green background for button */
+            background-color: #28a745;
             color: white;
             border: none;
             padding: 10px;
-            border-radius: 5px; /* Rounded corners */
+            border-radius: 5px;
             cursor: pointer;
-            margin-top: 10px; /* Space above the button */
+            margin-top: 10px;
         }
 
         .product-item button:hover {
-            background-color: #218838; /* Darker green on hover */
+            background-color: #218838;
         }
 
         .product-item.unavailable {
@@ -266,7 +267,7 @@
         .modal {
             display: none;
             position: fixed;
-            z-index: 1001; /* Make sure it's above the header */
+            z-index: 1001;
             left: 0;
             top: 0;
             width: 100%;
@@ -283,7 +284,7 @@
             border: 1px solid #888;
             width: 80%;
             box-sizing: border-box;
-            max-width: 600px; /* Limit the width to avoid clumsiness */
+            max-width: 600px;
         }
 
         .close {
@@ -330,7 +331,7 @@
         }
 
         .quantity-option button {
-            background-color: #4CAF50; /* Green color for "Add to Cart" button */
+            background-color: #4CAF50;
             border: none;
             color: white;
             padding: 5px 10px;
@@ -401,7 +402,7 @@
     <script>
         async function fetchCategories() {
             try {
-                const response = await fetch('https://m1wala1.onrender.com/api/categories');
+                const response = await fetch('/api/categories');
                 if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
                 return await response.json();
             } catch (error) {
@@ -412,7 +413,7 @@
 
         async function fetchSubcategories(categoryId) {
             try {
-                const response = await fetch(`https://m1wala1.onrender.com/api/subcategories?categoryId=${categoryId}`);
+                const response = await fetch(`/api/subcategories?categoryId=${categoryId}`);
                 if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
                 return await response.json();
             } catch (error) {
@@ -423,11 +424,7 @@
 
         async function fetchProducts(subcategoryId) {
             try {
-                if (!subcategoryId || !isValidObjectId(subcategoryId)) {
-                    throw new Error('Invalid or missing Subcategory ID');
-                }
-
-                const response = await fetch(`https://m1wala1.onrender.com/api/products?subcategoryId=${subcategoryId}`);
+                const response = await fetch(`/api/products?subcategoryId=${subcategoryId}`);
                 if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
                 return await response.json();
             } catch (error) {
@@ -438,7 +435,7 @@
 
         async function searchProducts(query) {
             try {
-                const response = await fetch(`https://m1wala1.onrender.com/api/search?query=${query}`);
+                const response = await fetch(`/api/search?query=${query}`);
                 if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
                 return await response.json();
             } catch (error) {
@@ -457,7 +454,7 @@
             return /^[0-9a-fA-F]{24}$/.test(id);
         }
 
-        async function renderCategories() {
+        async function renderCategories(categoryIdToNavigate = null, subcategoryIdToNavigate = null, productIdToNavigate = null) {
             const categories = await fetchCategories();
             const content = document.getElementById('content');
             content.innerHTML = '<div class="category-grid"></div>';
@@ -467,16 +464,21 @@
                 const categoryItem = document.createElement('div');
                 categoryItem.className = 'category-item';
                 categoryItem.innerHTML = `
-                    <a href="#" onclick="navigateToSubcategories('${category._id}')">
+                    <a href="#" onclick="navigateToSubcategories('${category._id}', '${subcategoryIdToNavigate}', '${productIdToNavigate}')">
                         <img src="${category.image}" alt="${category.name}">
                         <span>${category.name}</span>
                     </a>
                 `;
                 categoryGrid.appendChild(categoryItem);
+
+                // Automatically navigate to the specified category
+                if (categoryIdToNavigate && category._id === categoryIdToNavigate) {
+                    navigateToSubcategories(category._id, subcategoryIdToNavigate, productIdToNavigate);
+                }
             });
         }
 
-        async function navigateToSubcategories(categoryId) {
+        async function navigateToSubcategories(categoryId, subcategoryIdToNavigate = null, productIdToNavigate = null) {
             const subcategories = await fetchSubcategories(categoryId);
             const content = document.getElementById('content');
             content.innerHTML = '<div class="subcategory-grid"></div><div class="product-grid"></div>';
@@ -487,20 +489,21 @@
                 const subcategoryItem = document.createElement('div');
                 subcategoryItem.className = 'subcategory-item';
                 subcategoryItem.innerHTML = `
-                    <a href="#" onclick="renderProducts('${subcategory._id}')">
+                    <a href="#" onclick="renderProducts('${subcategory._id}', '${productIdToNavigate}')">
                         <img src="${subcategory.image}" alt="${subcategory.name}">
                         <span>${subcategory.name}</span>
                     </a>
                 `;
                 subcategoryGrid.appendChild(subcategoryItem);
-            });
 
-            if (subcategories.length > 0) {
-                renderProducts(subcategories[0]._id);
-            }
+                // Automatically navigate to the specified subcategory
+                if (subcategoryIdToNavigate && subcategory._id === subcategoryIdToNavigate) {
+                    renderProducts(subcategory._id, productIdToNavigate);
+                }
+            });
         }
 
-        async function renderProducts(subcategoryId) {
+        async function renderProducts(subcategoryId, productIdToNavigate = null) {
             const products = await fetchProducts(subcategoryId);
             const productGrid = document.querySelector('.product-grid');
             if (productGrid) {
@@ -511,6 +514,15 @@
                 } else {
                     products.forEach(product => {
                         renderProductItem(product);
+
+                        // Automatically scroll to and highlight the specified product
+                        if (productIdToNavigate && product._id === productIdToNavigate) {
+                            const productElement = document.querySelector(`[data-product-id="${product._id}"]`);
+                            if (productElement) {
+                                productElement.scrollIntoView({ behavior: 'smooth' });
+                                productElement.classList.add('highlight');
+                            }
+                        }
                     });
                 }
             } else {
@@ -524,7 +536,7 @@
             const discountPercentage = calculateDiscountPercentage(originalPrice, discountedPrice);
             const productItem = document.createElement('div');
             productItem.className = 'product-item';
-            productItem.dataset.productId = product._id; // Add product ID
+            productItem.dataset.productId = product._id;
 
             const productImage = document.createElement('img');
             productImage.src = `${product.image}`;
@@ -625,48 +637,54 @@
         }
 
         async function addToCart(product, quantity = null) {
-            const item = {
-                productName: product.name,
-                quantity: quantity ? quantity.quantityValue : product.quantities[0].quantityValue,
-                unit: quantity ? quantity.quantityUnit : product.quantities[0].quantityUnit,
-                price: quantity ? parseFloat(quantity.price) : parseFloat(product.quantities[0].price),
-                productId: product._id,
-                quantityId: quantity ? quantity._id : product.quantities[0]._id
-            };
+  // Save the current scroll position
+  localStorage.setItem('scrollPos', window.scrollY);
 
-            const token = localStorage.getItem('token');
+  const item = {
+    productName: product.name,
+    quantity: quantity ? quantity.quantityValue : product.quantities[0].quantityValue,
+    unit: quantity ? quantity.quantityUnit : product.quantities[0].quantityUnit,
+    price: quantity ? parseFloat(quantity.price) : parseFloat(product.quantities[0].price),
+    productId: product._id,
+    quantityId: quantity ? quantity._id : product.quantities[0]._id,
+    categoryId: product.categoryId,
+    subcategoryId: product.subcategoryId
+  };
 
-            if (!token) {
-                alert('You need to log in first.');
-                return;
-            }
+  const token = localStorage.getItem('token');
 
-            try {
-                const response = await fetch('https://m1wala1.onrender.com/add-to-cart', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'x-auth-token': token,
-                    },
-                    body: JSON.stringify(item)
-                });
+  if (!token) {
+    alert('You need to log in first.');
+    return;
+  }
 
-                const data = await response.json();
-                if (response.ok) {
-                    alert('Product added to cart.');
-                } else {
-                    alert('session expired please login. ' + (data.msg || data.errors[0].msg));
-                }
-            } catch (error) {
-                console.error('Error adding item to cart:', error);
-                alert('session expired please login.');
-            }
-        }
+  console.log('Adding to cart:', item);  // Log the item being added to cart
+
+  try {
+    const response = await fetch('/add-to-cart', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-auth-token': token,
+      },
+      body: JSON.stringify(item)
+    });
+
+    const data = await response.json();
+    if (response.ok) {
+      alert('Product added to cart.');
+      window.location.href = '/cart.html';
+    } else {
+      console.error('Error from server:', data);  // Log the error from the server
+      alert('Session expired. Please log in. ' + (data.msg || data.errors[0].msg));
+    }
+  } catch (error) {
+    console.error('Error adding item to cart:', error);  // Log any client-side errors
+    alert('An error occurred. Please try again.');
+  }
+}
 
         document.addEventListener('DOMContentLoaded', () => {
-            // Fetch and render categories
-            renderCategories();
-
             // Handle search input
             const searchInput = document.getElementById('search');
             searchInput.addEventListener('input', async (event) => {
@@ -694,18 +712,17 @@
 
             // Check for URL parameters
             const urlParams = new URLSearchParams(window.location.search);
+            const categoryId = urlParams.get('categoryId');
+            const subcategoryId = urlParams.get('subcategoryId');
             const productId = urlParams.get('productId');
-            const subCategoryId = urlParams.get('subCategoryId');
 
-            if (productId && subCategoryId && isValidObjectId(productId) && isValidObjectId(subCategoryId)) {
-                // Fetch and display the specific product
-                renderProducts(subCategoryId).then(() => {
-                    const productElement = document.querySelector(`[data-product-id="${productId}"]`);
-                    if (productElement) {
-                        productElement.scrollIntoView({ behavior: 'smooth' });
-                        productElement.classList.add('highlight');
-                    }
-                });
+            renderCategories(categoryId, subcategoryId, productId);
+
+            // Restore the scroll position
+            const scrollPos = localStorage.getItem('scrollPos');
+            if (scrollPos) {
+                window.scrollTo(0, parseInt(scrollPos));
+                localStorage.removeItem('scrollPos');
             }
         });
 
