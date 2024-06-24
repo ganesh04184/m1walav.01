@@ -19,9 +19,7 @@
     <meta name="msapplication-TileColor" content="#FFFFFF" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
-    <title>Shopping Cart</title>
     <style>
-        /* Your styles here */
         * {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -82,55 +80,61 @@
             text-align: right;
             margin-top: 20px;
         }
+
         .bill-details {
-          background-color: #fffbcc;
-          padding: 20px;
-          border-radius: 5px;
-          text-align: center;
-          margin-bottom: 20px;
-      }
+            background-color: #fffbcc;
+            padding: 20px;
+            border-radius: 5px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
 
-      .original-price {
-          text-decoration: line-through;
-          color: #999;
-      }
+        .original-price {
+            text-decoration: line-through;
+            color: #999;
+        }
 
-      .proceed {
-          text-align: center;
-          padding: 20px;
-          background-color: #fff;
-          border-radius: 5px;
-          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      }
+        .savings {
+            font-size: 16px;
+            color: #4CAF50;
+            font-weight: bold;
+        }
 
-      .proceed-btn {
-          background-color: #4CAF50;
-          color: #fff;
-          border: none;
-          padding: 15px 30px;
-          cursor: pointer;
-          border-radius: 5px;
-          font-size: 18px;
-      }
+        .proceed {
+            text-align: center;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
 
-      .proceed-btn:hover {
-          background-color: #45a049;
-      }
+        .proceed-btn {
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            padding: 15px 30px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 18px;
+        }
 
-      button {
-          background-color: #4CAF50;
-          color: #fff;
-          border: none;
-          padding: 10px 20px;
-          cursor: pointer;
-          border-radius: 5px;
-          font-size: 16px;
-      }
+        .proceed-btn:hover {
+            background-color: #45a049;
+        }
 
-      button:hover {
-          background-color: #45a049;
-      }
+        button {
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+        }
 
+        button:hover {
+            background-color: #45a049;
+        }
     </style>
 </head>
 <body>
@@ -139,6 +143,9 @@
     </div>
     <div id="empty-cart-message" style="display: none;">Your cart is empty!</div>
     <div class="subtotal" id="total-cost">Subtotal: ₹0.00</div>
+    <div class="bill-details" id="bill-details" style="display: none;">
+        <div class="savings" id="total-savings">You saved: ₹0.00</div>
+    </div>
     <button id="proceed-btn">Proceed to Payment</button>
     <button id="continue-shopping-btn">Continue Shopping</button>
 
@@ -147,6 +154,8 @@
             const cartContainer = document.getElementById('cart-container');
             const emptyCartMessage = document.getElementById('empty-cart-message');
             const totalCostElement = document.getElementById('total-cost');
+            const totalSavingsElement = document.getElementById('total-savings');
+            const billDetails = document.getElementById('bill-details');
 
             function fetchCart() {
                 const token = localStorage.getItem('token'); // Assuming token is stored in localStorage
@@ -157,7 +166,7 @@
                     return;
                 }
 
-                fetch('/api/cart', {
+                fetch('https://m1wala1.onrender.com/api/cart', {
                     headers: {
                         'Content-Type': 'application/json',
                         'x-auth-token': token
@@ -185,6 +194,7 @@
 
             function renderCartItems(cartData) {
                 const { cartItems, subtotal } = cartData;
+                let totalSavings = 0;
 
                 cartContainer.innerHTML = '';
                 if (!Array.isArray(cartItems) || cartItems.length === 0) {
@@ -203,11 +213,13 @@
                     const itemDiv = document.createElement('div');
                     itemDiv.classList.add('cart-item');
                     itemDiv.dataset.id = item._id; // Use data attribute to store cart item ID
+                    const savings = item.originalPrice - item.price;
+                    totalSavings += savings;
                     itemDiv.innerHTML = `
                         <img src="${item.imageUrl}" alt="${item.productName}" />
                         <div class="item-details">
                             <p>${item.productName}</p>
-                            <p>Price: ₹${item.price}</p>
+                            <p><span class="original-price">₹${item.originalPrice.toFixed(2)}</span> ₹${item.price.toFixed(2)}</p>
                             <div class="item-quantity">
                                 <button class="quantity-btn decrease-btn" data-id="${item._id}">-</button>
                                 <span class="quantity">${item.quantity}</span>
@@ -228,6 +240,13 @@
 
                 // Update subtotal display
                 totalCostElement.innerHTML = `Subtotal: ₹${subtotal.toFixed(2)}`;
+                // Update total savings display
+                if (totalSavings > 0) {
+                    billDetails.style.display = 'block';
+                    totalSavingsElement.innerHTML = `You saved: ₹${totalSavings.toFixed(2)}`;
+                } else {
+                    billDetails.style.display = 'none';
+                }
             }
 
             function updateQuantity(itemId, action) {
@@ -245,7 +264,7 @@
                 }
 
                 console.log(`Updating quantity for item ${itemId}, action: ${action}`);
-                fetch(`/api/cart/${itemId}/${action}`, {
+                fetch(`https://m1wala1.onrender.com/api/cart/${itemId}/${action}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
