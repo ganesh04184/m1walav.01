@@ -21,41 +21,15 @@
 
     <title>Shopping Cart</title>
     <style>
+        /* Your styles here */
         * {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
         }
 
-        header {
-            background-color: #fff;
-            padding: 20px;
-            text-align: center;
-            border-bottom: 1px solid #ddd;
-        }
-
         .cart-container {
             padding: 20px;
-        }
-
-        .savings-message {
-            background-color: #e0f8e9;
-            padding: 10px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .review-items {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            margin-bottom: 20px;
-        }
-
-        .review-items h2 {
-            margin-top: 0;
         }
 
         .cart-item {
@@ -69,14 +43,11 @@
             height: 60px;
             border-radius: 5px;
             margin-right: 20px;
+            cursor: pointer;
         }
 
         .item-details {
             flex-grow: 1;
-        }
-
-        .item-details p {
-            margin: 5px 0;
         }
 
         .item-quantity {
@@ -92,6 +63,12 @@
             border-radius: 5px;
             font-size: 16px;
             color: #fff;
+            transition: background-color 0.3s ease;
+        }
+
+        .quantity-btn:disabled {
+            background-color: #ddd;
+            cursor: not-allowed;
         }
 
         .quantity {
@@ -99,129 +76,181 @@
             font-size: 16px;
         }
 
-        .item-price {
-            font-weight: bold;
-            color: #000;
-        }
-
-        .clear-cart {
-            background-color: #ff4d4d;
-            color: #fff;
-            border: none;
-            padding: 10px;
-            cursor: pointer;
-            border-radius: 5px;
-        }
-
-        .additional-options {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            margin-bottom: 20px;
-        }
-
-        .apply-coupon,
-        .bag-option {
-            margin-bottom: 20px;
-        }
-
-        .bill-details {
-            background-color: #fffbcc;
-            padding: 20px;
-            border-radius: 5px;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .original-price {
-            text-decoration: line-through;
-            color: #999;
-        }
-
-        .proceed {
-            text-align: center;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .proceed-btn {
-            background-color: #4CAF50;
-            color: #fff;
-            border: none;
-            padding: 15px 30px;
-            cursor: pointer;
-            border-radius: 5px;
+        .subtotal {
             font-size: 18px;
+            font-weight: bold;
+            text-align: right;
+            margin-top: 20px;
         }
+        .bill-details {
+          background-color: #fffbcc;
+          padding: 20px;
+          border-radius: 5px;
+          text-align: center;
+          margin-bottom: 20px;
+      }
 
-        .proceed-btn:hover {
-            background-color: #45a049;
-        }
+      .original-price {
+          text-decoration: line-through;
+          color: #999;
+      }
 
-        button {
-            background-color: #4CAF50;
-            color: #fff;
-            border: none;
-            padding: 10px 20px;
-            cursor: pointer;
-            border-radius: 5px;
-            font-size: 16px;
-        }
+      .proceed {
+          text-align: center;
+          padding: 20px;
+          background-color: #fff;
+          border-radius: 5px;
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
 
-        button:hover {
-            background-color: #45a049;
-        }
+      .proceed-btn {
+          background-color: #4CAF50;
+          color: #fff;
+          border: none;
+          padding: 15px 30px;
+          cursor: pointer;
+          border-radius: 5px;
+          font-size: 18px;
+      }
 
-        .empty-cart-message {
-            text-align: center;
-            padding: 20px;
-            background-color: #ff4d4d;
-            color: #fff;
-            border-radius: 5px;
-            display: none;
-        }
+      .proceed-btn:hover {
+          background-color: #45a049;
+      }
+
+      button {
+          background-color: #4CAF50;
+          color: #fff;
+          border: none;
+          padding: 10px 20px;
+          cursor: pointer;
+          border-radius: 5px;
+          font-size: 16px;
+      }
+
+      button:hover {
+          background-color: #45a049;
+      }
+
     </style>
 </head>
 <body>
-    <header>
-        <h1>Shopping Cart</h1>
-    </header>
-    <section id="cart-items" class="cart-container">
+    <div class="cart-container" id="cart-container">
         <!-- Cart items will be dynamically added here -->
-    </section>
-    <section class="bill-details">
-        <h2>Subtotal</h2>
-        <p id="subtotal">Subtotal: ₹<span id="subtotal-value">0</span></p>
-    </section>
-    <section class="proceed">
-        <button id="proceed-btn">Proceed to Payment</button>
-    </section>
-    <section class="ContinueShopping">
-        <button id="ContinueShopping-btn">Continue Shopping</button>
-    </section>
-    <div id="empty-cart-message" class="empty-cart-message">
-        Your cart is empty. Please add products to your cart before proceeding to payment.
     </div>
+    <div id="empty-cart-message" style="display: none;">Your cart is empty!</div>
+    <div class="subtotal" id="total-cost">Subtotal: ₹0.00</div>
+    <button id="proceed-btn">Proceed to Payment</button>
+    <button id="continue-shopping-btn">Continue Shopping</button>
+
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const cartItemsContainer = document.getElementById('cart-items');
-            const token = localStorage.getItem('token');
-            if (!token) {
-                alert('You need to log in first.');
-                window.location.href = '/login.html';
-                return;
-            }
-    
+        document.addEventListener('DOMContentLoaded', function () {
+            const cartContainer = document.getElementById('cart-container');
+            const emptyCartMessage = document.getElementById('empty-cart-message');
+            const totalCostElement = document.getElementById('total-cost');
+
             function fetchCart() {
-                fetch('https://m1wala1.onrender.com/api/cart', {
-                    method: 'GET',
+                const token = localStorage.getItem('token'); // Assuming token is stored in localStorage
+                if (!token) {
+                    console.error('No token found, authorization required.');
+                    alert('You need to log in first.');
+                    window.location.href = 'login.html';
+                    return;
+                }
+
+                fetch('/api/cart', {
                     headers: {
                         'Content-Type': 'application/json',
                         'x-auth-token': token
-                    },
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(cartData => {
+                    console.log('Cart items retrieved:', cartData);
+                    renderCartItems(cartData);
+                })
+                .catch(error => {
+                    console.error('Error fetching cart items:', error);
+                    if (error.message.includes('401')) {
+                        alert('Unauthorized. Please log in again.');
+                    } else {
+                        alert('Error fetching cart items. Please try again later.');
+                    }
+                });
+            }
+
+            function renderCartItems(cartData) {
+                const { cartItems, subtotal } = cartData;
+
+                cartContainer.innerHTML = '';
+                if (!Array.isArray(cartItems) || cartItems.length === 0) {
+                    emptyCartMessage.style.display = 'block';
+                    return;
+                }
+
+                emptyCartMessage.style.display = 'none';
+
+                cartItems.forEach(item => {
+                    if (!item._id || !item.subcategoryId || !item.categoryId) {
+                        console.error('Invalid cart item:', item);
+                        return;
+                    }
+                    console.log('Rendering item with ID:', item._id);
+                    const itemDiv = document.createElement('div');
+                    itemDiv.classList.add('cart-item');
+                    itemDiv.dataset.id = item._id; // Use data attribute to store cart item ID
+                    itemDiv.innerHTML = `
+                        <img src="${item.imageUrl}" alt="${item.productName}" />
+                        <div class="item-details">
+                            <p>${item.productName}</p>
+                            <p>Price: ₹${item.price}</p>
+                            <div class="item-quantity">
+                                <button class="quantity-btn decrease-btn" data-id="${item._id}">-</button>
+                                <span class="quantity">${item.quantity}</span>
+                                <button class="quantity-btn increase-btn" data-id="${item._id}">+</button>
+                            </div>
+                        </div>
+                    `;
+                    cartContainer.appendChild(itemDiv);
+
+                    const decreaseBtn = itemDiv.querySelector('.decrease-btn');
+                    const increaseBtn = itemDiv.querySelector('.increase-btn');
+                    const productImage = itemDiv.querySelector('img');
+
+                    decreaseBtn.addEventListener('click', () => updateQuantity(item._id, 'decrease'));
+                    increaseBtn.addEventListener('click', () => updateQuantity(item._id, 'increase'));
+                    productImage.addEventListener('click', () => redirectToProduct(item.productId, item.subcategoryId, item.categoryId));
+                });
+
+                // Update subtotal display
+                totalCostElement.innerHTML = `Subtotal: ₹${subtotal.toFixed(2)}`;
+            }
+
+            function updateQuantity(itemId, action) {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    console.error('No token found, authorization required.');
+                    alert('You need to log in first.');
+                    return;
+                }
+
+                if (!itemId) {
+                    console.error('Invalid item ID:', itemId);
+                    alert('Invalid item ID. Please try again.');
+                    return;
+                }
+
+                console.log(`Updating quantity for item ${itemId}, action: ${action}`);
+                fetch(`/api/cart/${itemId}/${action}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-auth-token': token
+                    }
                 })
                 .then(response => {
                     if (!response.ok) {
@@ -230,107 +259,41 @@
                     }
                     return response.json();
                 })
-                .then(data => {
-                    if (data.msg) {
-                        alert(data.msg);
-                    } else {
-                        renderCartItems(data);
-                    }
+                .then(cartData => {
+                    console.log('Updated cart items:', cartData);
+                    renderCartItems(cartData);
                 })
                 .catch(error => {
-                    console.error('Error fetching cart items:', error);
-                    alert('Error fetching cart items. Please try again later.');
+                    console.error('Error updating cart item quantity:', error);
+                    alert('Error updating cart item quantity. Please try again later.');
                 });
             }
-    
-            function renderCartItems(items) {
-                cartItemsContainer.innerHTML = '';
-                let totalCost = 0;
-    
-                items.forEach(item => {
-                    const itemElement = document.createElement('div');
-                    itemElement.classList.add('cart-item');
-                    itemElement.setAttribute('data-id', item.productId);
-    
-                    const productPrice = parseFloat(item.price) || 0;
-                    const subtotal = productPrice * item.quantity;
-                    totalCost += subtotal;
-    
-                    itemElement.innerHTML = `
-                        <img src="${item.imageUrl}" alt="${item.productName}">
-                        <div class="item-details">
-                            <h4>${item.productName}</h4>
-                            <p>Price: ₹${productPrice.toFixed(2)} per ${item.unit}</p>
-                            <p>Quantity: <span class="quantity">${item.quantity} ${item.unit}</span></p>
-                            <p>Subtotal: ₹${subtotal.toFixed(2)}</p>
-                            <div class="item-quantity">
-                                <button class="quantity-btn increase-quantity" data-id="${item.productId}">+</button>
-                                <span class="quantity">${item.quantity}</span>
-                                <button class="quantity-btn decrease-quantity" data-id="${item.productId}">-</button>
-                            </div>
-                        </div>
-                    `;
-                    cartItemsContainer.appendChild(itemElement);
-                });
-    
-                document.getElementById('subtotal-value').textContent = totalCost.toFixed(2);
-            }
-    
-            cartItemsContainer.addEventListener('click', event => {
-        const target = event.target;
-        if (target.classList.contains('increase-quantity')) {
-            const itemId = target.getAttribute('data-id');
-            updateQuantity(itemId, 'increase');
-        } else if (target.classList.contains('decrease-quantity')) {
-            const itemId = target.getAttribute('data-id');
-            updateQuantity(itemId, 'decrease');
-        }
-    });
-    
-            function updateQuantity(itemId, action) {
-        fetch(`https://m1wala1.onrender.com/api/cart/${itemId}/${action}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'x-auth-token': token,
-            },
-        })
-        .then(response => {
-            if (!response.ok) {
-                console.error(`HTTP error! Status: ${response.status}`);
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            renderCartItems(data);
-        })
-        .catch(error => {
-            console.error('Error updating cart item quantity:', error);
-            alert('session expired please login.');
-        });
-    }
 
-    
-            function proceedToPayment() {
-                const subtotal = parseFloat(document.getElementById('subtotal-value').textContent);
-                if (subtotal === 0) {
-                    document.getElementById('empty-cart-message').style.display = 'block';
+            function redirectToProduct(productId, subcategoryId, categoryId) {
+                if (productId && subcategoryId && categoryId) {
+                    window.location.href = `grocery-home.html?categoryId=${categoryId}&subcategoryId=${subcategoryId}&productId=${productId}`;
                 } else {
-                    localStorage.setItem('Subtotal', subtotal);
-                    window.location.href = "./payment-method.html";
+                    console.error('Invalid product, subcategory, or category ID:', productId, subcategoryId, categoryId);
+                    alert('Invalid product or subcategory. Please try again.');
                 }
             }
-    
-            function continueShopping() {
-                window.location.href = "./grocery-home.html";
+
+            function proceedToPayment() {
+                const subtotalText = totalCostElement.textContent;
+                const totalCost = parseFloat(subtotalText.split('₹')[1]);
+                localStorage.setItem('totalCost', totalCost);
+                window.location.href = "/payment-method.html";
             }
-    
+
+            function continueShopping() {
+                window.location.href = "/grocery-home.html";
+            }
+
             document.getElementById('proceed-btn').addEventListener('click', proceedToPayment);
-            document.getElementById('ContinueShopping-btn').addEventListener('click', continueShopping);
-    
+            document.getElementById('continue-shopping-btn').addEventListener('click', continueShopping);
+
             fetchCart();
         });
-    </script>    
+    </script>
 </body>
 </html>
