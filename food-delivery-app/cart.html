@@ -18,7 +18,6 @@
     <meta name="msapplication-TileImage" content="../assets/images/logo/favicon.png" />
     <meta name="msapplication-TileColor" content="#FFFFFF" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-
     <style>
         * {
             font-family: Arial, sans-serif;
@@ -151,168 +150,170 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const cartContainer = document.getElementById('cart-container');
-            const emptyCartMessage = document.getElementById('empty-cart-message');
-            const totalCostElement = document.getElementById('total-cost');
-            const totalSavingsElement = document.getElementById('total-savings');
-            const billDetails = document.getElementById('bill-details');
+    const cartContainer = document.getElementById('cart-container');
+    const emptyCartMessage = document.getElementById('empty-cart-message');
+    const totalCostElement = document.getElementById('total-cost');
+    const totalSavingsElement = document.getElementById('total-savings');
+    const billDetails = document.getElementById('bill-details');
 
-            function fetchCart() {
-                const token = localStorage.getItem('token'); // Assuming token is stored in localStorage
-                if (!token) {
-                    console.error('No token found, authorization required.');
-                    alert('You need to log in first.');
-                    window.location.href = 'login.html';
-                    return;
-                }
+    function fetchCart() {
+        const token = localStorage.getItem('token'); // Assuming token is stored in localStorage
+        if (!token) {
+            console.error('No token found, authorization required.');
+            alert('You need to log in first.');
+            window.location.href = '/login.html';
+            return;
+        }
 
-                fetch('https://m1wala1.onrender.com/api/cart', {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'x-auth-token': token
-                    }
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! Status: ${response.status}`);
-                    }
-                    return response.json();
-                })
-                .then(cartData => {
-                    console.log('Cart items retrieved:', cartData);
-                    renderCartItems(cartData);
-                })
-                .catch(error => {
-                    console.error('Error fetching cart items:', error);
-                    if (error.message.includes('401')) {
-                        alert('Unauthorized. Please log in again.');
-                    } else {
-                        alert('Error fetching cart items. Please try again later.');
-                    }
-                });
+        fetch('https://m1wala1.onrender.com/api/cart', {
+            headers: {
+                'Content-Type': 'application/json',
+                'x-auth-token': token
             }
-
-            function renderCartItems(cartData) {
-                const { cartItems, subtotal } = cartData;
-                let totalSavings = 0;
-
-                cartContainer.innerHTML = '';
-                if (!Array.isArray(cartItems) || cartItems.length === 0) {
-                    emptyCartMessage.style.display = 'block';
-                    return;
-                }
-
-                emptyCartMessage.style.display = 'none';
-
-                cartItems.forEach(item => {
-                    if (!item._id || !item.subcategoryId || !item.categoryId) {
-                        console.error('Invalid cart item:', item);
-                        return;
-                    }
-                    console.log('Rendering item with ID:', item._id);
-                    const itemDiv = document.createElement('div');
-                    itemDiv.classList.add('cart-item');
-                    itemDiv.dataset.id = item._id; // Use data attribute to store cart item ID
-                   const savings = (item.originalPrice - item.price) * item.quantity;
-                    totalSavings += savings;
-                    itemDiv.innerHTML = `
-                        <img src="${item.imageUrl}" alt="${item.productName}" />
-                        <div class="item-details">
-                            <p>${item.productName}</p>
-                            <p><span class="original-price">₹${item.originalPrice.toFixed(2)}</span> ₹${item.price.toFixed(2)}</p>
-                            <div class="item-quantity">
-                                <button class="quantity-btn decrease-btn" data-id="${item._id}">-</button>
-                                <span class="quantity">${item.quantity}</span>
-                                <button class="quantity-btn increase-btn" data-id="${item._id}">+</button>
-                            </div>
-                        </div>
-                    `;
-                    cartContainer.appendChild(itemDiv);
-
-                    const decreaseBtn = itemDiv.querySelector('.decrease-btn');
-                    const increaseBtn = itemDiv.querySelector('.increase-btn');
-                    const productImage = itemDiv.querySelector('img');
-
-                    decreaseBtn.addEventListener('click', () => updateQuantity(item._id, 'decrease'));
-                    increaseBtn.addEventListener('click', () => updateQuantity(item._id, 'increase'));
-                    productImage.addEventListener('click', () => redirectToProduct(item.productId, item.subcategoryId, item.categoryId));
-                });
-
-                // Update subtotal display
-                totalCostElement.innerHTML = `Subtotal: ₹${subtotal.toFixed(2)}`;
-                // Update total savings display
-                if (totalSavings > 0) {
-                    billDetails.style.display = 'block';
-                    totalSavingsElement.innerHTML = `You saved: ₹${totalSavings.toFixed(2)}`;
-                } else {
-                    billDetails.style.display = 'none';
-                }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
             }
-
-            function updateQuantity(itemId, action) {
-                const token = localStorage.getItem('token');
-                if (!token) {
-                    console.error('No token found, authorization required.');
-                    alert('You need to log in first.');
-                    return;
-                }
-
-                if (!itemId) {
-                    console.error('Invalid item ID:', itemId);
-                    alert('Invalid item ID. Please try again.');
-                    return;
-                }
-
-                console.log(`Updating quantity for item ${itemId}, action: ${action}`);
-                fetch(`https://m1wala1.onrender.com/api/cart/${itemId}/${action}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'x-auth-token': token
-                    }
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        console.error(`HTTP error! Status: ${response.status}`);
-                        throw new Error(`HTTP error! Status: ${response.status}`);
-                    }
-                    return response.json();
-                })
-                .then(cartData => {
-                    console.log('Updated cart items:', cartData);
-                    renderCartItems(cartData);
-                })
-                .catch(error => {
-                    console.error('Error updating cart item quantity:', error);
-                    alert('Error updating cart item quantity. Please try again later.');
-                });
+            return response.json();
+        })
+        .then(cartData => {
+            //console.log('Cart items retrieved:', cartData);
+            renderCartItems(cartData);
+        })
+        .catch(error => {
+            console.error('Error fetching cart items:', error);
+            if (error.message.includes('401')) {
+                alert('Unauthorized. Please log in again.');
+            } else {
+                alert('Error fetching cart items. Please try again later.');
             }
-
-            function redirectToProduct(productId, subcategoryId, categoryId) {
-                if (productId && subcategoryId && categoryId) {
-                    window.location.href = `grocery-home.html?categoryId=${categoryId}&subcategoryId=${subcategoryId}&productId=${productId}`;
-                } else {
-                    console.error('Invalid product, subcategory, or category ID:', productId, subcategoryId, categoryId);
-                    alert('Invalid product or subcategory. Please try again.');
-                }
-            }
-
-            function proceedToPayment() {
-                const subtotalText = totalCostElement.textContent;
-                const totalCost = parseFloat(subtotalText.split('₹')[1]);
-                localStorage.setItem('totalCost', totalCost);
-                window.location.href = "/payment-method.html";
-            }
-
-            function continueShopping() {
-                window.location.href = "/grocery-home.html";
-            }
-
-            document.getElementById('proceed-btn').addEventListener('click', proceedToPayment);
-            document.getElementById('continue-shopping-btn').addEventListener('click', continueShopping);
-
-            fetchCart();
         });
+    }
+
+    function renderCartItems(cartData) {
+    const { cartItems, subtotal } = cartData;
+    let totalSavings = 0;
+
+    cartContainer.innerHTML = '';
+    if (!Array.isArray(cartItems) || cartItems.length === 0) {
+        emptyCartMessage.style.display = 'block';
+        return;
+    }
+
+    emptyCartMessage.style.display = 'none';
+
+    cartItems.forEach(item => {
+        if (!item._id || !item.subcategoryId || !item.categoryId) {
+            console.error('Invalid cart item:', item);
+            return;
+        }
+        console.log('Rendering item with ID:', item._id);
+        const itemDiv = document.createElement('div');
+        itemDiv.classList.add('cart-item');
+        itemDiv.dataset.id = item._id; // Use data attribute to store cart item ID
+        const savings = (item.originalPrice - item.price) * item.quantity;
+        totalSavings += savings;
+
+        itemDiv.innerHTML = `
+            <img src="${item.imageUrl}" alt="${item.productName}" />
+            <div class="item-details">
+                <p>${item.productName}</p>
+                <p><span class="original-price">₹${item.originalPrice.toFixed(2)}</span> ₹${item.price.toFixed(2)}</p>
+                <p>${item.quantityValue !== null && item.quantityUnit !== null ? `${item.quantityValue} ${item.quantityUnit}/₹${item.price.toFixed(2)}` : 'N/A'}</p>
+                <div class="item-quantity">
+                    <button class="quantity-btn decrease-btn" data-id="${item._id}">-</button>
+                    <span class="quantity">${item.quantity}</span>
+                    <button class="quantity-btn increase-btn" data-id="${item._id}">+</button>
+                </div>
+            </div>
+        `;
+        cartContainer.appendChild(itemDiv);
+
+        const decreaseBtn = itemDiv.querySelector('.decrease-btn');
+        const increaseBtn = itemDiv.querySelector('.increase-btn');
+        const productImage = itemDiv.querySelector('img');
+
+        decreaseBtn.addEventListener('click', () => updateQuantity(item._id, 'decrease'));
+        increaseBtn.addEventListener('click', () => updateQuantity(item._id, 'increase'));
+        productImage.addEventListener('click', () => redirectToProduct(item.productId, item.subcategoryId, item.categoryId));
+    });
+
+    // Update subtotal display
+    totalCostElement.innerHTML = `Subtotal: ₹${subtotal.toFixed(2)}`;
+    // Update total savings display
+    if (totalSavings > 0) {
+        billDetails.style.display = 'block';
+        totalSavingsElement.innerHTML = `You saved: ₹${totalSavings.toFixed(2)}`;
+    } else {
+        billDetails.style.display = 'none';
+    }
+}
+
+function updateQuantity(itemId, action) {
+    const token = localStorage.getItem('token');
+    if (!token) {
+        console.error('No token found, authorization required.');
+        alert('You need to log in first.');
+        return;
+    }
+
+    if (!itemId) {
+        console.error('Invalid item ID:', itemId);
+        alert('Invalid item ID. Please try again.');
+        return;
+    }
+
+    console.log(`Updating quantity for item ${itemId}, action: ${action}`);
+    fetch(`https://m1wala1.onrender.com/api/cart/${itemId}/${action}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'x-auth-token': token
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            console.error(`HTTP error! Status: ${response.status}`);
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(cartData => {
+        console.log('Updated cart items:', cartData); // Log cartData here
+        renderCartItems(cartData);
+    })
+    .catch(error => {
+        console.error('Error updating cart item quantity:', error);
+        alert('Error updating cart item quantity. Please try again later.');
+    });
+}
+
+    function redirectToProduct(productId, subcategoryId, categoryId) {
+        if (productId && subcategoryId && categoryId) {
+            window.location.href = `grocery-home.html?categoryId=${categoryId}&subcategoryId=${subcategoryId}&productId=${productId}`;
+        } else {
+            console.error('Invalid product, subcategory, or category ID:', productId, subcategoryId, categoryId);
+            alert('Invalid product or subcategory. Please try again.');
+        }
+    }
+
+    function proceedToPayment() {
+        const subtotalText = totalCostElement.textContent;
+        const totalCost = parseFloat(subtotalText.split('₹')[1]);
+        localStorage.setItem('totalCost', totalCost);
+        window.location.href = "/payment-method.html";
+    }
+
+    function continueShopping() {
+        window.location.href = "/grocery-home.html";
+    }
+
+    document.getElementById('proceed-btn').addEventListener('click', proceedToPayment);
+    document.getElementById('continue-shopping-btn').addEventListener('click', continueShopping);
+
+    fetchCart();
+});
     </script>
 </body>
 </html>
