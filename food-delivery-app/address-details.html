@@ -1,14 +1,90 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Address Details</title>
-    <link rel="stylesheet" href="../assets/css/vendors/bootstrap.min.css" />
-    <link rel="stylesheet" href="../assets/css/style.css" />
-</head>
+    <style>
+        /* General styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
 
+        .custom-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #ffffff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Header styles */
+        .header-panel {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 0;
+        }
+
+        .header-panel a {
+            text-decoration: none;
+            color: #333;
+            font-size: 24px;
+        }
+
+        .header-panel h2 {
+            margin: 0;
+            font-size: 20px;
+        }
+
+        /* Form styles */
+        .auth-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-label {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .form-input input {
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .form-input input:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+
+        .btn {
+            padding: 10px;
+            font-size: 16px;
+            color: #6868f7;
+            background-color: #3a9f0b;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
 <body>
     <!-- header start -->
     <header class="section-t-space">
@@ -27,52 +103,53 @@
     <section class="section-b-space">
         <div class="custom-container">
             <form id="address-form" class="auth-form">
+                <input type="hidden" name="id" />
                 <div class="form-group">
-                    <label class="form-label fw-semibold">Full Name</label>
+                    <label for="firstName" class="form-label fw-semibold">First Name</label>
                     <div class="form-input mb-3">
-                        <input type="text" name="fullname" class="form-control" placeholder="Enter your full name" required />
+                        <input type="text" id="firstName" name="firstName" class="form-control" placeholder="Enter your first name" autocomplete="given-name" required />
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="form-label fw-semibold">Mobile Number</label>
+                    <label for="lastName" class="form-label fw-semibold">Last Name</label>
                     <div class="form-input mb-3">
-                        <input type="text" name="mobile" class="form-control" placeholder="Enter your mobile number" required />
+                        <input type="text" id="lastName" name="lastName" class="form-control" placeholder="Enter your last name" autocomplete="family-name" required />
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="form-label fw-semibold">Flat/House Number</label>
+                    <label for="email" class="form-label fw-semibold">Email</label>
                     <div class="form-input mb-3">
-                        <input type="text" name="flat" class="form-control" placeholder="Enter your flat/house number" required />
+                        <input type="email" id="email" name="email" class="form-control" placeholder="Enter your email" autocomplete="email" required />
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="form-label fw-semibold">Area</label>
+                    <label for="street" class="form-label fw-semibold">Street</label>
                     <div class="form-input mb-3">
-                        <input type="text" name="area" class="form-control" placeholder="Enter your area" required />
+                        <input type="text" id="street" name="street" class="form-control" placeholder="Enter your street" autocomplete="street-address" required />
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="form-label fw-semibold">Landmark</label>
+                    <label for="city" class="form-label fw-semibold">City</label>
                     <div class="form-input mb-3">
-                        <input type="text" name="landmark" class="form-control" placeholder="Enter your landmark" required />
+                        <input type="text" id="city" name="city" class="form-control" placeholder="Enter your city" autocomplete="address-level2" required />
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="form-label fw-semibold">Pincode</label>
+                    <label for="postalCode" class="form-label fw-semibold">Postal Code</label>
                     <div class="form-input mb-3">
-                        <input type="text" name="pincode" class="form-control" placeholder="Enter your pincode" required />
+                        <input type="text" id="postalCode" name="postalCode" class="form-control" placeholder="Enter your postal code" autocomplete="postal-code" required />
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="form-label fw-semibold">Town/City</label>
+                    <label for="country" class="form-label fw-semibold">Country</label>
                     <div class="form-input mb-3">
-                        <input type="text" name="city" class="form-control" placeholder="Enter your town/city" required />
+                        <input type="text" id="country" name="country" class="form-control" placeholder="Enter your country" autocomplete="country-name" required />
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="form-label fw-semibold">State</label>
+                    <label for="phone" class="form-label fw-semibold">Phone</label>
                     <div class="form-input mb-3">
-                        <input type="text" name="state" class="form-control" placeholder="Enter your state" required />
+                        <input type="text" id="phone" name="phone" class="form-control" placeholder="Enter your phone number" autocomplete="tel" required />
                     </div>
                 </div>
                 <button type="submit" class="btn theme-btn save-address w-100">Save Address</button>
@@ -80,50 +157,102 @@
         </div>
     </section>
     <!-- Address form section end -->
-
-    <script src="../assets/js/bootstrap.bundle.min.js"></script>
     <script>
-        document.getElementById('address-form').addEventListener('submit', function(event) {
-            event.preventDefault();
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('address-form');
+            const urlParams = new URLSearchParams(window.location.search);
+            const addressId = urlParams.get('id');
+            const token = localStorage.getItem('token');
 
-            const formData = new FormData(event.target);
-            const data = {
-                fullname: formData.get('fullname'),
-                mobile: formData.get('mobile'),
-                flat: formData.get('flat'),
-                area: formData.get('area'),
-                landmark: formData.get('landmark'),
-                pincode: formData.get('pincode'),
-                city: formData.get('city'),
-                state: formData.get('state')
-            };
+            if (!token) {
+                alert('No token found, please log in first.');
+                window.location.href = '/login.html'; // Redirect to login page
+                return;
+            }
 
-            fetch('http://localhost:3000/address-details', {
-                    method: 'POST',
+            if (addressId) {
+                // If editing an address, pre-fill the form with existing data
+                fetch(`https://m1wala1.onrender.com/api/addresses/${addressId}`, {
                     headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(data)
+                        'x-auth-token': token
+                    }
                 })
                 .then(response => {
                     if (!response.ok) {
-                        throw new Error('Network response was not ok');
+                        return response.json().then(data => { throw new Error(data.msg || 'Error fetching address data'); });
                     }
                     return response.json();
                 })
                 .then(data => {
-                    if (data.success) {
+                    console.log('Fetched address data:', data);
+                    if (data && data._id) {
+                        form.querySelector('input[name="id"]').value = data._id;
+                        form.querySelector('input[name="firstName"]').value = data.firstName || '';
+                        form.querySelector('input[name="lastName"]').value = data.lastName || '';
+                        form.querySelector('input[name="email"]').value = data.email || '';
+                        form.querySelector('input[name="street"]').value = data.street || '';
+                        form.querySelector('input[name="city"]').value = data.city || '';
+                        form.querySelector('input[name="postalCode"]').value = data.postalCode || '';
+                        form.querySelector('input[name="country"]').value = data.country || '';
+                        form.querySelector('input[name="phone"]').value = data.phone || '';
+                    } else {
+                        console.error('Invalid data received:', data);
+                        alert('Error fetching address details.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching address data:', error);
+                    alert(`Error fetching address data: ${error.message}`);
+                });
+            }
+
+            form.addEventListener('submit', function(event) {
+                event.preventDefault();
+
+                const formData = new FormData(event.target);
+                const data = {
+                    firstName: formData.get('firstName'),
+                    lastName: formData.get('lastName'),
+                    email: formData.get('email'),
+                    street: formData.get('street'),
+                    city: formData.get('city'),
+                    postalCode: formData.get('postalCode'),
+                    country: formData.get('country'),
+                    phone: formData.get('phone')
+                };
+
+                console.log('Submitting data:', data);
+
+                fetch('https://m1wala1.onrender.com/api/addresses', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-auth-token': token
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then(response => {
+                    console.log('Response status:', response.status);
+                    if (!response.ok) {
+                        return response.text().then(text => { throw new Error(text) });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Response data:', data);
+                    if (data._id) {
                         alert('Address saved successfully');
-                        window.location.href = 'address.html';
+                        window.location.href = 'payment-method.html';
                     } else {
                         alert('Error saving address');
                     }
                 })
                 .catch(error => {
                     console.error('Error:', error);
+                    alert(`Error saving address: ${error.message}`);
                 });
+            });
         });
     </script>
 </body>
-
 </html>
