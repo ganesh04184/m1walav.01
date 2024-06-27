@@ -571,7 +571,7 @@
 
 async function fetchCartItems(token) {
     try {
-        const response = await fetch('/api/cart', {
+        const response = await fetch('https://m1wala1.onrender.com/api/cart', {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -1047,27 +1047,14 @@ document.addEventListener('DOMContentLoaded', () => {
             itemQuantity.textContent = `Quantity: ${item.quantity || 0}`;
             itemContainer.appendChild(itemQuantity);
 
-            const itemUnit = document.createElement('span');
-            itemUnit.textContent = `Unit: ${item.quantityUnit || 'N/A'}`;
-            itemContainer.appendChild(itemUnit);
-
-            const itemValue = document.createElement('span');
-            itemValue.textContent = `Value: ${item.quantityValue || 0}`;
-            itemContainer.appendChild(itemValue);
-
-            const itemPrice = document.createElement('span');
-            itemPrice.textContent = `₹${item.price || 0}`;
-            itemContainer.appendChild(itemPrice);
+            const itemDetails = document.createElement('span');
+            itemDetails.textContent = `${item.quantityValue || 0} ${item.quantityUnit || 'N/A'}/₹${item.price || 0}`;
+            itemContainer.appendChild(itemDetails);
 
             const decrementButton = document.createElement('button');
             decrementButton.textContent = '-';
-            decrementButton.disabled = item.quantity === 1;
             decrementButton.addEventListener('click', () => {
-                if (item.quantity > 1) {
-                    updateCartQuantity(item._id, 'decrease');
-                } else {
-                    updateCartQuantity(item._id, 'remove');
-                }
+                updateCartQuantity(item._id, item.quantity > 1 ? 'decrease' : 'remove');
             });
             itemContainer.appendChild(decrementButton);
 
@@ -1130,20 +1117,19 @@ document.addEventListener('DOMContentLoaded', () => {
             'Content-Type': 'application/json',
             'x-auth-token': token
         }
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            cart = Array.isArray(data.cartItems) ? data.cartItems : [];
-            updateCart();
-        })
-        .catch(error => console.error('Error fetching cart items:', error));
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        cart = Array.isArray(data.cartItems) ? data.cartItems : [];
+        updateCart();
+    })
+    .catch(error => console.error('Error fetching cart items:', error));
 });
-
     </script>
 </body>
 </html>
