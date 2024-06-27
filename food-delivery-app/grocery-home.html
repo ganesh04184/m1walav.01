@@ -362,14 +362,14 @@
         font-size: 1.2em;
     }
     
-    .cart-container {
-        width: 300px;
-        border: 1px solid #ccc;
-        padding: 10px;
-        margin: 20px auto;
-        max-height: calc(100vh - 150px); /* Adjust to ensure navbar is visible */
-        overflow-y: auto;
-    }
+.cart-container {
+    width: 300px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin: 20px auto;
+    max-height: calc(100vh - 200px); /* Adjust to leave space for navbar and avoid overlap */
+    overflow-y: auto;
+}
     
     .cart-header {
         display: flex;
@@ -428,17 +428,18 @@
     }
     
     .popup-cart-container {
-        background-color: #fff;
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        display: flex;
-        justify-content: space-around;
-        padding: 10px 0;
-        box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
-        z-index: 1000;
-    }    
+    background-color: #fff;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    margin-bottom: 20px; /* Ensure it doesn't cover the content */
+}
     </style>
 </head>
 <body>
