@@ -422,7 +422,7 @@
         object-fit: cover;
     }
     
-    /* Go to cart button */
+/* Go to cart button */
 #go-to-cart {
     display: inline-block;
     padding: 5px 10px; /* Reduced size */
@@ -438,19 +438,22 @@
 #go-to-cart:hover {
     background-color: #0056b3;
 }
-    
-    .popup-cart-container {
+   
+    /* Popup cart container - positioned directly above the navbar */
+.popup-cart-container {
     background-color: #fff;
     position: fixed;
-    bottom: 0;
+    bottom: 30px; /* Directly above the navbar */
     left: 0;
     right: 0;
     display: flex;
-    justify-content: space-around;
-    padding: 10px 0;
+    justify-content: space-between; /* Adjusted to space-between for proper alignment */
+    align-items: center; /* Center items vertically */
+    padding: 10px; /* Adjust padding for proper spacing */
     box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
-    z-index: 1000;
-    margin-bottom: 20px; /* Ensure it doesn't cover the content */
+    z-index: 1001; /* Higher than navbar to ensure visibility */
+    max-width: 100%; /* Same width as navbar */
+    height: 50px; /* Same height as navbar */
 }
     </style>
 </head>
