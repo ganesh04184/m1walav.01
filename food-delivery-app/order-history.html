@@ -23,31 +23,48 @@
     .dark-text {
       font-size: 18px;
       margin-bottom: 5px;
-      color: #3d7d36;
+      color: #35852c;
     }
     .theme-color {
       font-size: 16px;
+      color: #35852c;
     }
     .food-items {
       font-size: 14px;
+      color: #35852c;
     }
     .rating-star {
-      font-size: 12px;
+      font-size: 14px;
+      color: #35852c;
     }
     .timing {
       list-style-type: none;
       padding: 0;
       margin: 0;
     }
-    .rating-stars-container {
+    .rating-container {
       display: flex;
       align-items: center;
+      gap: 10px;
     }
-    .star {
-      color: #ffbf00;
-    }
-    .star:hover {
+    .rating-number {
+      padding: 5px;
+      border: 1px solid #3d7d36;
       cursor: pointer;
+    }
+    .rating-number:hover, .rating-number.selected {
+      background-color: #3d7d36;
+      color: #ffffff;
+    }
+    .review-comment {
+      margin-top: 10px;
+    }
+    .review-comment textarea {
+      width: 100%;
+      height: 80px;
+      border: 1px solid #3d7d36;
+      border-radius: 5px;
+      padding: 10px;
     }
   </style>
 </head>
@@ -70,12 +87,12 @@
         if (!token) {
           throw new Error('No token found');
         }
-        console.log('Fetching orders with token:', token);
+        //console.log('Fetching orders with token:', token);
 
         const response = await fetch('https://m1wala1.onrender.com/api/orders', {
           method: 'GET',
           headers: {
-            'x-auth-token': token, // Updated header
+            'x-auth-token': token,
             'Content-Type': 'application/json'
           }
         });
@@ -87,7 +104,7 @@
         }
 
         const orders = await response.json();
-        console.log('Orders fetched:', orders);
+        //console.log('Orders fetched:', orders);
         displayOrderHistory(orders);
       } catch (error) {
         console.error('Error fetching order history:', error);
@@ -104,17 +121,20 @@
           <div class="col-12">
             <div class="order-box">
               <div>
-                <h5 class="dark-text">Order ID: ${order._id}</h5> <!-- Ensure this matches your order schema -->
+                <h5 class="dark-text">Order ID: ${order._id}</h5>
                 <h5 class="dark-text">Status: ${order.status}</h5>
                 <h5 class="dark-text">Expected Delivery: ${new Date(order.expectedDeliveryDate).toLocaleDateString()}</h5>
-                <h5 class="theme-color">₹${order.total}</h5>
-                <h6 class="food-items mb-2">${order.items.map(item => item.name).join(', ')}</h6>
+                <h5 class="theme-color">Total: ₹${order.total}</h5>
+                <h6 class="food-items mb-2">Items: ${order.items.map(item => `${item.productName} - ${item.quantity} x ₹${item.price}`).join(', ')}</h6>
               </div>
               <div class="rating-star">
                 <ul class="timing">
                   ${order.status === 'Delivered' ? `
-                    <li class="rating-stars-container">
-                      ${generateStarRating(order._id, order.rating)} <!-- Ensure this matches your order schema -->
+                    <li class="rating-container">
+                      ${generateNumberRating(order._id, order.rating)}
+                      <div class="review-comment">
+                        <textarea id="reviewComment-${order._id}" placeholder="Leave a comment...">${order.reviewComment || ''}</textarea>
+                      </div>
                     </li>
                   ` : ''}
                 </ul>
@@ -127,25 +147,26 @@
       });
     }
 
-    function generateStarRating(orderId, rating = 0) {
-      let starsHTML = '';
+    function generateNumberRating(orderId, rating = 0) {
+      let numbersHTML = '';
       for (let i = 1; i <= 5; i++) {
-        const starClass = i <= rating ? 'ri-star-s-fill' : 'ri-star-line';
-        starsHTML += `<span class="star" onclick="rateOrder('${orderId}', ${i})"><i class="${starClass}"></i></span>`;
+        const numberClass = i <= rating ? 'rating-number selected' : 'rating-number';
+        numbersHTML += `<span class="${numberClass}" onclick="rateOrder('${orderId}', ${i})">${i}</span>`;
       }
-      return starsHTML;
+      return numbersHTML;
     }
 
     async function rateOrder(orderId, rating) {
       try {
         const token = localStorage.getItem('token');
+        const reviewComment = document.getElementById(`reviewComment-${orderId}`).value;
         const response = await fetch(`https://m1wala1.onrender.com/api/orders/${orderId}/rate`, {
           method: 'PUT',
           headers: {
-            'x-auth-token': token, // Updated header
+            'x-auth-token': token,
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({ rating })
+          body: JSON.stringify({ rating, reviewComment })
         });
 
         if (!response.ok) {
