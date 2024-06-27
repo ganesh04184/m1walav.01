@@ -372,78 +372,11 @@
         font-size: 1.2em;
     }
     
-.cart-container {
-    width: 300px;
-    border: 1px solid #ccc;
-    padding: 10px;
-    margin: 20px auto;
-    max-height: calc(100vh - 200px); /* Adjust to leave space for navbar and avoid overlap */
-    overflow-y: auto;
-}
-    
-    .cart-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-    
-    .review-container {
-        display: none;
-        margin-top: 10px;
-    }
-    
-    .review-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 5px 0;
-        border-bottom: 1px solid #eee;
-    }
-    
-    .review-item span {
-        flex: 1;
-    }
-    
-    .review-item button {
-        background-color: #f0f0f0;
-        border: none;
-        padding: 5px;
-        margin: 0 5px;
-        cursor: pointer;
-    }
-    
-    .review-item button:disabled {
-        cursor: not-allowed;
-    }
-    
-    .review-item img {
-        width: 50px;
-        height: 50px;
-        object-fit: cover;
-    }
-    
-/* Go to cart button */
-#go-to-cart {
-    display: inline-block;
-    padding: 5px 10px; /* Reduced size */
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    cursor: pointer;
-    text-align: center;
-    border-radius: 4px; /* Added border-radius for better styling */
-    margin-left: 10px; /* Align button to the right */
-}
-
-#go-to-cart:hover {
-    background-color: #0056b3;
-}
-   
-    /* Popup cart container - positioned directly above the navbar */
+/* Popup cart container - positioned directly above the navbar */
 .popup-cart-container {
     background-color: #fff;
     position: fixed;
-    bottom: 30px; /* Directly above the navbar */
+    bottom: 50px; /* Directly above the navbar */
     left: 0;
     right: 0;
     display: flex;
@@ -454,6 +387,78 @@
     z-index: 1001; /* Higher than navbar to ensure visibility */
     max-width: 100%; /* Same width as navbar */
     height: 50px; /* Same height as navbar */
+}
+
+/* Cart container */
+.cart-container {
+    background-color: #fff;
+    width: 100%; /* Full width */
+    padding: 10px;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    bottom: 50px; /* Directly above the navbar */
+    left: 0;
+    right: 0;
+    z-index: 1001; /* Higher than navbar to ensure visibility */
+    overflow-y: auto;
+    max-height: calc(100vh - 60px); /* Adjust to leave space for navbar */
+}
+
+/* Go to cart button */
+#go-to-cart {
+    display: inline-block;
+    padding: 5px 10px; /* Reduced size */
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    text-align: center;
+    border-radius: 4px; /* Added border-radius for better styling */
+    margin-right: 10px; /* Align button to the left of toggle button */
+}
+
+#go-to-cart:hover {
+    background-color: #0056b3;
+}
+
+/* Cart header */
+.cart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+/* Clear any space between popup-cart-container and navbar-menu */
+body {
+    margin: 0;
+    padding: 0;
+}
+
+/* Cart count */
+.cart-count {
+    font-size: 1.2em;
+    color: #28a745;
+    font-weight: bold;
+}
+
+/* Review item buttons */
+.review-item button {
+    background-color: #f0f0f0;
+    border: none;
+    padding: 5px;
+    margin: 0 5px;
+    cursor: pointer;
+}
+
+.review-item button:disabled {
+    cursor: not-allowed;
+}
+
+.review-item img {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
 }
     </style>
 </head>
