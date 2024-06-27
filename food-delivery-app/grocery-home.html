@@ -141,6 +141,8 @@
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 20px;
             overflow-y: auto;
+            max-height: calc(100vh - 200px); /* Adjust to leave space for navbar and avoid overlap */
+            margin-bottom: 60px; /* Leave space for navbar */
         }
         .product-item {
             border: 1px solid #ddd;
