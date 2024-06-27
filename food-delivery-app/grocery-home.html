@@ -26,25 +26,29 @@
     }
     
     header {
-        background-color: #4CAF50;
-        color: white;
-        padding: 10px;
-        text-align: center;
-        position: sticky;
-        top: 0;
-        z-index: 1000;
-    }
-    
-    .header-top {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-    
-    .header-top h1 {
-        margin: 0;
-        font-size: 1.5em;
-    }
+    background-color: #205dee;
+    color: #fff;
+    padding: 10px;
+    text-align: center;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+}
+
+.header-top h1 {
+    margin: 0;
+    font-size: 1.5em;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
     
     .logo {
         width: 50px;
