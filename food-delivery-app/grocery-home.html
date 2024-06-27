@@ -102,134 +102,121 @@
         margin-bottom: 10px;
     }
     
-    .subcategory-grid {
-        width: 250px;
-        background-color: #f8f8f8;
-        border-right: 1px solid #ddd;
-        padding: 10px;
-        overflow-y: auto;
-        flex-shrink: 0;
-        height: 100%;
-    }
-    
-    .subcategory-item {
-        padding: 10px;
-        margin-bottom: 5px;
-        cursor: pointer;
-        transition: background-color 0.3s;
-        border-radius: 5px;
-        display: flex;
-        align-items: center;
-        text-decoration: none;
-        color: #000;
-        background-color: #fff;
-    }
-    
-    .subcategory-item:hover, .subcategory-item.active {
-        background-color: #e0e0e0;
-    }
-    
-    .subcategory-item img {
-        max-width: 30px;
-        margin-right: 10px;
-    }
-    
-    .product-grid {
-        flex-grow: 1;
-        padding: 20px;
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-        gap: 20px;
-        overflow-y: auto;
-        max-height: 100vh;
-        margin-bottom: 40px;
-    }
-    
-    .product-item {
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        padding: 15px;
-        text-align: center;
-        background-color: #fff;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        position: relative;
-    }
-    
-    .product-item img {
-        max-width: 100%;
-        height: auto;
-        border-bottom: 1px solid #ddd;
-        padding-bottom: 15px;
-        margin-bottom: 15px;
-    }
-    
-    .product-item .discount {
-        position: absolute;
-        top: 10px;
-        left: 10px;
-        background-color: #ff5c5c;
-        color: white;
-        padding: 5px;
-        border-radius: 5px;
-        font-weight: bold;
-    }
-    
-    .product-item .prices {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 10px;
-        margin-top: 10px;
-    }
-    
-    .product-item .original-price {
-        text-decoration: line-through;
-        color: #888;
-    }
-    
-    .product-item .discounted-price {
-        color: #28a745;
-        font-weight: bold;
-    }
-    
-    .product-item button {
-        background-color: #28a745;
-        color: white;
-        border: none;
-        padding: 10px;
-        border-radius: 5px;
-        cursor: pointer;
-        margin-top: 10px;
-    }
-    
-    .product-item button:hover {
-        background-color: #218838;
-    }
-    
-    .product-item.unavailable {
-        background-color: #f8d7da;
-        opacity: 0.6;
-        pointer-events: none;
-    }
-    
-    .product-item .not-available {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background-color: rgba(255, 255, 255, 0.8);
-        color: red;
-        font-size: 1.5em;
-        font-weight: bold;
-        text-align: center;
-    }
-    
+    #content {
+            display: flex;
+            height: calc(100vh - 180px);
+        }
+        .subcategory-grid {
+            width: 250px;
+            background-color: #f8f8f8;
+            border-right: 1px solid #ddd;
+            padding: 10px;
+            overflow-y: auto;
+            flex-shrink: 0;
+            height: 100%;
+        }
+        .subcategory-item {
+            padding: 10px;
+            margin-bottom: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: #000;
+            background-color: #fff;
+        }
+        .subcategory-item:hover, .subcategory-item.active {
+            background-color: #e0e0e0;
+        }
+        .subcategory-item img {
+            max-width: 30px;
+            margin-right: 10px;
+        }
+        .product-grid {
+            flex-grow: 1;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            overflow-y: auto;
+        }
+        .product-item {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            text-align: center;
+            background-color: #fff;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+        }
+        .product-item img {
+            max-width: 100%;
+            height: auto;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+        }
+        .product-item .discount {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: #ff5c5c;
+            color: white;
+            padding: 5px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .product-item .prices {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .product-item .original-price {
+            text-decoration: line-through;
+            color: #888;
+        }
+        .product-item .discounted-price {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .product-item button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .product-item button:hover {
+            background-color: #218838;
+        }
+        .product-item.unavailable {
+            background-color: #f8d7da;
+            opacity: 0.6;
+            pointer-events: none;
+        }
+        .product-item .not-available {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(255, 255, 255, 0.8);
+            color: red;
+            font-size: 1.5em;
+            font-weight: bold;
+            text-align: center;
+        }
     .navbar-menu {
         background-color: #fff;
         position: fixed;
