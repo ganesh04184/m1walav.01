@@ -291,11 +291,23 @@
   
       <div class="navbar-menu">
         <ul>
-          <li><a href="grocery-home.html" class="icon"><img class="unactive" src="../assets/images/svg/grocery.svg" alt="grocery" /><img class="active" src="../assets/images/svg/grocery-fill.svg" alt="grocery" /><span>Grocery</span></a></li>
-          <li><a href="cart.html" class="icon"><img class="unactive" src="../assets/images/svg/pharmacy.svg" alt="pharmacy" /><img class="active" src="../assets/images/svg/pharmacy-fill.svg" alt="cart" /><span>Cart</span></a></li>
-          <li class="active"><a href="profile.html" class="icon"><img class="unactive" src="../assets/images/svg/user.svg" alt="user" /><img class="active" src="../assets/images/svg/user-fill.svg" alt="user" /><span>Profile</span></a></li>
+            <li class="active">
+                <a href="grocery-home.html" class="icon">
+                    <span>Grocery</span>
+                </a>
+            </li>
+            <li>
+                <a href="cart.html" class="icon">
+                    <span>Cart</span>
+                </a>
+            </li>
+            <li>
+                <a href="profile.html" class="icon">
+                    <span>Profile</span>
+                </a>
+            </li>
         </ul>
-      </div>
+    </div>
   
       <script>
         function setLoading(isLoading) {
@@ -316,7 +328,7 @@ function logout() {
     localStorage.removeItem('token');
     localStorage.removeItem('userId');
     alert('Logged out successfully.');
-    window.location.href = 'login.html';
+    window.location.href = '/login.html';
 }
 
 // Function to fetch user profile
@@ -327,7 +339,7 @@ function fetchUserProfile() {
 
     if (!token || !userId) {
         alert('No token or user ID found. Redirecting to login page.');
-        window.location.href = 'login.html';
+        window.location.href = '/login.html';
         return;
     }
 
@@ -339,20 +351,20 @@ function fetchUserProfile() {
         }
     })
     .then(response => {
-        console.log('Fetch response status:', response.status);
+        //console.log('Fetch response status:', response.status);
         if (response.status === 401) {
             alert('Unauthorized request. Redirecting to login page.');
-            window.location.href = 'login.html';
+            window.location.href = '/login.html';
             return;
         } else if (response.status === 404) {
             alert('User not found. Redirecting to login page.');
-            window.location.href = 'login.html';
+            window.location.href = '/login.html';
             return;
         }
         return response.json();
     })
     .then(data => {
-        console.log('Fetched user data:', data);
+        //console.log('Fetched user data:', data);
         if (data && data.name && data.email) {
             document.getElementById('profileName').innerHTML = `<h5>${data.name}</h5><h6>${data.email}</h6>`;
             if (data.mobile) {
@@ -382,7 +394,7 @@ function updateMobile(event) {
 
     if (!token || !userId) {
         alert('No token or user ID found. Redirecting to login page.');
-        window.location.href = 'login.html';
+        window.location.href = '/login.html';
         return;
     }
 
@@ -396,7 +408,7 @@ function updateMobile(event) {
     })
     .then(response => response.json())
     .then(data => {
-        console.log('Updated user data:', data);
+        //console.log('Updated user data:', data);
         if (data && data.mobile) {
             alert('Mobile number updated successfully.');
         } else {
