@@ -66,6 +66,17 @@
       border-radius: 5px;
       padding: 10px;
     }
+    .product-image {
+      width: 50px;
+      height: 50px;
+      object-fit: cover;
+      border: 1px solid #3d7d36;
+      margin-right: 10px;
+    }
+    .item-link {
+      display: flex;
+      align-items: center;
+    }
   </style>
 </head>
 <body>
@@ -87,7 +98,7 @@
         if (!token) {
           throw new Error('No token found');
         }
-        //console.log('Fetching orders with token:', token);
+        console.log('Fetching orders with token:', token);
 
         const response = await fetch('https://m1wala1.onrender.com/api/orders', {
           method: 'GET',
@@ -104,7 +115,7 @@
         }
 
         const orders = await response.json();
-        //console.log('Orders fetched:', orders);
+        console.log('Orders fetched:', orders);
         displayOrderHistory(orders);
       } catch (error) {
         console.error('Error fetching order history:', error);
@@ -117,6 +128,21 @@
       orderHistoryContainer.innerHTML = '';
 
       orders.forEach(order => {
+        const itemsHTML = order.items.map(item => {
+          const productId = item.productId && item.productId._id ? item.productId._id : null;
+          const subcategoryId = item.subcategoryId && item.subcategoryId._id ? item.subcategoryId._id : null;
+          const categoryId = item.categoryId && item.categoryId._id ? item.categoryId._id : null;
+          const productName = item.productName ? item.productName : 'Unknown Product';
+          const productImageSrc = item.productId && item.productId.image ? item.productId.image : '/images/placeholder.jpg';
+
+          return `
+            <a href="javascript:redirectToProduct('${productId}', '${subcategoryId}', '${categoryId}')" class="item-link">
+              <img class="product-image" src="${productImageSrc}" alt="${productName}">
+              ${productName} - ${item.quantity} x ₹${item.price}
+            </a>
+          `;
+        }).join(', ');
+
         const orderHTML = `
           <div class="col-12">
             <div class="order-box">
@@ -125,7 +151,7 @@
                 <h5 class="dark-text">Status: ${order.status}</h5>
                 <h5 class="dark-text">Expected Delivery: ${new Date(order.expectedDeliveryDate).toLocaleDateString()}</h5>
                 <h5 class="theme-color">Total: ₹${order.total}</h5>
-                <h6 class="food-items mb-2">Items: ${order.items.map(item => `${item.productName} - ${item.quantity} x ₹${item.price}`).join(', ')}</h6>
+                <h6 class="food-items mb-2">Items: ${itemsHTML}</h6>
               </div>
               <div class="rating-star">
                 <ul class="timing">
@@ -170,16 +196,22 @@
         });
 
         if (!response.ok) {
-          const errorText = await response.text();
-          console.error('Response error text:', errorText);
           throw new Error('Failed to rate order');
         }
 
-        alert(`You rated the product ${rating} out of 5`);
         fetchOrderHistory();
       } catch (error) {
         console.error('Error rating order:', error);
         alert('Error rating order. Please try again later.');
+      }
+    }
+
+    function redirectToProduct(productId, subcategoryId, categoryId) {
+      if (productId && subcategoryId && categoryId) {
+        window.location.href = `grocery-home.html?categoryId=${categoryId}&subcategoryId=${subcategoryId}&productId=${productId}`;
+      } else {
+        console.error('Invalid product, subcategory, or category ID:', productId, subcategoryId, categoryId);
+        alert('Invalid product or subcategory. Please try again.');
       }
     }
   </script>
