@@ -245,7 +245,7 @@
             // Fetch and display categories
             const fetchCategories = async () => {
                 try {
-                    const response = await fetch('/api/categories');
+                    const response = await fetch('https://m1wala1.onrender.com/api/categories');
                     if (!response.ok) throw new Error('Failed to fetch categories');
                     const categories = await response.json();
                     return categories;
@@ -257,7 +257,7 @@
 
             const fetchSubcategories = async (categoryId) => {
                 try {
-                    const response = await fetch(`/api/subcategories?categoryId=${categoryId}`);
+                    const response = await fetch(`https://m1wala1.onrender.com/api/subcategories?categoryId=${categoryId}`);
                     if (!response.ok) throw new Error('Failed to fetch subcategories');
                     const subcategories = await response.json();
                     return subcategories;
@@ -269,7 +269,7 @@
 
             const fetchProducts = async (subcategoryId) => {
                 try {
-                    const response = await fetch(`/api/products?subcategoryId=${subcategoryId}`);
+                    const response = await fetch(`https://m1wala1.onrender.com/api/products?subcategoryId=${subcategoryId}`);
                     if (!response.ok) throw new Error('Failed to fetch products');
                     const products = await response.json();
                     return products;
@@ -466,7 +466,7 @@
             // Add category function
             const addCategory = async (name, imageUrl) => {
                 try {
-                    const response = await fetch('/api/categories', {
+                    const response = await fetch('https://m1wala1.onrender.com/api/categories', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ name, imageUrl })
@@ -480,7 +480,7 @@
             // Add subcategory function
             const addSubcategory = async (name, imageUrl, categoryId) => {
                 try {
-                    const response = await fetch('/api/subcategories', {
+                    const response = await fetch('https://m1wala1.onrender.com/api/subcategories', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ name, imageUrl, categoryId })
@@ -494,7 +494,7 @@
             // Add product function
             const addProduct = async (name, categoryId, subcategoryId, imageUrl, quantities) => {
                 try {
-                    const response = await fetch('/api/products', {
+                    const response = await fetch('https://m1wala1.onrender.com/api/products', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ name, categoryId, subcategoryId, imageUrl, quantities })
@@ -508,7 +508,7 @@
             // Delete category function
             window.deleteCategory = async (categoryId) => {
                 try {
-                    const response = await fetch(`/api/categories/${categoryId}`, { method: 'DELETE' });
+                    const response = await fetch(`https://m1wala1.onrender.com/api/categories/${categoryId}`, { method: 'DELETE' });
                     if (!response.ok) throw new Error('Failed to delete category');
                     populateCategories();
                 } catch (error) {
@@ -519,7 +519,7 @@
             // Delete subcategory function
             window.deleteSubcategory = async (subcategoryId) => {
                 try {
-                    const response = await fetch(`/api/subcategories/${subcategoryId}`, { method: 'DELETE' });
+                    const response = await fetch(`https://m1wala1.onrender.com/api/subcategories/${subcategoryId}`, { method: 'DELETE' });
                     if (!response.ok) throw new Error('Failed to delete subcategory');
                     subcategoryList.innerHTML = '';
                 } catch (error) {
@@ -530,7 +530,7 @@
             // Delete product function
             window.deleteProduct = async (productId) => {
                 try {
-                    const response = await fetch(`/api/products/${productId}`, { method: 'DELETE' });
+                    const response = await fetch(`https://m1wala1.onrender.com/api/products/${productId}`, { method: 'DELETE' });
                     if (!response.ok) throw new Error('Failed to delete product');
                     productList.innerHTML = '';
                 } catch (error) {
@@ -541,7 +541,7 @@
             // Toggle product availability function
             window.toggleAvailability = async (productId) => {
                 try {
-                    const response = await fetch(`/api/products/${productId}/toggle-availability`, { method: 'PATCH' });
+                    const response = await fetch(`https://m1wala1.onrender.com/api/products/${productId}/toggle-availability`, { method: 'PATCH' });
                     if (!response.ok) throw new Error('Failed to toggle availability');
                     viewProducts(document.getElementById('product-subcategory').value);
                 } catch (error) {
@@ -553,7 +553,7 @@
              // Fetch and populate product details for editing
         window.editProduct = async (productId) => {
             try {
-                const response = await fetch(`/api/products/${productId}`);
+                const response = await fetch(`https://m1wala1.onrender.com/api/products/${productId}`);
                 if (!response.ok) throw new Error('Failed to fetch product details');
                 const product = await response.json();
 
@@ -610,7 +610,7 @@
                     });
 
                     try {
-                        const response = await fetch(`/api/products/${productId}`, {
+                        const response = await fetch(`https://m1wala1.onrender.com/api/products/${productId}`, {
                             method: 'PUT',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({ name, categoryId, subcategoryId, imageUrl, quantities })
