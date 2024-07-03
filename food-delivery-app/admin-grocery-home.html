@@ -33,10 +33,6 @@
             margin-bottom: 20px;
         }
 
-        .banner-list, .logo-list {
-            margin-top: 20px;
-        }
-
         .hidden {
             display: none;
         }
@@ -124,714 +120,519 @@
             margin-top: 10px;
             color: green;
         }
+
+        #product-modal, #category-modal, #subcategory-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            z-index: 1000;
+            display: none;
+        }
+
+        #product-modal form, #category-modal form, #subcategory-modal form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            z-index: 999;
+        }
     </style>
 </head>
 <body>
-    <header>
-        <h1>Admin - Manage Grocery</h1>
-    </header>
-    <main>
+    <h1>Admin Panel</h1>
+
+    <div>
         <button id="add-category-btn">Add Category</button>
         <button id="add-subcategory-btn">Add Subcategory</button>
         <button id="add-product-btn">Add Product</button>
-      
-        <form id="category-form" style="display:none;">
+    </div>
+
+    <!-- Modals for adding category, subcategory, and product -->
+    <div id="category-modal" style="display:none;">
+        <form id="category-form">
+            <h2>Add Category</h2>
             <label for="category-name">Category Name:</label>
             <input type="text" id="category-name" name="name" required>
-            <label for="category-image-url">Category Image URL:</label>
+            <label for="category-image-url">Image URL:</label>
             <input type="url" id="category-image-url" name="imageUrl" required>
-            <button type="submit">Add Category</button>
-          </form>          
-      
-          <form id="subcategory-form" style="display:none;">
+            <button type="submit">Submit</button>
+            <button type="button" class="close-modal">Close</button>
+        </form>
+    </div>
+
+    <div id="subcategory-modal" style="display:none;">
+        <form id="subcategory-form">
+            <h2>Add Subcategory</h2>
             <label for="subcategory-name">Subcategory Name:</label>
             <input type="text" id="subcategory-name" name="name" required>
-            <label for="subcategory-image-url">Subcategory Image URL:</label>
+            <label for="subcategory-image-url">Image URL:</label>
             <input type="url" id="subcategory-image-url" name="imageUrl" required>
             <label for="category-id">Category:</label>
             <select id="category-id" name="categoryId" required></select>
-            <button type="submit">Add Subcategory</button>
-          </form>          
-      
-          <form id="product-form" style="display:none;">
+            <button type="submit">Submit</button>
+            <button type="button" class="close-modal">Close</button>
+        </form>
+    </div>
+
+    <div id="product-modal" style="display:none;">
+        <form id="product-form">
+            <h2>Add Product</h2>
             <label for="product-name">Product Name:</label>
             <input type="text" id="product-name" name="name" required>
             <label for="product-category">Category:</label>
             <select id="product-category" name="categoryId" required></select>
             <label for="product-subcategory">Subcategory:</label>
             <select id="product-subcategory" name="subcategoryId" required></select>
-            <label for="product-image-url">Product Image URL:</label>
+            <label for="product-image-url">Image URL:</label>
             <input type="url" id="product-image-url" name="imageUrl" required>
-            
-            <div id="quantity-container">
-              <div class="quantity-entry">
-                <select class="quantity-unit" name="quantity-unit[]" required>
-                  <option value="kg">kg</option>
-                  <option value="grams">grams</option>
-                  <option value="units">units</option>
-                  <option value="ml">ml</option>
-                </select>
-                <input type="number" class="quantity-value" name="quantity-value[]" min="1" required>
-                <input type="number" class="quantity-price" name="quantity-price[]" step="0.01" placeholder="Price" required>
-                <input type="number" class="quantity-original-price" name="quantity-original-price[]" step="0.01" placeholder="Original Price" required>
-                <input type="number" class="quantity-discounted-price" name="quantity-discounted-price[]" step="0.01" placeholder="Discounted Price" required>
-                <button type="button" class="remove-quantity">Remove</button>
-              </div>
-            </div>
-            
+            <div id="quantity-container"></div>
             <button type="button" id="add-quantity">Add More Quantity</button>
             <button type="submit">Add Product</button>
-          </form>          
-      
-        <div class="category-list" id="category-list"></div>
-        <div class="subcategory-list" id="subcategory-list"></div>
-        <div class="product-list" id="product-list"></div>
-      
-      </main>
-      
-      <script>
-      document.addEventListener('DOMContentLoaded', function () {
-  const addCategoryBtn = document.getElementById('add-category-btn');
-  const addSubcategoryBtn = document.getElementById('add-subcategory-btn');
-  const addProductBtn = document.getElementById('add-product-btn');
-  const categoryForm = document.getElementById('category-form');
-  const subcategoryForm = document.getElementById('subcategory-form');
-  const productForm = document.getElementById('product-form');
+            <button type="button" class="close-modal">Close</button>
+        </form>
+    </div>
 
-  if (addCategoryBtn) {
-    addCategoryBtn.addEventListener('click', () => {
-      categoryForm.style.display = 'block';
-    });
-  }
+    <div class="modal-backdrop" style="display:none;"></div>
 
-  if (addSubcategoryBtn) {
-    addSubcategoryBtn.addEventListener('click', () => {
-      subcategoryForm.style.display = 'block';
-      renderCategoriesForSubcategory();
-    });
-  }
+    <div id="category-list">
+        <h2>Categories</h2>
+        <!-- Categories will be listed here -->
+    </div>
 
-  if (addProductBtn) {
-    addProductBtn.addEventListener('click', () => {
-      productForm.style.display = 'block';
-      renderCategoriesForProduct();
-    });
-  }
+    <div id="subcategory-list">
+        <h2>Subcategories</h2>
+        <!-- Subcategories will be listed here -->
+    </div>
 
-  const addQuantityBtn = document.getElementById('add-quantity');
-  if (addQuantityBtn) {
-    addQuantityBtn.addEventListener('click', function () {
-      const quantityContainer = document.getElementById('quantity-container');
-      if (quantityContainer) {
-        const quantityEntry = document.createElement('div');
-        quantityEntry.classList.add('quantity-entry');
-        quantityEntry.innerHTML = `
-          <select class="quantity-unit" name="quantity-unit[]" required>
-            <option value="kg">kg</option>
-            <option value="grams">grams</option>
-            <option value="units">units</option>
-            <option value="ml">ml</option>
-          </select>
-          <input type="number" class="quantity-value" name="quantity-value[]" min="1" required>
-          <input type="number" class="quantity-price" name="quantity-price[]" step="0.01" placeholder="Price" required>
-          <input type="number" class="quantity-original-price" name="quantity-original-price[]" step="0.01" placeholder="Original Price" required>
-          <input type="number" class="quantity-discounted-price" name="quantity-discounted-price[]" step="0.01" placeholder="Discounted Price" required>
-          <button type="button" class="remove-quantity">Remove</button>
-        `;
-        quantityEntry.querySelector('.remove-quantity').addEventListener('click', function () {
-          quantityContainer.removeChild(quantityEntry);
+    <div id="product-list">
+        <h2>Products</h2>
+        <!-- Products will be listed here -->
+    </div>
+
+    <p id="form-message" style="display:none;"></p>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const addCategoryBtn = document.getElementById('add-category-btn');
+            const addSubcategoryBtn = document.getElementById('add-subcategory-btn');
+            const addProductBtn = document.getElementById('add-product-btn');
+            const categoryModal = document.getElementById('category-modal');
+            const subcategoryModal = document.getElementById('subcategory-modal');
+            const productModal = document.getElementById('product-modal');
+            const modalBackdrop = document.querySelector('.modal-backdrop');
+            const categoryForm = document.getElementById('category-form');
+            const subcategoryForm = document.getElementById('subcategory-form');
+            const productForm = document.getElementById('product-form');
+
+            const categoryList = document.getElementById('category-list');
+            const subcategoryList = document.getElementById('subcategory-list');
+            const productList = document.getElementById('product-list');
+
+            // Fetch and display categories
+            const fetchCategories = async () => {
+                try {
+                    const response = await fetch('/api/categories');
+                    if (!response.ok) throw new Error('Failed to fetch categories');
+                    const categories = await response.json();
+                    return categories;
+                } catch (error) {
+                    console.error('Error fetching categories:', error);
+                    return [];
+                }
+            };
+
+            const fetchSubcategories = async (categoryId) => {
+                try {
+                    const response = await fetch(`/api/subcategories?categoryId=${categoryId}`);
+                    if (!response.ok) throw new Error('Failed to fetch subcategories');
+                    const subcategories = await response.json();
+                    return subcategories;
+                } catch (error) {
+                    console.error('Error fetching subcategories:', error);
+                    return [];
+                }
+            };
+
+            const fetchProducts = async (subcategoryId) => {
+                try {
+                    const response = await fetch(`/api/products?subcategoryId=${subcategoryId}`);
+                    if (!response.ok) throw new Error('Failed to fetch products');
+                    const products = await response.json();
+                    return products;
+                } catch (error) {
+                    console.error('Error fetching products:', error);
+                    return [];
+                }
+            };
+
+            // Populate category list
+            const populateCategories = async () => {
+                const categories = await fetchCategories();
+                categoryList.innerHTML = '';
+                categories.forEach(category => {
+                    const categoryItem = document.createElement('div');
+                    categoryItem.innerHTML = `
+                        <h3>${category.name}</h3>
+                        <img src="${category.image}" alt="${category.name}" width="100">
+                        <button onclick="viewSubcategories('${category._id}')">View Subcategories</button>
+                        <button onclick="deleteCategory('${category._id}')">Delete</button>
+                    `;
+                    categoryList.appendChild(categoryItem);
+                });
+            };
+
+            // Populate subcategory list
+            window.viewSubcategories = async (categoryId) => {
+                const subcategories = await fetchSubcategories(categoryId);
+                subcategoryList.innerHTML = '';
+                subcategories.forEach(subcategory => {
+                    const subcategoryItem = document.createElement('div');
+                    subcategoryItem.innerHTML = `
+                        <h4>${subcategory.name}</h4>
+                        <img src="${subcategory.image}" alt="${subcategory.name}" width="100">
+                        <button onclick="viewProducts('${subcategory._id}')">View Products</button>
+                        <button onclick="deleteSubcategory('${subcategory._id}')">Delete</button>
+                    `;
+                    subcategoryList.appendChild(subcategoryItem);
+                });
+            };
+
+            // Populate product list
+            window.viewProducts = async (subcategoryId) => {
+                const products = await fetchProducts(subcategoryId);
+                productList.innerHTML = '';
+                products.forEach(product => {
+                    const productItem = document.createElement('div');
+                    productItem.innerHTML = `
+                        <h5>${product.name}</h5>
+                        <img src="${product.image}" alt="${product.name}" width="100">
+                        <p>Rating: ${product.averageRating || 'No ratings yet'}</p>
+                        <button onclick="editProduct('${product._id}')">Edit</button>
+                        <button onclick="deleteProduct('${product._id}')">Delete</button>
+                        <button onclick="toggleAvailability('${product._id}')">
+                            ${product.available ? 'Set Unavailable' : 'Set Available'}
+                        </button>
+                    `;
+                    productList.appendChild(productItem);
+                });
+            };
+
+            // Handle adding category
+            categoryForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const name = categoryForm['category-name'].value;
+                const imageUrl = categoryForm['category-image-url'].value;
+                await addCategory(name, imageUrl);
+                categoryModal.style.display = 'none';
+                modalBackdrop.style.display = 'none';
+                populateCategories();
+            });
+
+            // Handle adding subcategory
+            subcategoryForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const name = subcategoryForm['subcategory-name'].value;
+                const imageUrl = subcategoryForm['subcategory-image-url'].value;
+                const categoryId = subcategoryForm['category-id'].value;
+                await addSubcategory(name, imageUrl, categoryId);
+                subcategoryModal.style.display = 'none';
+                modalBackdrop.style.display = 'none';
+                viewSubcategories(categoryId);
+            });
+
+            // Handle adding product
+            productForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const name = productForm['product-name'].value;
+                const categoryId = productForm['product-category'].value;
+                const subcategoryId = productForm['product-subcategory'].value;
+                const imageUrl = productForm['product-image-url'].value;
+
+                const quantities = [];
+                document.querySelectorAll('.quantity-group').forEach(group => {
+                    const quantityUnit = group.querySelector('.quantity-unit').value;
+                    const quantityValue = group.querySelector('.quantity-value').value;
+                    const price = group.querySelector('.price').value;
+                    const originalPrice = group.querySelector('.original-price').value;
+                    const discountedPrice = group.querySelector('.discounted-price').value;
+                    quantities.push({ quantityUnit, quantityValue, price, originalPrice, discountedPrice });
+                });
+
+                await addProduct(name, categoryId, subcategoryId, imageUrl, quantities);
+                productModal.style.display = 'none';
+                modalBackdrop.style.display = 'none';
+                viewProducts(subcategoryId);
+            });
+
+            // Add more quantity fields
+            document.getElementById('add-quantity').addEventListener('click', () => {
+                const quantityGroup = document.createElement('div');
+                quantityGroup.classList.add('quantity-group');
+                quantityGroup.innerHTML = `
+                    <label for="quantity-unit">Quantity Unit:</label>
+                    <input type="text" class="quantity-unit" required>
+                    <label for="quantity-value">Quantity Value:</label>
+                    <input type="number" class="quantity-value" required>
+                    <label for="price">Price:</label>
+                    <input type="number" class="price" required>
+                    <label for="original-price">Original Price:</label>
+                    <input type="number" class="original-price">
+                    <label for="discounted-price">Discounted Price:</label>
+                    <input type="number" class="discounted-price">
+                    <button type="button" class="remove-quantity">Remove</button>
+                `;
+                document.getElementById('quantity-container').appendChild(quantityGroup);
+
+                quantityGroup.querySelector('.remove-quantity').addEventListener('click', () => {
+                    quantityGroup.remove();
+                });
+            });
+
+            // Add event listeners for buttons to show modals
+            addCategoryBtn.addEventListener('click', () => {
+                categoryModal.style.display = 'block';
+                modalBackdrop.style.display = 'block';
+            });
+
+            addSubcategoryBtn.addEventListener('click', async () => {
+                subcategoryModal.style.display = 'block';
+                modalBackdrop.style.display = 'block';
+
+                // Populate category dropdown in subcategory form
+                const categories = await fetchCategories();
+                const categorySelect = document.getElementById('category-id');
+                categorySelect.innerHTML = '';
+                categories.forEach(category => {
+                    const option = document.createElement('option');
+                    option.value = category._id;
+                    option.textContent = category.name;
+                    categorySelect.appendChild(option);
+                });
+            });
+
+            addProductBtn.addEventListener('click', async () => {
+                productModal.style.display = 'block';
+                modalBackdrop.style.display = 'block';
+
+                // Populate category and subcategory dropdowns in product form
+                const categories = await fetchCategories();
+                const categorySelect = document.getElementById('product-category');
+                categorySelect.innerHTML = '';
+                categories.forEach(category => {
+                    const option = document.createElement('option');
+                    option.value = category._id;
+                    option.textContent = category.name;
+                    categorySelect.appendChild(option);
+                });
+
+                categorySelect.addEventListener('change', async () => {
+                    const subcategorySelect = document.getElementById('product-subcategory');
+                    const subcategories = await fetchSubcategories(categorySelect.value);
+                    subcategorySelect.innerHTML = '';
+                    subcategories.forEach(subcategory => {
+                        const option = document.createElement('option');
+                        option.value = subcategory._id;
+                        option.textContent = subcategory.name;
+                        subcategorySelect.appendChild(option);
+                    });
+                });
+
+                // Trigger initial subcategory population
+                categorySelect.dispatchEvent(new Event('change'));
+            });
+
+            // Close modal functionality
+            document.querySelectorAll('.close-modal').forEach(button => {
+                button.addEventListener('click', () => {
+                    button.parentElement.parentElement.style.display = 'none';
+                    modalBackdrop.style.display = 'none';
+                });
+            });
+
+            // Add category function
+            const addCategory = async (name, imageUrl) => {
+                try {
+                    const response = await fetch('/api/categories', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ name, imageUrl })
+                    });
+                    if (!response.ok) throw new Error('Failed to add category');
+                } catch (error) {
+                    console.error('Error adding category:', error);
+                }
+            };
+
+            // Add subcategory function
+            const addSubcategory = async (name, imageUrl, categoryId) => {
+                try {
+                    const response = await fetch('/api/subcategories', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ name, imageUrl, categoryId })
+                    });
+                    if (!response.ok) throw new Error('Failed to add subcategory');
+                } catch (error) {
+                    console.error('Error adding subcategory:', error);
+                }
+            };
+
+            // Add product function
+            const addProduct = async (name, categoryId, subcategoryId, imageUrl, quantities) => {
+                try {
+                    const response = await fetch('/api/products', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ name, categoryId, subcategoryId, imageUrl, quantities })
+                    });
+                    if (!response.ok) throw new Error('Failed to add product');
+                } catch (error) {
+                    console.error('Error adding product:', error);
+                }
+            };
+
+            // Delete category function
+            window.deleteCategory = async (categoryId) => {
+                try {
+                    const response = await fetch(`/api/categories/${categoryId}`, { method: 'DELETE' });
+                    if (!response.ok) throw new Error('Failed to delete category');
+                    populateCategories();
+                } catch (error) {
+                    console.error('Error deleting category:', error);
+                }
+            };
+
+            // Delete subcategory function
+            window.deleteSubcategory = async (subcategoryId) => {
+                try {
+                    const response = await fetch(`/api/subcategories/${subcategoryId}`, { method: 'DELETE' });
+                    if (!response.ok) throw new Error('Failed to delete subcategory');
+                    subcategoryList.innerHTML = '';
+                } catch (error) {
+                    console.error('Error deleting subcategory:', error);
+                }
+            };
+
+            // Delete product function
+            window.deleteProduct = async (productId) => {
+                try {
+                    const response = await fetch(`/api/products/${productId}`, { method: 'DELETE' });
+                    if (!response.ok) throw new Error('Failed to delete product');
+                    productList.innerHTML = '';
+                } catch (error) {
+                    console.error('Error deleting product:', error);
+                }
+            };
+
+            // Toggle product availability function
+            window.toggleAvailability = async (productId) => {
+                try {
+                    const response = await fetch(`/api/products/${productId}/toggle-availability`, { method: 'PATCH' });
+                    if (!response.ok) throw new Error('Failed to toggle availability');
+                    viewProducts(document.getElementById('product-subcategory').value);
+                } catch (error) {
+                    console.error('Error toggling availability:', error);
+                }
+            };
+
+            // Edit product function
+             // Fetch and populate product details for editing
+        window.editProduct = async (productId) => {
+            try {
+                const response = await fetch(`/api/products/${productId}`);
+                if (!response.ok) throw new Error('Failed to fetch product details');
+                const product = await response.json();
+
+                // Populate the product form
+                productForm['product-name'].value = product.name;
+                productForm['product-category'].value = product.categoryId;
+                productForm['product-subcategory'].value = product.subcategoryId;
+                productForm['product-image-url'].value = product.image;
+                
+                const quantityContainer = document.getElementById('quantity-container');
+                quantityContainer.innerHTML = ''; // Clear existing quantity fields
+                product.quantities.forEach(quantity => {
+                    const quantityGroup = document.createElement('div');
+                    quantityGroup.classList.add('quantity-group');
+                    quantityGroup.innerHTML = `
+                        <label for="quantity-unit">Quantity Unit:</label>
+                        <input type="text" class="quantity-unit" value="${quantity.quantityUnit}" required>
+                        <label for="quantity-value">Quantity Value:</label>
+                        <input type="number" class="quantity-value" value="${quantity.quantityValue}" required>
+                        <label for="price">Price:</label>
+                        <input type="number" class="price" value="${quantity.price}" required>
+                        <label for="original-price">Original Price:</label>
+                        <input type="number" class="original-price" value="${quantity.originalPrice}">
+                        <label for="discounted-price">Discounted Price:</label>
+                        <input type="number" class="discounted-price" value="${quantity.discountedPrice}">
+                        <button type="button" class="remove-quantity">Remove</button>
+                    `;
+                    quantityContainer.appendChild(quantityGroup);
+
+                    quantityGroup.querySelector('.remove-quantity').addEventListener('click', () => {
+                        quantityGroup.remove();
+                    });
+                });
+
+                productModal.style.display = 'block';
+                modalBackdrop.style.display = 'block';
+
+                // Change form submission to update the product instead of adding a new one
+                productForm.onsubmit = async (e) => {
+                    e.preventDefault();
+                    const name = productForm['product-name'].value;
+                    const categoryId = productForm['product-category'].value;
+                    const subcategoryId = productForm['product-subcategory'].value;
+                    const imageUrl = productForm['product-image-url'].value;
+
+                    const quantities = [];
+                    document.querySelectorAll('.quantity-group').forEach(group => {
+                        const quantityUnit = group.querySelector('.quantity-unit').value;
+                        const quantityValue = group.querySelector('.quantity-value').value;
+                        const price = group.querySelector('.price').value;
+                        const originalPrice = group.querySelector('.original-price').value;
+                        const discountedPrice = group.querySelector('.discounted-price').value;
+                        quantities.push({ quantityUnit, quantityValue, price, originalPrice, discountedPrice });
+                    });
+
+                    try {
+                        const response = await fetch(`/api/products/${productId}`, {
+                            method: 'PUT',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ name, categoryId, subcategoryId, imageUrl, quantities })
+                        });
+                        if (!response.ok) throw new Error('Failed to update product');
+
+                        productModal.style.display = 'none';
+                        modalBackdrop.style.display = 'none';
+                        viewProducts(subcategoryId);
+                    } catch (error) {
+                        console.error('Error updating product:', error);
+                    }
+                };
+            } catch (error) {
+                console.error('Error fetching product details:', error);
+            }
+        };
+
+
+            // Initial population of categories
+            populateCategories();
         });
-        quantityContainer.appendChild(quantityEntry);
-      }
-    });
-  }
-
-  async function fetchCategories() {
-    try {
-      const response = await fetch('https://m1wala1.onrender.com/api/categories');
-      const data = await response.json();
-      return Array.isArray(data) ? data : [];
-    } catch (error) {
-      console.error('Error fetching categories:', error);
-      return [];
-    }
-  }
-
-  async function fetchSubcategories(categoryId) {
-    try {
-      const response = await fetch(`https://m1wala1.onrender.com/api/subcategories?categoryId=${categoryId}`);
-      const data = await response.json();
-      return Array.isArray(data) ? data : [];
-    } catch (error) {
-      console.error('Error fetching subcategories:', error);
-      return [];
-    }
-  }
-
-  async function fetchProducts(subcategoryId) {
-    try {
-      const response = await fetch(`https://m1wala1.onrender.com/api/products?subcategoryId=${subcategoryId}`);
-      const products = await response.json();
-      displayProducts(products);
-    } catch (error) {
-      console.error('Error fetching products:', error);
-    }
-  }
-
-  async function deleteProduct(id) {
-    try {
-      await fetch(`https://m1wala1.onrender.com/api/products/${id}`, { method: 'DELETE' });
-      const selectedSubcategoryId = document.getElementById('product-subcategory').value;
-      await fetchProducts(selectedSubcategoryId);
-    } catch (error) {
-      console.error('Error deleting product:', error);
-    }
-  }
-
-  async function toggleAvailability(id) {
-    try {
-      await fetch(`https://m1wala1.onrender.com/api/products/${id}/toggle-availability`, { method: 'PATCH' });
-      const selectedSubcategoryId = document.getElementById('product-subcategory').value;
-      await fetchProducts(selectedSubcategoryId);
-    } catch (error) {
-      console.error('Error toggling product availability:', error);
-    }
-  }
-
-  async function editProduct(id) {
-    try {
-      const response = await fetch(`https://m1wala1.onrender.com/api/products/${id}`);
-      if (!response.ok) {
-        console.error(`Fetch error: ${response.status} ${response.statusText}`);
-        throw new Error('Network response was not ok');
-      }
-      const product = await response.json();
-      if (!product) throw new Error('Product not found');
-
-      productForm.setAttribute('data-product-id', id); // Store the product ID for later update
-
-      document.getElementById('product-name').value = product.name;
-      document.getElementById('product-category').value = product.categoryId;
-      document.getElementById('product-subcategory').value = product.subcategoryId;
-      document.getElementById('product-image-url').value = product.image;
-
-      const quantityContainer = document.getElementById('quantity-container');
-      quantityContainer.innerHTML = '';
-      (product.quantities || []).forEach((quantity) => {
-        const quantityEntry = document.createElement('div');
-        quantityEntry.classList.add('quantity-entry');
-        quantityEntry.innerHTML = `
-          <select class="quantity-unit" name="quantity-unit[]" required>
-            <option value="kg" ${quantity.quantityUnit === 'kg' ? 'selected' : ''}>kg</option>
-            <option value="grams" ${quantity.quantityUnit === 'grams' ? 'selected' : ''}>grams</option>
-            <option value="units" ${quantity.quantityUnit === 'units' ? 'selected' : ''}>units</option>
-            <option value="ml" ${quantity.quantityUnit === 'ml' ? 'selected' : ''}>ml</option>
-          </select>
-          <input type="number" class="quantity-value" name="quantity-value[]" value="${quantity.quantityValue}" min="1" required>
-          <input type="number" class="quantity-price" name="quantity-price[]" value="${quantity.price}" placeholder="Price" required>
-          <input type="number" class="quantity-original-price" name="quantity-original-price[]" value="${quantity.originalPrice}" placeholder="Original Price" required>
-          <input type="number" class="quantity-discounted-price" name="quantity-discounted-price[]" value="${quantity.discountedPrice}" placeholder="Discounted Price" required>
-          <button type="button" class="remove-quantity">Remove</button>
-        `;
-        quantityEntry.querySelector('.remove-quantity').addEventListener('click', function () {
-          quantityContainer.removeChild(quantityEntry);
-        });
-        quantityContainer.appendChild(quantityEntry);
-      });
-
-      document.getElementById('product-form').style.display = 'block';
-    } catch (error) {
-      console.error('Error fetching product details:', error);
-    }
-  }
-
-  document.getElementById('category-form').addEventListener('submit', async function (event) {
-    event.preventDefault();
-    const formData = new FormData(categoryForm);
-    const name = formData.get('name');
-    const imageUrl = formData.get('imageUrl');
-    
-    try {
-      await fetch('https://m1wala1.onrender.com/api/categories', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ name, imageUrl })
-      });
-      renderCategories();
-    } catch (error) {
-      console.error('Error adding category:', error);
-    }
-  });
-
-  document.getElementById('subcategory-form').addEventListener('submit', async function (event) {
-    event.preventDefault();
-    const formData = new FormData(subcategoryForm);
-    const name = formData.get('name');
-    const imageUrl = formData.get('imageUrl');
-    const categoryId = formData.get('categoryId');
-
-    try {
-      await fetch('https://m1wala1.onrender.com/api/subcategories', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ name, imageUrl, categoryId })
-      });
-      const selectedCategoryId = document.getElementById('category-id').value;
-      renderSubcategories(selectedCategoryId);
-    } catch (error) {
-      console.error('Error adding subcategory:', error);
-    }
-  });
-
-  document.getElementById('product-form').addEventListener('submit', async function (event) {
-    event.preventDefault();
-    const formData = new FormData(productForm);
-    const name = formData.get('name');
-    const imageUrl = formData.get('imageUrl');
-    const categoryId = formData.get('categoryId');
-    const subcategoryId = formData.get('subcategoryId');
-
-    const quantities = [];
-    document.querySelectorAll('.quantity-entry').forEach(entry => {
-      quantities.push({
-        quantityUnit: entry.querySelector('.quantity-unit').value,
-        quantityValue: entry.querySelector('.quantity-value').value,
-        price: entry.querySelector('.quantity-price').value,
-        originalPrice: entry.querySelector('.quantity-original-price').value,
-        discountedPrice: entry.querySelector('.quantity-discounted-price').value
-      });
-    });
-
-    const productId = productForm.getAttribute('data-product-id');
-
-    try {
-      if (productId) {
-        // Update existing product
-        await fetch(`https://m1wala1.onrender.com/api/products/${productId}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ name, imageUrl, categoryId, subcategoryId, quantities })
-        });
-      } else {
-        // Create new product
-        await fetch('https://m1wala1.onrender.com/api/products', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ name, imageUrl, categoryId, subcategoryId, quantities })
-        });
-      }
-      const selectedSubcategoryId = document.getElementById('product-subcategory').value;
-      fetchProducts(selectedSubcategoryId);
-    } catch (error) {
-      console.error('Error adding/updating product:', error);
-    }
-  });
-
-  const renderCategories = async () => {
-    const categories = await fetchCategories();
-    const categoryList = document.getElementById('category-list');
-    const categorySelect = document.getElementById('category-id');
-    const productCategorySelect = document.getElementById('product-category');
-    if (categoryList && categorySelect && productCategorySelect) {
-      categoryList.innerHTML = '';
-      categorySelect.innerHTML = '';
-      productCategorySelect.innerHTML = '';
-
-      categories.forEach(category => {
-        const categoryDiv = document.createElement('div');
-        categoryDiv.className = 'category';
-        categoryDiv.innerHTML = `
-          <img src="${category.image}" alt="${category.name}" crossorigin="anonymous">
-          <p>${category.name}</p>
-          <div class="category-actions">
-            <button class="delete-category" onclick="deleteCategory('${category._id}')">Delete</button>
-            <button class="view-subcategories" onclick="renderSubcategories('${category._id}')">View Subcategories</button>
-          </div>
-        `;
-        categoryList.appendChild(categoryDiv);
-
-        const option = document.createElement('option');
-        option.value = category._id;
-        option.textContent = category.name;
-        categorySelect.appendChild(option);
-
-        const productOption = document.createElement('option');
-        productOption.value = category._id;
-        productOption.textContent = category.name;
-        productCategorySelect.appendChild(productOption);
-      });
-
-      categorySelect.addEventListener('change', async function () {
-        const selectedCategoryId = categorySelect.value;
-        await renderSubcategories(selectedCategoryId);
-      });
-
-      productCategorySelect.addEventListener('change', async function () {
-        const selectedCategoryId = productCategorySelect.value;
-        await renderSubcategories(selectedCategoryId);
-      });
-
-      if (categories.length > 0) {
-        await renderSubcategories(categories[0]._id);
-      }
-    }
-  };
-
-  const renderSubcategories = async (categoryId) => {
-    const subcategories = await fetchSubcategories(categoryId);
-    const subcategoryList = document.getElementById('subcategory-list');
-    const subcategorySelect = document.getElementById('product-subcategory');
-    if (subcategoryList && subcategorySelect) {
-      subcategoryList.innerHTML = '';
-      subcategorySelect.innerHTML = '';
-
-      subcategories.forEach(subcategory => {
-        const subcategoryDiv = document.createElement('div');
-        subcategoryDiv.className = 'subcategory';
-        subcategoryDiv.innerHTML = `
-          <img src="${subcategory.image}" alt="${subcategory.name}" crossorigin="anonymous">
-          <p>${subcategory.name}</p>
-          <div class="subcategory-actions">
-            <button class="delete-subcategory" onclick="deleteSubcategory('${subcategory._id}')">Delete</button>
-            <button class="view-products" onclick="fetchProducts('${subcategory._id}')">View Products</button>
-          </div>
-        `;
-        subcategoryList.appendChild(subcategoryDiv);
-
-        const option = document.createElement('option');
-        option.value = subcategory._id;
-        option.textContent = subcategory.name;
-        subcategorySelect.appendChild(option);
-      });
-
-      subcategorySelect.addEventListener('change', function () {
-        const selectedSubcategoryId = subcategorySelect.value;
-        fetchProducts(selectedSubcategoryId);
-      });
-
-      if (subcategories.length > 0) {
-        fetchProducts(subcategories[0]._id);
-      }
-    }
-  };
-
-  const renderCategoriesForSubcategory = async () => {
-    const categories = await fetchCategories();
-    const categorySelect = document.getElementById('category-id');
-    if (categorySelect) {
-      categorySelect.innerHTML = '';
-
-      categories.forEach(category => {
-        const option = document.createElement('option');
-        option.value = category._id;
-        option.textContent = category.name;
-        categorySelect.appendChild(option);
-      });
-
-      if (categories.length > 0) {
-        renderSubcategories(categories[0]._id);
-      }
-    }
-  };
-
-  const renderCategoriesForProduct = async () => {
-    const categories = await fetchCategories();
-    const productCategorySelect = document.getElementById('product-category');
-    if (productCategorySelect) {
-      productCategorySelect.innerHTML = '';
-
-      categories.forEach(category => {
-        const option = document.createElement('option');
-        option.value = category._id;
-        option.textContent = category.name;
-        productCategorySelect.appendChild(option);
-      });
-
-      if (categories.length > 0) {
-        renderSubcategories(categories[0]._id);
-      }
-    }
-  };
-
-  const displayProducts = (products) => {
-    const productList = document.getElementById('product-list');
-    if (productList) {
-      productList.innerHTML = '';
-      products.forEach(product => {
-        const productDiv = document.createElement('div');
-        productDiv.className = 'product';
-        const quantity = product.quantities[0] || {};
-        productDiv.innerHTML = `
-          <img src="${product.image}" alt="${product.name}" crossorigin="anonymous">
-          <h3>${product.name}</h3>
-          <p>${quantity.quantityValue || ''} ${quantity.quantityUnit || ''}</p>
-          <p>₹${quantity.originalPrice || 'N/A'} - ₹${quantity.discountedPrice || 'N/A'}</p>
-          <div class="product-actions">
-            <button class="edit" onclick="editProduct('${product._id}')">Edit</button>
-            <button class="delete" onclick="deleteProduct('${product._id}')">Delete</button>
-            <button class="toggle" onclick="toggleAvailability('${product._id}')">${product.available ? 'Mark as Unavailable' : 'Mark as Available'}</button>
-          </div>
-        `;
-        productList.appendChild(productDiv);
-      });
-    }
-  };
-
-  document.getElementById('category-form').addEventListener('submit', async function (event) {
-    event.preventDefault();
-    const formData = new FormData(categoryForm);
-    const name = formData.get('name');
-    const imageUrl = formData.get('imageUrl');
-    
-    try {
-      await fetch('https://m1wala1.onrender.com/api/categories', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ name, imageUrl })
-      });
-      renderCategories();
-    } catch (error) {
-      console.error('Error adding category:', error);
-    }
-  });
-
-  document.getElementById('subcategory-form').addEventListener('submit', async function (event) {
-    event.preventDefault();
-    const formData = new FormData(subcategoryForm);
-    const name = formData.get('name');
-    const imageUrl = formData.get('imageUrl');
-    const categoryId = formData.get('categoryId');
-
-    try {
-      await fetch('https://m1wala1.onrender.com/api/subcategories', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ name, imageUrl, categoryId })
-      });
-      const selectedCategoryId = document.getElementById('category-id').value;
-      renderSubcategories(selectedCategoryId);
-    } catch (error) {
-      console.error('Error adding subcategory:', error);
-    }
-  });
-
-  document.getElementById('product-form').addEventListener('submit', async function (event) {
-    event.preventDefault();
-    const formData = new FormData(productForm);
-    const name = formData.get('name');
-    const imageUrl = formData.get('imageUrl');
-    const categoryId = formData.get('categoryId');
-    const subcategoryId = formData.get('subcategoryId');
-
-    const quantities = [];
-    document.querySelectorAll('.quantity-entry').forEach(entry => {
-      quantities.push({
-        quantityUnit: entry.querySelector('.quantity-unit').value,
-        quantityValue: entry.querySelector('.quantity-value').value,
-        price: entry.querySelector('.quantity-price').value,
-        originalPrice: entry.querySelector('.quantity-original-price').value,
-        discountedPrice: entry.querySelector('.quantity-discounted-price').value
-      });
-    });
-
-    try {
-      await fetch('https://m1wala1.onrender.com/api/products', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ name, imageUrl, categoryId, subcategoryId, quantities })
-      });
-      const selectedSubcategoryId = document.getElementById('product-subcategory').value;
-      fetchProducts(selectedSubcategoryId);
-    } catch (error) {
-      console.error('Error adding product:', error);
-    }
-  });
-  document.getElementById('product-form').addEventListener('submit', async function (event) {
-  event.preventDefault();
-  const formData = new FormData(productForm);
-  const name = formData.get('name');
-  const imageUrl = formData.get('imageUrl');
-  const categoryId = formData.get('categoryId');
-  const subcategoryId = formData.get('subcategoryId');
-
-  const quantities = [];
-  document.querySelectorAll('.quantity-entry').forEach(entry => {
-    quantities.push({
-      quantityUnit: entry.querySelector('.quantity-unit').value,
-      quantityValue: entry.querySelector('.quantity-value').value,
-      price: entry.querySelector('.quantity-price').value,
-      originalPrice: entry.querySelector('.quantity-original-price').value,
-      discountedPrice: entry.querySelector('.quantity-discounted-price').value
-    });
-  });
-
-  const productId = productForm.getAttribute('data-product-id');
-
-  try {
-    await fetch(`https://m1wala1.onrender.com/api/products/${productId}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ name, imageUrl, categoryId, subcategoryId, quantities })
-    });
-    const selectedSubcategoryId = document.getElementById('product-subcategory').value;
-    fetchProducts(selectedSubcategoryId);
-  } catch (error) {
-    console.error('Error updating product:', error);
-  }
-});
-
-
-  renderCategories();
-});
-   async function deleteProduct(id) {
-        try {
-          await fetch(`https://m1wala1.onrender.com/api/products/${id}`, { method: 'DELETE' });
-          const selectedSubcategoryId = document.getElementById('product-subcategory').value;
-          await fetchProducts(selectedSubcategoryId);
-        } catch (error) {
-          console.error('Error deleting product:', error);
-        }
-      }
-      
-      async function toggleAvailability(id) {
-        try {
-          await fetch(`https://m1wala1.onrender.com/api/products/${id}/toggle-availability`, { method: 'PATCH' });
-          const selectedSubcategoryId = document.getElementById('product-subcategory').value;
-          await fetchProducts(selectedSubcategoryId);
-        } catch (error) {
-          console.error('Error toggling product availability:', error);
-        }
-      }
-      
-      async function editProduct(id) {
-  try {
-    const response = await fetch(`https://m1wala1.onrender.com/api/products/${id}`);
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    const product = await response.json();
-    if (!product) throw new Error('Product not found');
-
-    document.getElementById('product-name').value = product.name;
-    document.getElementById('product-category').value = product.categoryId;
-    document.getElementById('product-subcategory').value = product.subcategoryId;
-    document.getElementById('product-image-url').value = product.image;
-
-    const quantityContainer = document.getElementById('quantity-container');
-    quantityContainer.innerHTML = '';
-    (product.quantities || []).forEach((quantity) => {
-      const quantityEntry = document.createElement('div');
-      quantityEntry.classList.add('quantity-entry');
-      quantityEntry.innerHTML = `
-        <select class="quantity-unit" name="quantity-unit[]" required>
-          <option value="kg" ${quantity.quantityUnit === 'kg' ? 'selected' : ''}>kg</option>
-          <option value="grams" ${quantity.quantityUnit === 'grams' ? 'selected' : ''}>grams</option>
-          <option value="units" ${quantity.quantityUnit === 'units' ? 'selected' : ''}>units</option>
-          <option value="ml" ${quantity.quantityUnit === 'ml' ? 'selected' : ''}>ml</option>
-        </select>
-        <input type="number" class="quantity-value" name="quantity-value[]" value="${quantity.quantityValue}" min="1" required>
-        <input type="number" class="quantity-price" name="quantity-price[]" value="${quantity.price}" placeholder="Price" required>
-        <input type="number" class="quantity-original-price" name="quantity-original-price[]" value="${quantity.originalPrice}" placeholder="Original Price" required>
-        <input type="number" class="quantity-discounted-price" name="quantity-discounted-price[]" value="${quantity.discountedPrice}" placeholder="Discounted Price" required>
-        <button type="button" class="remove-quantity">Remove</button>
-      `;
-      quantityEntry.querySelector('.remove-quantity').addEventListener('click', function () {
-        quantityContainer.removeChild(quantityEntry);
-      });
-      quantityContainer.appendChild(quantityEntry);
-    });
-
-    document.getElementById('product-form').style.display = 'block';
-  } catch (error) {
-    console.error('Error fetching product details:', error);
-  }
-}
-      
-      async function deleteCategory(id) {
-        try {
-          await fetch(`https://m1wala1.onrender.com/api/categories/${id}`, { method: 'DELETE' });
-          await renderCategories();
-        } catch (error) {
-          console.error('Error deleting category:', error);
-        }
-      }
-      
-      async function deleteSubcategory(id) {
-        try {
-          await fetch(`https://m1wala1.onrender.com/api/subcategories/${id}`, { method: 'DELETE' });
-          const selectedCategoryId = document.getElementById('category-id').value;
-          await renderSubcategories(selectedCategoryId);
-        } catch (error) {
-          console.error('Error deleting subcategory:', error);
-        }
-      }
-      
-      async function fetchProducts(subcategoryId) {
-        try {
-          const response = await fetch(`https://m1wala1.onrender.com/api/products?subcategoryId=${subcategoryId}`);
-          const products = await response.json();
-          displayProducts(products);
-        } catch (error) {
-          console.error('Error fetching products:', error);
-        }
-      }
-      
-      const displayProducts = (products) => {
-        const productList = document.getElementById('product-list');
-        if (productList) {
-          productList.innerHTML = '';
-          products.forEach(product => {
-            const quantity = product.quantities[0] || {};
-            productList.innerHTML += `
-              <div class="product">
-                <img src="${product.image}" alt="${product.name}" crossorigin="anonymous">
-                <h3>${product.name}</h3>
-                <p>${quantity.quantityValue || ''} ${quantity.quantityUnit || ''}</p>
-                <p>₹${quantity.originalPrice || 'N/A'} - ₹${quantity.discountedPrice || 'N/A'}</p>
-                <div class="product-actions">
-                  <button class="edit" onclick="editProduct('${product._id}')">Edit</button>
-                  <button class="delete" onclick="deleteProduct('${product._id}')">Delete</button>
-                  <button class="toggle" onclick="toggleAvailability('${product._id}')">${product.available ? 'Mark as Unavailable' : 'Mark as Available'}</button>
-                </div>
-              </div>
-            `;
-          });
-        }
-      };
-      
-      // Fetch and display products on page load
-      document.addEventListener('DOMContentLoaded', async () => {
-        const response = await fetch('https://m1wala1.onrender.com/api/products');
-        const products = await response.json();
-        displayProducts(products);
-      });
-      
-      async function fetchProducts(subcategoryId) {
-        try {
-          const response = await fetch(`https://m1wala1.onrender.com/api/products?subcategoryId=${subcategoryId}`);
-          const products = await response.json();
-          displayProducts(products);
-        } catch (error) {
-          console.error('Error fetching products:', error);
-        }
-      }
-      </script>
-      </body>
-      </html>
-      
+    </script>
+</body>
+</html>
