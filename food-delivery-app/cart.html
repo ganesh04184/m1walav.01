@@ -70,19 +70,14 @@
             background-color: #fffbcc;
             padding: 20px;
             border-radius: 5px;
-            text-align: center;
+            text-align: left;
             margin-bottom: 20px;
         }
 
-        .original-price {
-            text-decoration: line-through;
-            color: #999;
-        }
-
-        .savings {
-            font-size: 16px;
-            color: #4CAF50;
-            font-weight: bold;
+        .bill-details .bill-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
         }
 
         .proceed {
@@ -90,7 +85,6 @@
             padding: 20px;
             background-color: #fff;
             border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
         .proceed-btn {
@@ -120,6 +114,66 @@
         button:hover {
             background-color: #45a049;
         }
+
+        .tip-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: none; /* Initially hidden */
+        }
+
+        .tip-button {
+            background-color: #f0f0f0;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+            margin: 5px;
+        }
+
+        .tip-button.active {
+            background-color: #ff5722;
+            color: #fff;
+        }
+
+        .review-order {
+            padding: 20px;
+            text-align: center;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .review-order p {
+            margin: 10px 0;
+            color: red;
+        }
+
+        .review-order a {
+            color: #ff5722;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        .add-tip-button {
+            background-color: #4CAF50;
+            color: #4CAF50;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+            margin: 5px 0;
+        }
+
+        .original-price {
+            text-decoration: line-through;
+        }
     </style>
 </head>
 <body>
@@ -127,10 +181,55 @@
         <!-- Cart items will be dynamically added here -->
     </div>
     <div id="empty-cart-message" style="display: none;">Your cart is empty!</div>
-    <div class="subtotal" id="total-cost">Subtotal: ₹0.00</div>
-    <div class="bill-details" id="bill-details" style="display: none;">
-        <div class="savings" id="total-savings">You saved: ₹0.00</div>
+
+    <button class="add-tip-button" id="add-tip-button">Add Tip</button>
+
+    <div class="tip-container" id="tip-container">
+        <p>Select a tip amount:</p>
+        <button class="tip-button" data-tip="10">₹10</button>
+        <button class="tip-button" data-tip="20">₹20 Most Tipped</button>
+        <button class="tip-button" data-tip="30">₹30</button>
+        <button class="tip-button" data-tip="other">Other</button>
     </div>
+
+    <div class="bill-details" id="bill-details" style="display: none;">
+        <div class="bill-row">
+            <div>MRP Total:</div>
+            <div>₹<span id="mrp-total">0.00</span></div>
+        </div>
+        <div class="bill-row">
+            <div>Handling Fee (incl GST):</div>
+            <div>₹<span id="handling-fee">5.00</span></div>
+        </div>
+        <div class="bill-row">
+            <div>Small Cart Fee:</div>
+            <div>₹<span id="small-cart-fee">0.00</span></div>
+        </div>
+        <div class="bill-row" style="font-size: 12px; color: grey;">
+            <div>Order above 200 to avoid small cart fees</div>
+        </div>
+        <div class="bill-row">
+            <div>Delivery Tip:</div>
+            <div>₹<span id="delivery-tip">0.00</span></div>
+        </div>
+        <div class="bill-row">
+            <div>Delivery Partner Fee:</div>
+            <div>₹<span id="delivery-partner-fee">0.00</span></div>
+        </div>
+        <div class="bill-row" style="font-size: 12px; color: grey;">
+            <div>Order above 200 and pay only 13 rupees</div>
+        </div>
+        <div class="bill-row">
+            <div>To Pay:</div>
+            <div>₹<span id="total-pay">0.00</span></div>
+        </div>
+    </div>
+
+    <div class="review-order">
+        <p>NOTE: Orders cannot be cancelled and are non-refundable once packed for delivery.</p>
+        <a id="terms-conditions">Read Cancellation Policy</a>
+    </div>
+
     <button id="proceed-btn">Proceed to Payment</button>
     <button id="continue-shopping-btn">Continue Shopping</button>
 
@@ -138,14 +237,24 @@
         document.addEventListener('DOMContentLoaded', function () {
             const cartContainer = document.getElementById('cart-container');
             const emptyCartMessage = document.getElementById('empty-cart-message');
-            const totalCostElement = document.getElementById('total-cost');
-            const totalSavingsElement = document.getElementById('total-savings');
             const billDetails = document.getElementById('bill-details');
+            const mrpTotalElement = document.getElementById('mrp-total');
+            const handlingFeeElement = document.getElementById('handling-fee');
+            const smallCartFeeElement = document.getElementById('small-cart-fee');
+            const deliveryTipElement = document.getElementById('delivery-tip');
+            const deliveryPartnerFeeElement = document.getElementById('delivery-partner-fee');
+            const totalPayElement = document.getElementById('total-pay');
+            const addTipButton = document.getElementById('add-tip-button');
+            const tipContainer = document.getElementById('tip-container');
+            const termsConditions = document.getElementById('terms-conditions');
+
+            let deliveryTip = 0; // Default tip set to 0
 
             function fetchCart() {
                 const token = localStorage.getItem('token');
                 if (!token) {
-                    alert('Session expired. Please log in.');
+                    console.error('No token found, authorization required.');
+                    alert('You need to log in first.');
                     window.location.href = '/login.html';
                     return;
                 }
@@ -158,13 +267,7 @@
                 })
                 .then(response => {
                     if (!response.ok) {
-                        if (response.status === 401) {
-                            alert('Session expired. Please log in.');
-                            window.location.href = '/login.html';
-                            throw new Error('Unauthorized access');
-                        } else {
-                            throw new Error(`HTTP error! Status: ${response.status}`);
-                        }
+                        throw new Error(`HTTP error! Status: ${response.status}`);
                     }
                     return response.json();
                 })
@@ -173,7 +276,7 @@
                 })
                 .catch(error => {
                     console.error('Error fetching cart items:', error);
-                    if (error.message.includes('Unauthorized access')) {
+                    if (error.message.includes('401')) {
                         alert('Unauthorized. Please log in again.');
                     } else if (error.message.includes('404')) {
                         emptyCartMessage.style.display = 'block';
@@ -186,27 +289,21 @@
 
             function renderCartItems(cartData) {
                 const { cartItems, subtotal } = cartData;
-                let totalSavings = 0;
-
                 cartContainer.innerHTML = '';
                 if (!Array.isArray(cartItems) || cartItems.length === 0) {
                     emptyCartMessage.style.display = 'block';
-                    updateCartTotals(0, 0);
+                    cartContainer.innerHTML = '';
                     return;
                 }
 
                 emptyCartMessage.style.display = 'none';
-
                 cartItems.forEach(item => {
                     const itemDiv = document.createElement('div');
                     itemDiv.classList.add('cart-item');
-                    const savings = (item.originalPrice - item.price) * item.quantity;
-                    totalSavings += savings;
-
                     itemDiv.innerHTML = `
                         <img src="${item.imageUrl}" alt="${item.productName}" />
                         <div class="item-details">
-                            <p>${item.productName}</p>
+                            <h3>${item.productName}</h3>
                             <p><span class="original-price">₹${item.originalPrice.toFixed(2)}</span> ₹${item.price.toFixed(2)}</p>
                             <p>${item.quantityValue} ${item.quantityUnit} / ₹${item.price.toFixed(2)}</p>
                             <div class="item-quantity">
@@ -227,24 +324,30 @@
                     productImage.addEventListener('click', () => redirectToProduct(item.productId, item.subcategoryId, item.categoryId));
                 });
 
-                updateCartTotals(subtotal, totalSavings);
+                updateCartTotals(subtotal);
             }
 
-            function updateCartTotals(subtotal, totalSavings) {
-                totalCostElement.innerHTML = `Subtotal: ₹${subtotal.toFixed(2)}`;
-                if (totalSavings > 0) {
-                    billDetails.style.display = 'block';
-                    totalSavingsElement.innerHTML = `You saved: ₹${totalSavings.toFixed(2)}`;
-                } else {
-                    billDetails.style.display = 'none';
-                }
+            function updateCartTotals(mrpTotal) {
+                const handlingFee = 5;
+                const smallCartFee = mrpTotal < 200 ? 10 : 0;
+                const deliveryPartnerFee = mrpTotal < 200 ? 25 : 13;
+                const totalPay = mrpTotal + handlingFee + smallCartFee + deliveryTip + deliveryPartnerFee;
+
+                mrpTotalElement.textContent = mrpTotal.toFixed(2);
+                handlingFeeElement.textContent = handlingFee.toFixed(2);
+                smallCartFeeElement.textContent = smallCartFee.toFixed(2);
+                deliveryTipElement.textContent = deliveryTip.toFixed(2);
+                deliveryPartnerFeeElement.textContent = deliveryPartnerFee.toFixed(2);
+                totalPayElement.textContent = totalPay.toFixed(2);
+
+                billDetails.style.display = 'block';
             }
 
             function updateQuantity(itemId, action) {
                 const token = localStorage.getItem('token');
                 if (!token) {
-                    alert('Session expired. Please log in.');
-                    window.location.href = '/login.html';
+                    console.error('No token found, authorization required.');
+                    alert('You need to log in first.');
                     return;
                 }
 
@@ -257,13 +360,7 @@
                 })
                 .then(response => {
                     if (!response.ok) {
-                        if (response.status === 401) {
-                            alert('Session expired. Please log in.');
-                            window.location.href = '/login.html';
-                            throw new Error('Unauthorized access');
-                        } else {
-                            throw new Error(`HTTP error! Status: ${response.status}`);
-                        }
+                        throw new Error(`HTTP error! Status: ${response.status}`);
                     }
                     return response.json();
                 })
@@ -285,8 +382,7 @@
             }
 
             function proceedToPayment() {
-                const subtotalText = totalCostElement.textContent;
-                const totalCost = parseFloat(subtotalText.split('₹')[1]);
+                const totalCost = parseFloat(totalPayElement.textContent);
                 localStorage.setItem('totalCost', totalCost);
                 window.location.href = "/payment-method.html";
             }
@@ -295,10 +391,42 @@
                 window.location.href = "/grocery-home.html";
             }
 
+            function handleTipSelection(event) {
+                const selectedTip = event.target.getAttribute('data-tip');
+                if (selectedTip === 'other') {
+                    const otherTip = prompt('Enter your tip amount:');
+                    deliveryTip = parseFloat(otherTip) || 0;
+                } else {
+                    deliveryTip = parseInt(selectedTip, 10);
+                }
+
+                document.querySelectorAll('.tip-button').forEach(btn => btn.classList.remove('active'));
+                event.target.classList.add('active');
+                fetchCart();
+            }
+
+            function showTermsAndConditions() {
+                window.location.href = '/terms-and-conditions.html';
+            }
+
             document.getElementById('proceed-btn').addEventListener('click', proceedToPayment);
             document.getElementById('continue-shopping-btn').addEventListener('click', continueShopping);
+            addTipButton.addEventListener('click', () => {
+                tipContainer.style.display = 'block';
+            });
+            document.querySelectorAll('.tip-button').forEach(btn => btn.addEventListener('click', handleTipSelection));
+            termsConditions.addEventListener('click', showTermsAndConditions);
 
             fetchCart();
+        });
+        document.addEventListener('DOMContentLoaded', () => {
+            const totalPayElement = document.getElementById('total-pay');
+            const totalPay = 200; // This value should be dynamically calculated based on the cart items and fees
+
+            totalPayElement.textContent = `To Pay: ₹${totalPay.toFixed(2)}`;
+            localStorage.setItem('totalPay', totalPay.toFixed(2));
+
+            console.log('Total cost set in localStorage:', totalPay); // Debugging log
         });
     </script>
 </body>
