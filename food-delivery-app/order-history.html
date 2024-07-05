@@ -77,6 +77,65 @@
       display: flex;
       align-items: center;
     }
+    .navbar-menu {
+            background-color: #fff;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+        .navbar-menu ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            width: 100%;
+            justify-content: space-around;
+        }
+
+        .navbar-menu li {
+            flex: 1;
+            text-align: center;
+        }
+
+        .navbar-menu a {
+            color: #228b22;
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .navbar-menu a.active {
+            color: #28a745;
+        }
+
+        .navbar-menu img {
+            max-width: 24px;
+            margin-bottom: 5px;
+        }
+    /* Apply styles for desktop and tablet screens */
+@media (min-width: 768px) {
+    body {
+        margin: 0 auto;
+        max-width: 80%;
+    }
+}
+
+/* Apply styles for mobile screens */
+@media (max-width: 767px) {
+    body {
+        margin: 0 5%;
+    }
+}
+
   </style>
 </head>
 <body>
@@ -88,7 +147,25 @@
       </div>
     </div>
   </section>
-
+<div class="navbar-menu">
+        <ul>
+            <li class="active">
+                <a href="grocery-home.html" class="icon">
+                    <span>Grocery</span>
+                </a>
+            </li>
+            <li>
+                <a href="cart.html" class="icon">
+                    <span>Cart</span>
+                </a>
+            </li>
+            <li>
+                <a href="profile.html" class="icon">
+                    <span>Profile</span>
+                </a>
+            </li>
+        </ul>
+    </div>
   <script>
     document.addEventListener('DOMContentLoaded', fetchOrderHistory);
 
