@@ -25,6 +25,11 @@
             padding: 0;
             box-sizing: border-box;
         }
+        .container {
+    max-width: 1200px; /* Maximum width for the content */
+    margin: 0 auto; /* Centering the content */
+    padding: 20px; /* Padding around the content */
+}
 
         header {
             background-color: #205dee;
@@ -544,6 +549,20 @@
             margin-bottom: 10px;
             border-radius: 5px;
         }
+        /* Apply styles for desktop and tablet screens */
+@media (min-width: 768px) {
+    body {
+        margin: 0 auto;
+        max-width: 70%;
+    }
+}
+
+/* Apply styles for mobile screens */
+@media (max-width: 767px) {
+    body {
+        margin: 0 5%;
+    }
+}
     </style>
 </head>
 <body>
