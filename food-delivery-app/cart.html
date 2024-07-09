@@ -282,6 +282,10 @@
                 })
                 .then(response => {
                     if (!response.ok) {
+                        if (response.status === 401) {
+                            alert('Session expired. Please login again.');
+                            window.location.href = '/login.html';
+                        }
                         throw new Error(`HTTP error! Status: ${response.status}`);
                     }
                     return response.json();
@@ -296,6 +300,7 @@
                     } else if (error.message.includes('404')) {
                         emptyCartMessage.style.display = 'block';
                         cartContainer.innerHTML = '';
+                        updateCartTotals(0);
                     } else {
                         alert('Error fetching cart items. Please try again later.');
                     }
@@ -308,6 +313,7 @@
                 if (!Array.isArray(cartItems) || cartItems.length === 0) {
                     emptyCartMessage.style.display = 'block';
                     cartContainer.innerHTML = '';
+                    updateCartTotals(0);
                     return;
                 }
 
@@ -343,6 +349,18 @@
             }
 
             function updateCartTotals(mrpTotal) {
+                if (mrpTotal === 0) {
+                    mrpTotalElement.textContent = '0.00';
+                    handlingFeeElement.textContent = '0.00';
+                    smallCartFeeElement.textContent = '0.00';
+                    deliveryTipElement.textContent = '0.00';
+                    deliveryPartnerFeeElement.textContent = '0.00';
+                    totalPayElement.textContent = '0.00';
+                    billDetails.style.display = 'none';
+                    localStorage.setItem('totalPay', '0.00');
+                    return;
+                }
+
                 const handlingFee = 5;
                 const smallCartFee = mrpTotal < 200 ? 10 : 0;
                 const deliveryPartnerFee = mrpTotal < 200 ? 25 : 13;
@@ -356,6 +374,9 @@
                 totalPayElement.textContent = totalPay.toFixed(2);
 
                 billDetails.style.display = 'block';
+
+                // Save the total pay value to localStorage
+                localStorage.setItem('totalPay', totalPay.toFixed(2));
             }
 
             function updateQuantity(itemId, action) {
@@ -375,6 +396,10 @@
                 })
                 .then(response => {
                     if (!response.ok) {
+                        if (response.status === 401) {
+                            alert('Session expired. Please login again.');
+                            window.location.href = '/login.html';
+                        }
                         throw new Error(`HTTP error! Status: ${response.status}`);
                     }
                     return response.json();
@@ -433,15 +458,6 @@
             termsConditions.addEventListener('click', showTermsAndConditions);
 
             fetchCart();
-        });
-        document.addEventListener('DOMContentLoaded', () => {
-            const totalPayElement = document.getElementById('total-pay');
-            const totalPay = 200; // This value should be dynamically calculated based on the cart items and fees
-
-            totalPayElement.textContent = `To Pay: ₹${totalPay.toFixed(2)}`;
-            localStorage.setItem('totalPay', totalPay.toFixed(2));
-
-            console.log('Total cost set in localStorage:', totalPay); // Debugging log
         });
     </script>
 </body>
