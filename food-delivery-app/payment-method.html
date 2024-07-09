@@ -78,7 +78,8 @@
             border-color: #28a745;
         }
 
-        .address-selection .address .edit-btn {
+        .address-selection .address .edit-btn,
+        .address-selection .address .delete-btn {
             position: absolute;
             top: 10px;
             right: 10px;
@@ -87,6 +88,15 @@
             border: none;
             cursor: pointer;
             padding: 5px 10px;
+        }
+
+        .address-selection .address .edit-btn {
+            right: 80px;
+        }
+
+        .address-selection .address .delete-btn {
+            top: 40px;
+            background-color: #dc3545;
         }
 
         .payment-method, .place-order {
@@ -169,21 +179,6 @@
             max-width: 24px;
             margin-bottom: 5px;
         }
-        /* Apply styles for desktop and tablet screens */
-@media (min-width: 768px) {
-    body {
-        margin: 0 auto;
-        max-width: 70%;
-    }
-}
-
-/* Apply styles for mobile screens */
-@media (max-width: 767px) {
-    body {
-        margin: 0 5%;
-    }
-}
-
     </style>
 </head>
 <body>
@@ -247,20 +242,20 @@
             const placeOrderSection = document.querySelector('.place-order');
             let subtotal = 0;
             let selectedAddressId = null;
-        
+
             const token = localStorage.getItem('token');
             if (!token) {
                 alert('No token found, please log in first.');
                 window.location.href = '/login.html';
                 return;
             }
-        
+
             // Retrieve the total cost from localStorage
-            const totalCost = parseFloat(localStorage.getItem('totalPay')) || 0;  // Updated key to 'totalPay'
+            const totalCost = parseFloat(localStorage.getItem('totalPay')) || 0; // Updated key to 'totalPay'
             console.log('Total cost retrieved from localStorage:', totalCost);  // Debugging log
             subtotal = totalCost;
-            subtotalElement.textContent = `Subtotal: ₹${totalCost.toFixed(2)}`;
-        
+            subtotalElement.textContent = `To Pay: ₹${totalCost.toFixed(2)}`;
+
             // Check if mobile number is present
             try {
                 const mobileResponse = await fetch('https://m1wala1.onrender.com/check-mobile', {
@@ -270,11 +265,15 @@
                         'x-auth-token': token
                     }
                 });
-        
+
                 if (!mobileResponse.ok) {
+                    if (mobileResponse.status === 401) {
+                        alert('Session expired. Please login again.');
+                        window.location.href = '/login.html';
+                    }
                     throw new Error(`HTTP error! Status: ${mobileResponse.status}`);
                 }
-        
+
                 const mobileData = await mobileResponse.json();
                 if (!mobileData.hasMobile) {
                     alert('Please update and verify your mobile number in your profile.');
@@ -287,14 +286,14 @@
                 window.location.href = '/profile.html';
                 return;
             }
-        
+
             function renderCartItems(cartData) {
                 const cartItems = cartData.cartItems || [];
                 if (!Array.isArray(cartItems)) {
                     console.error('Invalid cart items format:', cartItems);
                     return;
                 }
-        
+
                 selectedItemsList.innerHTML = '';
                 cartItems.forEach(item => {
                     const li = document.createElement('li');
@@ -309,13 +308,13 @@
                     li.appendChild(img);
                     li.appendChild(itemText);
                     selectedItemsList.appendChild(li);
-        
+
                     li.addEventListener('click', () => {
                         window.location.href = `grocery-home.html?categoryId=${item.categoryId}&subcategoryId=${item.subcategoryId}&productId=${item.productId}`;
                     });
                 });
             }
-        
+
             function renderAddresses(addresses) {
                 savedAddressesContainer.innerHTML = '';
                 addresses.forEach(address => {
@@ -328,9 +327,10 @@
                         <p>${address.country}</p>
                         <p>${address.phone}</p>
                         <button class="edit-btn" data-id="${address._id}">Edit</button>
+                        <button class="delete-btn" data-id="${address._id}">Delete</button>
                     `;
                     savedAddressesContainer.appendChild(addressDiv);
-        
+
                     addressDiv.addEventListener('click', () => {
                         document.querySelectorAll('.address').forEach(addr => addr.classList.remove('selected'));
                         addressDiv.classList.add('selected');
@@ -338,21 +338,27 @@
                         paymentMethodSection.style.display = 'block';
                         placeOrderSection.style.display = 'block';
                     });
-        
+
                     if (!selectedAddressId) {
                         addressDiv.classList.add('selected');
                         selectedAddressId = address._id;
                         paymentMethodSection.style.display = 'block';
                         placeOrderSection.style.display = 'block';
                     }
-        
+
                     addressDiv.querySelector('.edit-btn').addEventListener('click', (event) => {
                         event.stopPropagation();
                         const addressId = event.target.dataset.id;
                         window.location.href = `address-details.html?id=${addressId}`;
                     });
+
+                    addressDiv.querySelector('.delete-btn').addEventListener('click', (event) => {
+                        event.stopPropagation();
+                        const addressId = event.target.dataset.id;
+                        deleteAddress(addressId);
+                    });
                 });
-        
+
                 if (addresses.length === 0) {
                     paymentMethodSection.style.display = 'none';
                     placeOrderSection.style.display = 'none';
@@ -361,7 +367,41 @@
                     placeOrderSection.style.display = 'block';
                 }
             }
-        
+
+            async function deleteAddress(addressId) {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    alert('No token found, please log in first.');
+                    window.location.href = '/login.html';
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`https://m1wala1.onrender.com/api/addresses/${addressId}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'x-auth-token': token
+                        }
+                    });
+
+                    if (!response.ok) {
+                        if (response.status === 401) {
+                            alert('Session expired. Please login again.');
+                            window.location.href = '/login.html';
+                        }
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    }
+
+                    const result = await response.json();
+                    alert(result.msg);
+                    fetchSavedAddresses(); // Refresh the addresses list
+                } catch (error) {
+                    console.error('Error deleting address:', error);
+                    alert('An error occurred while deleting the address. Please try again later.');
+                }
+            }
+
             async function fetchCartItems() {
                 try {
                     const response = await fetch('https://m1wala1.onrender.com/api/cart', {
@@ -371,11 +411,15 @@
                             'x-auth-token': token
                         }
                     });
-        
+
                     if (!response.ok) {
+                        if (response.status === 401) {
+                            alert('Session expired. Please login again.');
+                            window.location.href = '/login.html';
+                        }
                         throw new Error(`HTTP error! Status: ${response.status}`);
                     }
-        
+
                     const data = await response.json();
                     renderCartItems(data);
                 } catch (error) {
@@ -383,7 +427,7 @@
                     alert('An error occurred while fetching cart items.');
                 }
             }
-        
+
             async function fetchSavedAddresses() {
                 try {
                     const response = await fetch('https://m1wala1.onrender.com/api/addresses', {
@@ -393,11 +437,15 @@
                             'x-auth-token': token
                         }
                     });
-        
+
                     if (!response.ok) {
+                        if (response.status === 401) {
+                            alert('Session expired. Please login again.');
+                            window.location.href = '/login.html';
+                        }
                         throw new Error(`HTTP error! Status: ${response.status}`);
                     }
-        
+
                     const addresses = await response.json();
                     renderAddresses(addresses);
                 } catch (error) {
@@ -405,7 +453,7 @@
                     alert('An error occurred while fetching saved addresses.');
                 }
             }
-        
+
             async function fetchUserProfile() {
                 try {
                     const response = await fetch(`https://m1wala1.onrender.com/api/auth`, {
@@ -415,11 +463,15 @@
                             'x-auth-token': token
                         }
                     });
-        
+
                     if (!response.ok) {
+                        if (response.status === 401) {
+                            alert('Session expired. Please login again.');
+                            window.location.href = '/login.html';
+                        }
                         throw new Error(`HTTP error! Status: ${response.status}`);
                     }
-        
+
                     const data = await response.json();
                     return data;
                 } catch (error) {
@@ -427,7 +479,7 @@
                     return null;
                 }
             }
-        
+
             async function clearCart() {
                 try {
                     const response = await fetch('https://m1wala1.onrender.com/api/cart', {
@@ -437,35 +489,35 @@
                             'x-auth-token': token
                         }
                     });
-        
+
                     if (!response.ok) {
                         const errorText = await response.text();
                         throw new Error(`HTTP error! Status: ${response.status}: ${errorText}`);
                     }
-        
+
                     fetchCartItems();  // Update the cart immediately
                 } catch (error) {
                     console.error('Error clearing cart:', error);
                     alert(`An error occurred while clearing the cart: ${error.message}`);
                 }
             }
-        
+
             fetchCartItems();
             fetchSavedAddresses();
-        
+
             addAddressBtn.addEventListener('click', () => {
                 window.location.href = 'address-details.html';
             });
-        
+
             orderForm.addEventListener('submit', async (event) => {
                 event.preventDefault();
-        
+
                 const formData = {
                     paymentMethod: document.querySelector('input[name="paymentMethod"]:checked').value,
                     items: [],
                     total: subtotal
                 };
-        
+
                 try {
                     const response = await fetch('https://m1wala1.onrender.com/api/cart', {
                         method: 'GET',
@@ -474,11 +526,15 @@
                             'x-auth-token': token
                         }
                     });
-        
+
                     if (!response.ok) {
+                        if (response.status === 401) {
+                            alert('Session expired. Please login again.');
+                            window.location.href = '/login.html';
+                        }
                         throw new Error(`HTTP error! Status: ${response.status}`);
                     }
-        
+
                     const cartData = await response.json();
                     formData.items = cartData.cartItems.map(item => ({
                         productName: item.productName,
@@ -488,19 +544,19 @@
                         categoryId: item.categoryId,
                         subcategoryId: item.subcategoryId
                     }));
-        
+
                     const userProfile = await fetchUserProfile();
                     if (!userProfile) {
                         alert('Failed to fetch user profile.');
                         return;
                     }
-        
+
                     if (!userProfile.mobile) {
                         alert('Please update and verify your mobile number in your profile.');
                         window.location.href = '/profile.html?redirect=payment-method.html';
                         return;
                     }
-        
+
                     const orderResponse = await fetch('https://m1wala1.onrender.com/api/orders', {
                         method: 'POST',
                         headers: {
@@ -514,18 +570,21 @@
                             paymentMethod: formData.paymentMethod
                         })
                     });
-        
+
                     if (!orderResponse.ok) {
                         const errorText = await orderResponse.text();
                         throw new Error(`Order Error: ${errorText}`);
                     }
-        
+
                     const orderData = await orderResponse.json();
                     alert('Order placed successfully!');
                     console.log(orderData);
-        
+
                     await clearCart();
-        
+
+                    // Disable the submit button to prevent double order placement
+                    document.querySelector('.place-order button[type="submit"]').disabled = true;
+
                     // Redirect to order history page
                     window.location.href = '/order-history.html';
                 } catch (error) {
@@ -534,7 +593,6 @@
                 }
             });
         });
-        </script>
-        
+    </script>
 </body>
 </html>
