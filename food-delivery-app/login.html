@@ -6,7 +6,7 @@
   <title>Login</title>
   <style>
     body {
-      background: url('https://m1walap.s3.ap-south-1.amazonaws.com/bg/login_bg.jpg') no-repeat center center fixed;
+      background: url('https://m1walap.s3.ap-south-1.amazonaws.com/bg/login+(2).jpeg') no-repeat center center fixed;
       background-size: cover;
       display: flex;
       justify-content: center;
@@ -49,11 +49,6 @@
       font-weight: bold;
       text-transform: uppercase;
       text-align: center;
-    }
-
-    ul {
-      list-style-type: none;
-      margin-bottom: 20px;
     }
 
     .input-field {
@@ -115,46 +110,19 @@
       .container {
         padding: 10px;
       }
+
       .header img {
         width: 60px;
         height: 60px;
       }
+
       .header h1 {
         font-size: 24px;
       }
     }
 
-    input[type="text"],
-    input[type="password"],
-    input[type="email"] {
-      width: 100%;
-      padding: 10px;
-      margin: 5px 0;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-      box-sizing: border-box;
-    }
-
-    button[type="submit"],
-    button[type="button"] {
-      width: 100%;
-      padding: 10px;
-      margin-top: 10px;
-      background-color: #205dee;
-      color: #fff;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
-    button[type="submit"]:hover,
-    button[type="button"]:hover {
-      background-color: #45a049;
-    }
-
     .signup-button {
-      background-color: #205dee;
-      color: #fff;
+      background-color: #008CBA;
       margin-top: 20px;
     }
 
@@ -176,246 +144,207 @@
       display: none;
     }
 
-    .loading-spinner {
+    .loading-indicator {
       display: none;
-      border: 4px solid rgba(0, 0, 0, 0.1);
-      border-left-color: #4CAF50;
-      border-radius: 50%;
-      width: 30px;
-      height: 30px;
-      animation: spin 1s linear infinite;
-    }
-
-    @keyframes spin {
-      from {
-        transform: rotate(0deg);
-      }
-      to {
-        transform: rotate(360deg);
-      }
-    }
-
-    .message {
       text-align: center;
-      color: #fff;
-      font-size: 14px;
-      margin-top: 10px;
+      margin-top: 20px;
     }
-    /* Apply styles for desktop and tablet screens */
-@media (min-width: 768px) {
-    body {
-        margin: 0 auto;
-        max-width: 70%;
-    }
-}
 
-/* Apply styles for mobile screens */
-@media (max-width: 767px) {
-    body {
-        margin: 0 5%;
+    .loading-indicator img {
+      width: 50px;
+      height: 50px;
     }
-}
-
   </style>
 </head>
 <body>
   <div class="container">
     <div class="header">
-      <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjohGD5DVMP3YmjTOtHGi8qey-zIap1-NGCS-qu7tSSAWxm1OMIxjljA_zEv4ymVA3-PN6RNI-H85Xg1ZFiZUJa0EkWRf0sI9V96sGkNl_c0Z4OThzSyHPi7fK9eUQhww3DXS5UKSOzKvK9JXggtG5Jkhl1rXubsHtv0rtTDZR8icLVfAHywuBTiyjIkmUf/w1684-h1069-p-k-no-nu/M1%20WALA%20(1).png" alt="Delivery Logo">
+      <img src="https://m1walap.s3.ap-south-1.amazonaws.com/bg/M1WALA+(1).png" alt="Delivery Logo">
       <h1>M1wala</h1>
       <h1>Login</h1>
     </div>
     <form id="loginForm" onsubmit="event.preventDefault(); login(document.getElementById('loginEmail').value, document.getElementById('loginPassword').value);">
       <label for="loginEmail">Email:</label>
-      <input type="email" id="loginEmail" required>
+      <input type="email" id="loginEmail" required class="input-field">
       <label for="loginPassword">Password:</label>
-      <input type="password" id="loginPassword" required oninput="showPasswordRequirements()">
+      <input type="password" id="loginPassword" required class="input-field" oninput="showPasswordRequirements()">
       <div id="passwordRequirements">Password must be at least 6 characters long and include at least one special character.</div>
-      <button type="submit">Login</button>
+      <button type="submit" class="submit">Login</button>
       <button type="button" class="signup-button" onclick="redirectToSignup()">Sign Up</button>
       <button type="button" onclick="showForgotPasswordForm()">Forgot Password</button>
-      <div class="loading-spinner" id="loadingSpinner"></div>
-      <div class="message" id="loginMessage"></div>
     </form>
-
+    <div class="loading-indicator" id="loadingIndicator">
+      <img src="https://i.gifer.com/ZZ5H.gif" alt="Loading...">
+    </div>
     <form id="forgotPasswordForm" onsubmit="event.preventDefault(); sendOtp(document.getElementById('forgotPasswordEmail').value);">
       <h1>Forgot Password</h1>
       <label for="forgotPasswordEmail">Email:</label>
-      <input type="email" id="forgotPasswordEmail" required>
-      <button type="submit">Send OTP</button>
+      <input type="email" id="forgotPasswordEmail" required class="input-field">
+      <button type="submit" class="submit">Send OTP</button>
     </form>
-
     <form id="otpForm" onsubmit="event.preventDefault(); showNewPasswordForm();">
       <h1>Verify OTP</h1>
       <label for="otpEmail">Email:</label>
-      <input type="email" id="otpEmail" required>
+      <input type="email" id="otpEmail" required class="input-field">
       <label for="otp">OTP:</label>
-      <input type="text" id="otp" required>
-      <button type="submit">Verify OTP</button>
+      <input type="text" id="otp" required class="input-field">
+      <button type="submit" class="submit">Verify OTP</button>
     </form>
-
     <form id="newPasswordForm" onsubmit="event.preventDefault(); resetPassword(document.getElementById('resetEmail').value, document.getElementById('resetOtp').value, document.getElementById('newPassword').value, document.getElementById('confirmPassword').value);">
       <h1>Reset Password</h1>
       <label for="resetEmail">Email:</label>
-      <input type="email" id="resetEmail" required>
+      <input type="email" id="resetEmail" required class="input-field">
       <label for="resetOtp">OTP:</label>
-      <input type="text" id="resetOtp" required>
+      <input type="text" id="resetOtp" required class="input-field">
       <label for="newPassword">New Password:</label>
-      <input type="password" id="newPassword" required oninput="validateNewPassword()">
+      <input type="password" id="newPassword" required class="input-field" oninput="validateNewPassword()">
       <div id="newPasswordRequirements">Password must be at least 6 characters long and include at least one special character.</div>
       <label for="confirmPassword">Confirm Password:</label>
-      <input type="password" id="confirmPassword" required oninput="checkPasswordMatch()">
+      <input type="password" id="confirmPassword" required class="input-field" oninput="checkPasswordMatch()">
       <div id="passwordMismatch">Passwords do not match</div>
-      <button type="submit">Reset Password</button>
+      <button type="submit" class="submit">Reset Password</button>
     </form>
-
-    <script>
-      function redirectToSignup() {
-        window.location.href = './signup.html';
-      }
-
-      function showPasswordRequirements() {
-        const password = document.getElementById('loginPassword').value;
-        const requirements = document.getElementById('passwordRequirements');
-        const regex = /^(?=.*[!@#$%^&*])/;
-
-        if (password.length < 6 || !regex.test(password)) {
-          requirements.style.display = 'block';
-        } else {
-          requirements.style.display = 'none';
-        }
-      }
-
-      function validateNewPassword() {
-        const password = document.getElementById('newPassword').value;
-        const requirements = document.getElementById('newPasswordRequirements');
-        const regex = /^(?=.*[!@#$%^&*])/;
-
-        if (password.length < 6 || !regex.test(password)) {
-          requirements.style.display = 'block';
-        } else {
-          requirements.style.display = 'none';
-        }
-      }
-
-      function checkPasswordMatch() {
-        const newPassword = document.getElementById('newPassword').value;
-        const confirmPassword = document.getElementById('confirmPassword').value;
-        const mismatch = document.getElementById('passwordMismatch');
-
-        if (newPassword !== confirmPassword) {
-          mismatch.style.display = 'block';
-        } else {
-          mismatch.style.display = 'none';
-        }
-      }
-
-      function showForgotPasswordForm() {
-        document.getElementById('loginForm').style.display = 'none';
-        document.getElementById('forgotPasswordForm').style.display = 'block';
-      }
-
-      function showOtpForm() {
-        document.getElementById('forgotPasswordForm').style.display = 'none';
-        document.getElementById('otpForm').style.display = 'block';
-      }
-
-      function showNewPasswordForm() {
-        const email = document.getElementById('otpEmail').value;
-        const otp = document.getElementById('otp').value;
-        document.getElementById('otpForm').style.display = 'none';
-        document.getElementById('newPasswordForm').style.display = 'block';
-        document.getElementById('resetEmail').value = email;
-        document.getElementById('resetOtp').value = otp;
-      }
-
-      async function login(email, password) {
-        try {
-          const loginMessage = document.getElementById('loginMessage');
-          const loadingSpinner = document.getElementById('loadingSpinner');
-          loginMessage.textContent = '';
-          loadingSpinner.style.display = 'block';
-
-          const response = await fetch('https://m1wala1.onrender.com/api/auth/login', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ email: email.trim(), password: password.trim() }),
-          });
-
-          loadingSpinner.style.display = 'none';
-
-          if (!response.ok) {
-            const errorData = await response.json();
-            loginMessage.textContent = errorData.msg || 'Unknown error';
-            throw new Error(errorData.msg || 'Unknown error');
-          }
-
-          const data = await response.json();
-          if (data.token) {
-            localStorage.setItem('token', data.token);
-            localStorage.setItem('userId', data.userId);
-            alert('Login successful!');
-            window.location.href = 'grocery-home.html';
-          } else {
-            loginMessage.textContent = 'Login failed: Unknown error';
-            alert('Login failed: Unknown error');
-          }
-        } catch (error) {
-          alert('An error occurred during login: ' + error.message);
-        }
-      }
-
-      async function sendOtp(email) {
-        try {
-          const response = await fetch('https://m1wala1.onrender.com/api/auth/forgot-password', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ email: email.trim() }),
-          });
-
-          const data = await response.json();
-          if (response.ok) {
-            alert('OTP sent to your email');
-            showOtpForm();
-          } else {
-            alert('Failed to send OTP: ' + data.msg);
-          }
-        } catch (error) {
-          console.error('An error occurred:', error);
-        }
-      }
-
-      async function resetPassword(email, otp, newPassword, confirmPassword) {
-        if (newPassword !== confirmPassword) {
-          alert('Passwords do not match');
-          return;
-        }
-
-        try {
-          const response = await fetch('https://m1wala1.onrender.com/api/auth/verify-otp', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ email: email.trim(), otp: otp.trim(), newPassword: newPassword.trim() }),
-          });
-
-          const data = await response.json();
-          if (response.ok) {
-            alert('Password updated successfully');
-            window.location.href = 'login.html';  // Redirect to login page
-          } else {
-            alert('Failed to reset password: ' + data.msg);
-          }
-        } catch (error) {
-          console.error('An error occurred:', error);
-        }
-      }
-    </script>
   </div>
+  <script>
+    function redirectToSignup() {
+      window.location.href = './signup.html';
+    }
+
+    function showPasswordRequirements() {
+      const password = document.getElementById('loginPassword').value;
+      const requirements = document.getElementById('passwordRequirements');
+      const regex = /^(?=.*[!@#$%^&*])/;
+
+      if (password.length < 6 || !regex.test(password)) {
+        requirements.style.display = 'block';
+      } else {
+        requirements.style.display = 'none';
+      }
+    }
+
+    function validateNewPassword() {
+      const password = document.getElementById('newPassword').value;
+      const requirements = document.getElementById('newPasswordRequirements');
+      const regex = /^(?=.*[!@#$%^&*])/;
+
+      if (password.length < 6 || !regex.test(password)) {
+        requirements.style.display = 'block';
+      } else {
+        requirements.style.display = 'none';
+      }
+    }
+
+    function checkPasswordMatch() {
+      const newPassword = document.getElementById('newPassword').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+      const mismatch = document.getElementById('passwordMismatch');
+
+      if (newPassword !== confirmPassword) {
+        mismatch.style.display = 'block';
+      } else {
+        mismatch.style.display = 'none';
+      }
+    }
+
+    function showForgotPasswordForm() {
+      document.getElementById('loginForm').style.display = 'none';
+      document.getElementById('forgotPasswordForm').style.display = 'block';
+    }
+
+    function showOtpForm() {
+      document.getElementById('forgotPasswordForm').style.display = 'none';
+      document.getElementById('otpForm').style.display = 'block';
+    }
+
+    function showNewPasswordForm() {
+      const email = document.getElementById('otpEmail').value;
+      const otp = document.getElementById('otp').value;
+      document.getElementById('otpForm').style.display = 'none';
+      document.getElementById('newPasswordForm').style.display = 'block';
+      document.getElementById('resetEmail').value = email;
+      document.getElementById('resetOtp').value = otp;
+    }
+
+    async function login(email, password) {
+      try {
+        document.getElementById('loadingIndicator').style.display = 'block'; // Show loading indicator
+        const response = await fetch('https://m1wala1.onrender.com/api/auth/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ email: email.trim(), password: password.trim() }),
+        });
+
+        document.getElementById('loadingIndicator').style.display = 'none'; // Hide loading indicator
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.msg || 'Unknown error');
+        }
+
+        const data = await response.json();
+        if (data.token) {
+          localStorage.setItem('token', data.token);
+          localStorage.setItem('userId', data.userId);
+          alert('Login successful!');
+          window.location.href = 'grocery-home.html';
+        } else {
+          alert('Login failed: Unknown error');
+        }
+      } catch (error) {
+        alert('An error occurred during login: ' + error.message);
+      }
+    }
+
+    async function sendOtp(email) {
+      try {
+        const response = await fetch('https://m1wala1.onrender.com/api/auth/forgot-password', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ email: email.trim() }),
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+          alert('OTP sent to your email');
+          showOtpForm();
+        } else {
+          alert('Failed to send OTP: ' + data.msg);
+        }
+      } catch (error) {
+        console.error('An error occurred:', error);
+      }
+    }
+
+    async function resetPassword(email, otp, newPassword, confirmPassword) {
+      if (newPassword !== confirmPassword) {
+        alert('Passwords do not match');
+        return;
+      }
+
+      try {
+        const response = await fetch('https://m1wala1.onrender.com/api/auth/verify-otp', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ email: email.trim(), otp: otp.trim(), newPassword: newPassword.trim() }),
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+          alert('Password updated successfully');
+          window.location.href = 'login.html';
+        } else {
+          alert('Failed to reset password: ' + data.msg);
+        }
+      } catch (error) {
+        console.error('An error occurred:', error);
+      }
+    }
+  </script>
 </body>
 </html>
